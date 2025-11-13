@@ -61,4 +61,19 @@ class Kuesioner extends Model
     {
         return $this->status === 'aktif';
     }
+    
+    public function identitas()
+    {
+        return $this->hasOne(KonfigurasiIdentitas::class, 'id_kuesioner', 'id_kuesioner');
+    }
+    
+    public function pertanyaan()
+    {
+        return $this->hasMany(\App\Models\Pertanyaan::class, 'id_kuesioner', 'id_kuesioner');
+    }
+    
+    public function respondens()
+    {
+        return $this->hasMany(\App\Models\Responden::class, 'id_kuesioner', 'id_kuesioner');
+    }
 }

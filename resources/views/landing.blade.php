@@ -111,11 +111,13 @@
                         kualitas layanan di Fakultas Teknik Universitas Bengkulu.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-6">
-                        <button class="group bg-medium-blue text-white px-10 py-5 rounded-xl font-semibold text-lg hover:bg-dark-blue transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl border-2 border-transparent focus:ring-4 focus:ring-medium-blue/30">
-                            <span class="flex items-center justify-center space-x-2">
-                                <span>Isi Survey Sekarang</span>
-                            </span>
-                        </button>
+                        <a href="{{ url('/cari-survey') }}">
+                            <button class="group bg-medium-blue text-white px-10 py-5 rounded-xl font-semibold text-lg hover:bg-dark-blue transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl border-2 border-transparent focus:ring-4 focus:ring-medium-blue/30">
+                                <span class="flex items-center justify-center space-x-2">
+                                    <span>Isi Survey Sekarang</span>
+                                </span>
+                            </button>
+                        </a>
                         <button class="group bg-white text-dark-blue border-3 border-medium-blue px-10 py-5 rounded-xl font-semibold text-lg hover:bg-medium-blue hover:text-white transition-all duration-300 shadow-lg hover:shadow-2xl focus:ring-4 focus:ring-medium-blue/30">
                             <span class="flex items-center justify-center space-x-2">
                                 <span>Panduan Pengisian</span>
@@ -301,9 +303,11 @@
                 Masukan Anda sangat berharga untuk peningkatan kualitas layanan Fakultas Teknik UNIB
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button class="bg-white text-dark-blue px-8 py-4 rounded-xl font-semibold text-lg hover:bg-cream transition-all duration-300 transform hover:scale-105">
-                    Mulai Survey
-                </button>
+                <a href="{{ url('/cari-survey') }}">
+                    <button class="bg-white text-dark-blue px-8 py-4 rounded-xl font-semibold text-lg hover:bg-cream transition-all duration-300 transform hover:scale-105">
+                        Mulai Survey
+                    </button>
+                </a>
                 <button class="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-dark-blue transition-all duration-300">
                     Hubungi Kami
                 </button>

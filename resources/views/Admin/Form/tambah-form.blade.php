@@ -53,7 +53,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="flex min-h-screen">
-        @include('navbar')
+        @include('Admin.navbar')
 
         <!-- Main Content -->
         <main class="flex-1 lg:ml-72 p-6 lg:p-8">

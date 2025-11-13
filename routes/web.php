@@ -4,6 +4,7 @@ use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Appearance;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KuesionerController;
 
@@ -21,9 +22,19 @@ Route::get('/', function () {
 //     return view('detail-form');
 // })->name('detailform');
 
-// Route::get('/kategori', function () {
-//     return view('kategori');
-// })->name('kategori');
+Route::get('/editpertanyaan', function () {
+    return view('edit-pertanyaan');
+})->name('editpertanyaan');
+Route::get('/survey', [KuesionerController::class, 'cariSurvey'])->name('survey');
+Route::get('/cari-survey', [KuesionerController::class, 'cariSurvey'])->name('cari-survey');
+Route::get('/isisurvey', function () {
+    return view('isi-survey');
+})->name('isisurvey');
+Route::get('/isi-survey/{id}', [KuesionerController::class, 'isiSurvey'])->name('isi-survey');
+Route::post('/isi-survey/{id}', [KuesionerController::class, 'storeJawaban'])->name('isi-survey.store');
+Route::get('/isi-survey/{id}/pertanyaan/{responden}', [KuesionerController::class, 'isiPertanyaan'])->name('isi-survey.pertanyaan');
+Route::post('/isi-survey/{id}/pertanyaan/{responden}', [KuesionerController::class, 'storePertanyaan'])->name('isi-survey.pertanyaan.store');
+Route::get('/isi-survey/{id}/selesai', [KuesionerController::class, 'selesai'])->name('isi-survey.selesai');
 
 
 
@@ -38,6 +49,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form/tambah', [KuesionerController::class, 'create'])->name('forms.create');
     Route::post('/form', [KuesionerController::class, 'store'])->name('forms.store');
     Route::get('/form/{id}', [KuesionerController::class, 'show'])->name('forms.show');
+    Route::get('/form/{id}/edit', [KuesionerController::class, 'edit'])->name('forms.edit');
+    Route::put('/form/{id}', [KuesionerController::class, 'update'])->name('forms.update');
+    Route::get('/form/{id}/edit-pertanyaan', [KuesionerController::class, 'editPertanyaan'])->name('forms.edit-pertanyaan');
+    Route::put('/form/{id}/update-pertanyaan', [KuesionerController::class, 'updatePertanyaan'])->name('forms.update-pertanyaan');
+    Route::delete('/form/{id}', [KuesionerController::class, 'destroy'])->name('forms.destroy');
+    
 
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
     Route::get('/kategori/tambah', [KategoriController::class, 'create'])->name('kategori.tambah');
@@ -46,7 +63,13 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
     Route::get('/kategori/{id}/hapus', [KategoriController::class, 'destroy'])->name('kategori.hapus');
 
-
+    // Admin Management Routes
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+    Route::get('/admin/tambah', [AdminController::class, 'create'])->name('admin.create');
+    Route::post('/admin', [AdminController::class, 'store'])->name('admin.store');
+    Route::get('/admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
+    Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
+    Route::delete('/admin/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
 
     // Route::redirect('settings', 'settings/profile');
 

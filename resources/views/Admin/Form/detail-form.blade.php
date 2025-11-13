@@ -118,7 +118,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="flex min-h-screen">
-        @include('navbar')
+        @include('Admin.navbar')
 
         <!-- Main Content -->
         <main class="flex-1 lg:ml-72 p-6 lg:p-8">
@@ -181,9 +181,9 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-wrap gap-3 mb-8 items-center">
-                <button class="px-5 py-2.5 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                <a href="{{ route('forms.edit-pertanyaan', $form->id_kuesioner) }}" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors">
                     Edit Pertanyaan
-                </button>
+                </a>
                 <button class="px-5 py-2.5 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors">
                     Lihat Responden
                 </button>
@@ -284,6 +284,13 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Delete Form Section -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <button type="button" onclick="confirmDeleteForm({{ $form->id_kuesioner }})" class="w-full px-4 py-3 bg-red-600 text-white font-medium rounded-lg text-sm hover:bg-red-700 transition-colors text-center">
+                    Hapus Form
+                </button>
+            </div>
         </main>
     </div>
 
@@ -291,9 +298,8 @@
         // Edit button handler
         const editFab = document.querySelector('.edit-fab');
         editFab.addEventListener('click', function() {
-            // Nanti akan diarahkan ke halaman edit identitas form
-            console.log('Edit identitas form');
-            // window.location.href = '/form/1/edit';
+            // Redirect to edit form page
+            window.location.href = '{{ route('forms.edit', $form->id_kuesioner) }}';
         });
 
         // Status toggle handler
@@ -319,6 +325,34 @@
                 toggleDot.classList.add('translate-x-1');
             }
         });
+        
+        // Delete form confirmation
+        function confirmDeleteForm(formId) {
+            if (confirm('Apakah Anda yakin ingin menghapus form ini? Tindakan ini tidak dapat dibatalkan dan semua data terkait akan dihapus.')) {
+                // Create and submit a form to delete the form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/form/${formId}`;
+                form.style.display = 'none';
+                
+                // Add CSRF token using the value from the meta tag or directly from Laravel
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_token';
+                tokenInput.value = '{{ csrf_token() }}'; // Directly embed the token from Laravel
+                form.appendChild(tokenInput);
+                
+                // Add method spoofing for DELETE
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                form.appendChild(methodInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
     </script>
 </body>
 </html>

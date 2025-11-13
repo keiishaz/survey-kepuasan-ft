@@ -13,13 +13,13 @@ class KategoriController extends Controller
         $categories = Kategori::withCount('kuesioner')
         ->orderBy('nama')
         ->get();
-        return view('kategori', compact('categories'));
+        return view('Admin.Kategori.kategori', compact('categories'));
     }
 
     // FORM TAMBAH
     public function create()
     {
-        return view('tambah-kategori');
+        return view('Admin.Kategori.tambah-kategori');
     }
 
     // SIMPAN
@@ -41,7 +41,7 @@ class KategoriController extends Controller
     public function edit($id)
     {
         $kategori = Kategori::findOrFail($id);
-        return view('edit-kategori', compact('kategori'));
+        return view('Admin.Kategori.edit-kategori', compact('kategori'));
     }
 
     // UPDATE

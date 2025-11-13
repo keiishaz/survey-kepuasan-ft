@@ -19,7 +19,7 @@
 </head>
 <body class="bg-gray-50 min-h-screen">
 <div class="flex min-h-screen">
-    @include('navbar')
+    @include('Admin.navbar')
 
     <!-- Toggle -->
     <button class="fixed top-6 right-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg border border-gray-200" id="sidebar-toggle">
