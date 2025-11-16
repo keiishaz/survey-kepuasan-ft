@@ -340,7 +340,7 @@
         .card-button {
             width: 100%;
             padding: 12px 20px;
-            background: #3b82f6;
+            background: #'3b82f6';
             color: white;
             border: none;
             border-radius: 8px;

@@ -273,6 +273,140 @@
             transform: translateY(0);
         }
 
+        /* Radio button styles for scale */
+        .scale-container {
+            margin-top: 16px;
+        }
+        
+        .scale-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0;
+            position: relative;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .scale-option {
+            position: relative;
+        }
+
+        .scale-input {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .scale-input:hover {
+            border-color: #9ca3af;
+            background: #f3f4f6;
+        }
+
+        .scale-input:checked {
+            border-color: #3b82f6;
+            background: #3b82f6;
+        }
+
+        .scale-input:checked::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .rating-label {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+
+        .nav-btn.next {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .nav-btn.next:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .page-indicator {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        /* Question counter */
+        .question-counter {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        /* Section Title */
+        .sub-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .page-container {
@@ -319,6 +453,16 @@
 
             .question-label {
                 font-size: 14px;
+            }
+
+            .scale-options {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .scale-input {
+                width: 32px;
+                height: 32px;
             }
         }
 
@@ -416,10 +560,28 @@
                 font-size: 14px;
             }
 
-            .submit-button {
+            .submit-button,
+            .nav-btn {
                 width: 100%;
                 padding: 12px 24px;
                 font-size: 14px;
+            }
+
+            .scale-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .scale-input {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .scale-labels {
+                flex-direction: column;
+                gap: 4px;
+                align-items: flex-start;
             }
         }
     </style>
@@ -473,8 +635,8 @@
         <!-- Form -->
         <form class="form-container" id="surveyForm" method="POST" action="{{ route('isi-survey.store', $survey->id_kuesioner) }}">
             @csrf
-            <!-- Identitas Section -->
-            <div class="form-section">
+            <!-- Identitas Section - Only visible on first page -->
+            <div id="identitas-section" class="form-section">
                 <div class="section-header">
                     <div class="section-icon">👤</div>
                     <h2 class="section-title">Identitas</h2>
@@ -548,48 +710,211 @@
                         <input type="text" class="input-field" name="identitas3" placeholder="Masukkan program studi Anda" required>
                     </div>
                 @endif
+                
+                <!-- Next button for identitas -->
+                <div class="nav-buttons">
+                    <button type="button" class="nav-btn" disabled style="visibility: hidden;">Sebelumnya</button>
+                    <button type="button" class="nav-btn next" onclick="showPage(1)">Berikutnya</button>
+                </div>
             </div>
 
-            <!-- Submit Section -->
-            <div class="submit-section">
-                <button type="submit" class="submit-button">
-                    Berikutnya
+            <!-- Questions Section - hidden initially -->
+            <div id="questions-section" class="form-section" style="display: none;">
+                <div class="section-header">
+                    <div class="section-icon">📝</div>
+                    <h2 class="section-title">Pertanyaan Survey</h2>
+                </div>
 
+                <div class="question-counter">
+                    <span id="current-section">1</span> dari <span id="total-sections">1</span> Bagian
+                </div>
 
+                <!-- Question groups organized by sub sections -->
+                <div id="questions-container">
+                    <!-- Questions will be loaded dynamically -->
+                </div>
 
+                <!-- Navigation for questions -->
+                <div class="nav-buttons">
+                    <button type="button" class="nav-btn" id="prev-btn" onclick="prevPage()">Sebelumnya</button>
+                    <button type="button" class="nav-btn next" id="next-btn" onclick="nextPage()">Berikutnya</button>
+                </div>
+            </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </button>
+            <!-- Submit Section - hidden initially -->
+            <div id="submit-section" class="submit-section" style="display: none;">
+                <p>Terima kasih telah mengisi survey kami!</p>
+                <button type="submit" class="submit-button">Kirim Jawaban</button>
             </div>
         </form>
     </div>
 
+    <script>
+        // Get the questions data from Laravel
+        // For this implementation we'll group all questions into a single section since we don't have defined sub sections in the database
+        // In case you later add sub sections, you can modify this structure
+        
+        const questions = [
+            @foreach($survey->pertanyaan as $index => $question)
+            {
+                id: {{ $question->id_pertanyaan }},
+                text: "{{ addslashes($question->teks) }}",
+                index: {{ $index }}
+            }@if(!$loop->last),
+            @endif
+            @endforeach
+        ];
+        
+        // Group all questions into a single section since no explicit sub-sectioning exists
+        const sections = [
+            {
+                id: 1,
+                title: "Bagian Umum",
+                questions: questions
+            }
+        ];
 
+        let currentPage = 0;
+        let totalSections = sections.length;
+
+        // Function to show a specific page
+        function showPage(pageNum) {
+            // Hide all sections
+            document.getElementById('identitas-section').style.display = 'none';
+            document.getElementById('questions-section').style.display = 'none';
+            document.getElementById('submit-section').style.display = 'none';
+
+            if (pageNum === 0) {
+                // Show identitas section
+                document.getElementById('identitas-section').style.display = 'block';
+            } else if (pageNum === -1) {
+                // Show submit section
+                document.getElementById('submit-section').style.display = 'block';
+            } else {
+                // Show questions section
+                document.getElementById('questions-section').style.display = 'block';
+                
+                // Update current page (section)
+                currentPage = pageNum - 1; // Adjust for 0-based indexing
+                
+                // Update section counter
+                document.getElementById('current-section').textContent = currentPage + 1;
+                document.getElementById('total-sections').textContent = totalSections;
+                
+                // Generate and display questions for this section
+                renderSection();
+                
+                // Update navigation buttons
+                document.getElementById('prev-btn').disabled = (currentPage === 0);
+                
+                // If this is the last section, change next button to Selesai
+                if (currentPage === totalSections - 1) {
+                    document.getElementById('next-btn').textContent = 'Selesai';
+                    document.getElementById('next-btn').onclick = function() {
+                        showPage(-1); // Show submit page
+                    };
+                } else {
+                    document.getElementById('next-btn').textContent = 'Berikutnya';
+                    document.getElementById('next-btn').onclick = function() {
+                        nextPage();
+                    };
+                }
+            }
+        }
+
+        function renderSection() {
+            const container = document.getElementById('questions-container');
+            
+            // Get current section
+            const section = sections[currentPage];
+            
+            let html = '';
+            
+            // Add section title if there's more than one section
+            if (totalSections > 1) {
+                html += `<h3 class="sub-section-title">${section.title}</h3>`;
+            }
+            
+            // Add each question in the section
+            section.questions.forEach((question, index) => {
+                const questionNumber = (currentPage * 10) + index + 1; // Calculate actual question number
+                
+                html += `
+                    <div class="question-group">
+                        <label class="question-label">
+                            ${questionNumber}. ${question.text}
+                        </label>
+                        <div class="scale-container">
+                            <div class="scale-options">
+                                <input type="radio" id="q_${question.id}_1" name="jawaban[${question.id}]" value="1" class="scale-input" required>
+                                <input type="radio" id="q_${question.id}_2" name="jawaban[${question.id}]" value="2" class="scale-input" required>
+                                <input type="radio" id="q_${question.id}_3" name="jawaban[${question.id}]" value="3" class="scale-input" required>
+                                <input type="radio" id="q_${question.id}_4" name="jawaban[${question.id}]" value="4" class="scale-input" required>
+                                <input type="radio" id="q_${question.id}_5" name="jawaban[${question.id}]" value="5" class="scale-input" required>
+                            </div>
+                            <div class="scale-labels">
+                                <span>Sangat Buruk</span>
+                                <span>Sangat Baik</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function nextPage() {
+            if (currentPage < totalSections - 1) {
+                currentPage++;
+                
+                // Update section counter
+                document.getElementById('current-section').textContent = currentPage + 1;
+                
+                // Re-render section
+                renderSection();
+                
+                // Update navigation buttons
+                document.getElementById('prev-btn').disabled = (currentPage === 0);
+                
+                // If this is the last section, change next button to Selesai
+                if (currentPage === totalSections - 1) {
+                    document.getElementById('next-btn').textContent = 'Selesai';
+                    document.getElementById('next-btn').onclick = function() {
+                        showPage(-1); // Show submit page
+                    };
+                }
+            } else {
+                // Go to submit page
+                showPage(-1);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 0) {
+                currentPage--;
+                
+                // Update section counter
+                document.getElementById('current-section').textContent = currentPage + 1;
+                
+                // Re-render section
+                renderSection();
+                
+                // Update navigation buttons
+                document.getElementById('prev-btn').disabled = (currentPage === 0);
+                
+                // Reset next button text if it was changed to 'Selesai'
+                if (document.getElementById('next-btn').textContent === 'Selesai') {
+                    document.getElementById('next-btn').textContent = 'Berikutnya';
+                    document.getElementById('next-btn').onclick = function() {
+                        nextPage();
+                    };
+                }
+            }
+        }
+
+        // Initialize the form - show identitas page first
+        showPage(0);
+    </script>
 </body>
 </html>
