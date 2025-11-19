@@ -32,8 +32,6 @@ Route::get('/isisurvey', function () {
 })->name('isisurvey');
 Route::get('/isi-survey/{id}', [KuesionerController::class, 'isiSurvey'])->name('isi-survey');
 Route::post('/isi-survey/{id}', [KuesionerController::class, 'storeJawaban'])->name('isi-survey.store');
-Route::get('/isi-survey/{id}/pertanyaan/{responden}', [KuesionerController::class, 'isiPertanyaan'])->name('isi-survey.pertanyaan');
-Route::post('/isi-survey/{id}/pertanyaan/{responden}', [KuesionerController::class, 'storePertanyaan'])->name('isi-survey.pertanyaan.store');
 Route::get('/isi-survey/{id}/selesai', [KuesionerController::class, 'selesai'])->name('isi-survey.selesai');
 
 
@@ -53,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/form/{id}', [KuesionerController::class, 'update'])->name('forms.update');
     Route::get('/form/{id}/edit-pertanyaan', [KuesionerController::class, 'editPertanyaan'])->name('forms.edit-pertanyaan');
     Route::put('/form/{id}/update-pertanyaan', [KuesionerController::class, 'updatePertanyaan'])->name('forms.update-pertanyaan');
+    Route::get('/form/{id}/responden', [KuesionerController::class, 'lihatResponden'])->name('forms.responden');
+    Route::get('/form/{id}/export-respon', [KuesionerController::class, 'exportResponden'])->name('forms.export-respon');
     Route::delete('/form/{id}', [KuesionerController::class, 'destroy'])->name('forms.destroy');
     
 

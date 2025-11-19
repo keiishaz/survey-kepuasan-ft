@@ -38,7 +38,7 @@ class KuesionerController extends Controller
             'deskripsi'       => ['nullable','string'],
             'tanggal_mulai'   => ['nullable','date'],
             'tanggal_selesai' => ['nullable','date','after_or_equal:tanggal_mulai'],
-            'sampul'          => ['nullable','image','max:5120'], 
+            'sampul'          => ['nullable','image','max:5120'],
         ], [
             'nama.required'        => 'Judul form wajib diisi.',
             'id_kategori.required' => 'Kategori wajib dipilih.',
@@ -60,11 +60,11 @@ class KuesionerController extends Controller
 
         // SIMPAN
         $kuesioner = Kuesioner::create([
-            'id_admin'        => $adminId,              
+            'id_admin'        => $adminId,
             'id_kategori'     => $validated['id_kategori'],
             'nama'            => $validated['nama'],
             'deskripsi'       => $validated['deskripsi'] ?? null,
-            'sampul'          => $sampulPath, 
+            'sampul'          => $sampulPath,
             'tanggal_mulai'   => $validated['tanggal_mulai'] ?? null,
             'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
             'created_by'      => $createdBy,
@@ -87,14 +87,14 @@ class KuesionerController extends Controller
             'coverUrl' => $coverUrl,
         ]);
     }
-    
+
     public function editPertanyaan($id)
     {
         $form = Kuesioner::with('kategori')->findOrFail($id);
-        
+
         // Get existing identitas configuration
         $identitas = $form->identitas()->first();
-        
+
         // Default identitas if none exists
         if (!$identitas) {
             $identitas = [
@@ -123,20 +123,20 @@ class KuesionerController extends Controller
                 'wajib5' => $identitas->wajib5,
             ];
         }
-        
+
         // Get all questions
         $questions = $form->pertanyaan()->orderBy('urutan')->get();
-        
+
         return view('Admin.Form.edit-pertanyaan', compact('form', 'identitas', 'questions'));
     }
-    
+
     public function updatePertanyaan(Request $request, $id)
     {
         $form = Kuesioner::findOrFail($id);
-        
+
         // Parse the identitas data
         $identitasData = json_decode($request->identitas_data, true);
-        
+
         // Update or create identitas configuration
         $identitas = $form->identitas()->first();
         if ($identitas) {
@@ -169,13 +169,13 @@ class KuesionerController extends Controller
                 'wajib5' => $identitasData['wajib5'] ?? false,
             ]);
         }
-        
+
         // Parse the questions data
         $questionsData = json_decode($request->questions_data, true);
-        
+
         // Process questions - first, remove all existing questions for this form
         $form->pertanyaan()->delete();
-        
+
         // Then recreate questions from the data
         foreach ($questionsData as $questionData) {
             $form->pertanyaan()->create([
@@ -183,10 +183,10 @@ class KuesionerController extends Controller
                 'status_aktif' => $questionData['required'],
             ]);
         }
-        
+
         return redirect()->route('forms.show', $form->id_kuesioner)->with('success', 'Pertanyaan berhasil diperbarui.');
     }
-    
+
     public function edit($id)
     {
         $form = Kuesioner::findOrFail($id);
@@ -194,7 +194,7 @@ class KuesionerController extends Controller
 
         return view('Admin.Form.edit-form', compact('form', 'categories'));
     }
-    
+
     public function update(Request $request, $id)
     {
         // VALIDASI
@@ -204,7 +204,7 @@ class KuesionerController extends Controller
             'deskripsi'       => ['nullable','string'],
             'tanggal_mulai'   => ['nullable','date'],
             'tanggal_selesai' => ['nullable','date','after_or_equal:tanggal_mulai'],
-            'sampul'          => ['nullable','image','max:5120'], 
+            'sampul'          => ['nullable','image','max:5120'],
         ], [
             'nama.required'        => 'Judul form wajib diisi.',
             'id_kategori.required' => 'Kategori wajib dipilih.',
@@ -236,7 +236,7 @@ class KuesionerController extends Controller
             'id_kategori'     => $validated['id_kategori'],
             'nama'            => $validated['nama'],
             'deskripsi'       => $validated['deskripsi'] ?? null,
-            'sampul'          => $sampulPath, 
+            'sampul'          => $sampulPath,
             'tanggal_mulai'   => $validated['tanggal_mulai'] ?? null,
             'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
         ]);
@@ -245,27 +245,74 @@ class KuesionerController extends Controller
             ->route('forms.show', $form->id_kuesioner)
             ->with('success', 'Form berhasil diperbarui.');
     }
-    
+
     public function destroy($id)
     {
         $form = Kuesioner::with(['respondens.jawaban', 'identitas', 'pertanyaan'])->findOrFail($id);
-        
+
         // Delete related jawaban first (they depend on responden)
         foreach ($form->respondens as $responden) {
             $responden->jawaban()->delete(); // Delete related jawaban
             $responden->delete(); // Delete the responden
         }
-        
+
         // Delete related identitas and pertanyaan
         $form->identitas()->delete();  // Delete related identitas configuration
         $form->pertanyaan()->delete(); // Delete related questions
-        
+
         // Finally delete the form itself
         $form->delete();
-        
+
         return redirect()->route('forms.index')->with('success', 'Form berhasil dihapus.');
     }
-    
+
+    public function lihatResponden($id)
+    {
+        $form = Kuesioner::with('kategori')->findOrFail($id);
+
+        // Ambil data responden untuk form ini beserta jawaban dan pertanyaan
+        $respondens = $form->respondens()->with(['jawaban.pertanyaan'])->get();
+
+        // Hitung total responden
+        $totalResponden = $respondens->count();
+
+        // Ambil semua jawaban untuk keperluan statistik
+        $jawabanSemua = $respondens->pluck('jawaban')->flatten();
+
+        // Ambil data untuk grafik distribusi jawaban per pertanyaan
+        $statistikPertanyaan = [];
+        foreach($form->pertanyaan as $pertanyaan) {
+            // Filter jawaban hanya untuk pertanyaan ini
+            $jawabanPertanyaanIni = $jawabanSemua->where('id_pertanyaan', $pertanyaan->id_pertanyaan);
+
+            // Hitung distribusi jawaban (1-5)
+            $distribusi = [
+                1 => $jawabanPertanyaanIni->where('jawaban', 1)->count(),
+                2 => $jawabanPertanyaanIni->where('jawaban', 2)->count(),
+                3 => $jawabanPertanyaanIni->where('jawaban', 3)->count(),
+                4 => $jawabanPertanyaanIni->where('jawaban', 4)->count(),
+                5 => $jawabanPertanyaanIni->where('jawaban', 5)->count(),
+            ];
+
+            $statistikPertanyaan[] = [
+                'pertanyaan' => $pertanyaan->teks,
+                'distribusi' => $distribusi,
+                'id_pertanyaan' => $pertanyaan->id_pertanyaan
+            ];
+        }
+
+        // Siapkan url sampul (atau null)
+        $coverUrl = $form->sampul ? Storage::url($form->sampul) : null;
+
+        return view('Admin.responden', [
+            'form'     => $form,
+            'coverUrl' => $coverUrl,
+            'respondens' => $respondens,
+            'totalResponden' => $totalResponden,
+            'statistikPertanyaan' => $statistikPertanyaan
+        ]);
+    }
+
     public function cariSurvey()
     {
         // Ambil hanya survey yang aktif (status aktif)
@@ -280,7 +327,7 @@ class KuesionerController extends Controller
 
         return view('cari-survey', compact('surveys'));
     }
-    
+
     public function isiSurvey($id)
     {
         $survey = Kuesioner::with(['kategori', 'pertanyaan', 'identitas'])
@@ -294,10 +341,10 @@ class KuesionerController extends Controller
                               ->whereNull('tanggal_selesai');
                     })
                     ->firstOrFail();
-        
+
         return view('isi-survey', compact('survey'));
     }
-    
+
     public function storeJawaban(Request $request, $id)
     {
         $survey = Kuesioner::with(['kategori', 'pertanyaan', 'identitas'])
@@ -311,111 +358,139 @@ class KuesionerController extends Controller
                               ->whereNull('tanggal_selesai');
                     })
                     ->firstOrFail();
-        
+
         // Validasi input identitas jika ada konfigurasi
         if ($survey->identitas) {
             $rules = [];
-            
+
             if ($survey->identitas->wajib1) {
                 $rules['identitas1'] = 'required|string|max:255';
             }
-            
+
             if ($survey->identitas->wajib2) {
                 $rules['identitas2'] = 'required|string|max:255';
             }
-            
+
             if ($survey->identitas->wajib3) {
                 $rules['identitas3'] = 'required|string|max:255';
             }
-            
+
             if ($survey->identitas->wajib4) {
                 $rules['identitas4'] = 'required|string|max:255';
             }
-            
+
             if ($survey->identitas->wajib5) {
                 $rules['identitas5'] = 'required|string|max:255';
             }
-            
+
             $request->validate($rules);
         }
-        
-        // Simpan data responden
+
+        // Simpan data responden termasuk jawaban identitas ke kolom yang sesuai
         $responden = $survey->respondens()->create([
             'id_kuesioner' => $survey->id_kuesioner,
-            'waktu_mulai' => now(),
-            'waktu_selesai' => null,
-            'status' => 'proses',
+            'identitas1' => $request->input('identitas1', null),
+            'identitas2' => $request->input('identitas2', null),
+            'identitas3' => $request->input('identitas3', null),
+            'identitas4' => $request->input('identitas4', null),
+            'identitas5' => $request->input('identitas5', null),
+            // Jangan set waktu_submit dulu karena nanti akan diupdate setelah jawaban disimpan
         ]);
-        
-        // Simpan jawaban identitas
-        $identitas_jawaban = [];
-        if ($request->has('identitas1')) $identitas_jawaban['identitas1'] = $request->identitas1;
-        if ($request->has('identitas2')) $identitas_jawaban['identitas2'] = $request->identitas2;
-        if ($request->has('identitas3')) $identitas_jawaban['identitas3'] = $request->identitas3;
-        if ($request->has('identitas4')) $identitas_jawaban['identitas4'] = $request->identitas4;
-        if ($request->has('identitas5')) $identitas_jawaban['identitas5'] = $request->identitas5;
-        
-        $responden->jawaban()->create([
-            'id_pertanyaan' => 0, // 0 sebagai indikator jawaban identitas
-            'jawaban' => json_encode($identitas_jawaban),
-        ]);
-        
-        // Redirect ke halaman pertanyaan survey
-        return redirect()->route('isi-survey.pertanyaan', ['id' => $survey->id_kuesioner, 'responden' => $responden->id_responden]);
-    }
-    
-    public function isiPertanyaan($id, $respondenId)
-    {
-        $survey = Kuesioner::with(['kategori', 'pertanyaan', 'identitas'])
-                    ->where('id_kuesioner', $id)
-                    ->where(function ($query) {
-                        $query->where('tanggal_mulai', '<=', now())
-                              ->where('tanggal_selesai', '>=', now());
-                    })
-                    ->orWhere(function ($query) {
-                        $query->whereNull('tanggal_mulai')
-                              ->whereNull('tanggal_selesai');
-                    })
-                    ->firstOrFail();
-        
-        $responden = \App\Models\Responden::findOrFail($respondenId);
-        $pertanyaan = $survey->pertanyaan()->where('status_aktif', true)->get();
-        
-        return view('isi-survey-pertanyaan', compact('survey', 'responden', 'pertanyaan'));
-    }
-    
-    public function storePertanyaan(Request $request, $id, $respondenId)
-    {
-        $survey = Kuesioner::findOrFail($id);
-        $responden = \App\Models\Responden::findOrFail($respondenId);
-        
-        // Validasi data
-        $request->validate([
-            'jawaban' => 'required|array',
-        ]);
-        
-        // Simpan jawaban pertanyaan
-        foreach ($request->jawaban as $id_pertanyaan => $isi_jawaban) {
-            $responden->jawaban()->create([
-                'id_pertanyaan' => $id_pertanyaan,
-                'jawaban' => $isi_jawaban,
-            ]);
+
+        // Save answer if available
+        if ($request->has('jawaban')) {
+            foreach ($request->jawaban as $id_pertanyaan => $isi_jawaban) {
+                // Pastikan id_pertanyaan adalah angka (bukan 0 yang digunakan untuk identitas)
+                if ($id_pertanyaan != 0) {
+                    // Validasi bahwa jawaban adalah angka antara 1-5
+                    if (is_numeric($isi_jawaban) && $isi_jawaban >= 1 && $isi_jawaban <= 5) {
+                        $responden->jawaban()->create([
+                            'id_pertanyaan' => $id_pertanyaan,
+                            'jawaban' => $isi_jawaban,
+                        ]);
+                    }
+                }
+            }
         }
-        
-        // Update waktu selesai dan status
+
+        // Update waktu submit setelah semua jawaban disimpan
         $responden->update([
-            'waktu_selesai' => now(),
-            'status' => 'selesai',
+            'waktu_submit' => now(),
         ]);
-        
-        // Redirect ke halaman terima kasih
+
+        // Redirect ke halaman selesai survey
         return redirect()->route('isi-survey.selesai', ['id' => $survey->id_kuesioner]);
     }
-    
+
     public function selesai($id)
     {
         $survey = Kuesioner::findOrFail($id);
-        
+
         return view('isi-survey-selesai', compact('survey'));
+    }
+
+    public function exportResponden($id)
+    {
+        $form = Kuesioner::with('kategori')->findOrFail($id);
+        $respondens = $form->respondens()->with(['jawaban.pertanyaan'])->get();
+
+        // Siapkan header CSV
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="responden_' . $form->nama . '_' . now()->format('Y-m-d_H-i-s') . '.csv"',
+        ];
+
+        // Buat response CSV
+        $callback = function() use ($form, $respondens) {
+            $file = fopen('php://output', 'w');
+
+            // Header baris
+            $row = ['ID Responden', 'Waktu Submit'];
+
+            // Tambahkan header identitas
+            if ($form->identitas) {
+                if ($form->identitas->atribut1) $row[] = $form->identitas->atribut1;
+                if ($form->identitas->atribut2) $row[] = $form->identitas->atribut2;
+                if ($form->identitas->atribut3) $row[] = $form->identitas->atribut3;
+                if ($form->identitas->atribut4) $row[] = $form->identitas->atribut4;
+                if ($form->identitas->atribut5) $row[] = $form->identitas->atribut5;
+            }
+
+            // Tambahkan header pertanyaan
+            foreach($form->pertanyaan as $pertanyaan) {
+                $row[] = $pertanyaan->teks;
+            }
+
+            fputcsv($file, $row);
+
+            // Baris data responden
+            foreach($respondens as $responden) {
+                $row = [
+                    $responden->id_respon,
+                    $responden->waktu_submit ? \Carbon\Carbon::parse($responden->waktu_submit)->format('Y-m-d H:i:s') : 'Belum selesai'
+                ];
+
+                // Tambahkan data identitas
+                if ($form->identitas) {
+                    if ($form->identitas->atribut1) $row[] = $responden->identitas1;
+                    if ($form->identitas->atribut2) $row[] = $responden->identitas2;
+                    if ($form->identitas->atribut3) $row[] = $responden->identitas3;
+                    if ($form->identitas->atribut4) $row[] = $responden->identitas4;
+                    if ($form->identitas->atribut5) $row[] = $responden->identitas5;
+                }
+
+                // Tambahkan jawaban untuk setiap pertanyaan
+                foreach($form->pertanyaan as $pertanyaan) {
+                    $jawaban = $responden->jawaban->firstWhere('id_pertanyaan', $pertanyaan->id_pertanyaan);
+                    $row[] = $jawaban ? $jawaban->jawaban : '';
+                }
+
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

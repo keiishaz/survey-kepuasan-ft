@@ -340,7 +340,7 @@
         .card-button {
             width: 100%;
             padding: 12px 20px;
-            background: #'3b82f6';
+            background: #3b82f6;
             color: white;
             border: none;
             border-radius: 8px;
@@ -539,7 +539,7 @@
             border-radius: 8px;
             overflow: hidden;
         }
-        
+
         .modal-icon img {
             width: 100%;
             height: 100%;
@@ -1068,11 +1068,11 @@
         // Data dari controller Laravel
         const surveys = [
             @foreach($surveys as $survey)
-            { 
-                id: {{ $survey->id_kuesioner }}, 
-                title: "{{ addslashes($survey->nama) }}", 
-                category: "{{ addslashes($survey->kategori->nama ?? 'umum') }}", 
-                description: "{{ addslashes($survey->deskripsi) }}", 
+            {
+                id: {{ $survey->id_kuesioner }},
+                title: "{{ addslashes($survey->nama) }}",
+                category: "{{ addslashes($survey->kategori->nama ?? 'umum') }}",
+                description: "{{ addslashes($survey->deskripsi) }}",
                 sampul: "{{ addslashes($survey->sampul) }}",
                 fullDescription: "{{ addslashes($survey->deskripsi) }}",
                 duration: '5-10 menit',
@@ -1085,6 +1085,18 @@
         ];
 
         let currentSurvey = null;
+
+        function escapeHtml(unsafe) {
+            if (typeof unsafe !== 'string') {
+                return '';
+            }
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
 
         function renderSurveys(filtered) {
             const container = document.getElementById('surveysContainer');
@@ -1102,7 +1114,7 @@
                 var survey = filtered[i];
                 var description = survey.description.length > 60 ? survey.description.substring(0, 60) + '...' : survey.description;
                 var sampulUrl = survey.sampul ? '/storage/' + survey.sampul : '{{ asset("images/gambar1.png") }}';
-                
+
                 html += '<div class="card">' +
                     '<div class="card-icon-section">' +
                         '<img src="' + sampulUrl + '" alt="' + survey.title.replace(/"/g, "&quot;") + '" class="card-image">' +
@@ -1112,7 +1124,7 @@
                         '<div class="card-title">' + survey.title + '</div>' +
                         '<div class="card-description">' + description + '</div>' +
                         '<div class="card-footer">' +
-                            '<button class="card-button" onclick="openModal(' + survey.id + ', &quot;' + survey.title.replace(/"/g, "&quot;").replace(/'/g, "\'") + '&quot;, &quot;' + survey.category.replace(/"/g, "&quot;").replace(/'/g, "\'") + '&quot;, &quot;' + survey.fullDescription.replace(/"/g, "&quot;").replace(/'/g, "\'") + '&quot;, &quot;' + survey.duration.replace(/"/g, "&quot;").replace(/'/g, "\'") + '&quot;, &quot;' + survey.questions + '&quot;, &quot;' + survey.deadline.replace(/"/g, "&quot;").replace(/'/g, "\'") + '&quot;)">' +
+                            '<button class="card-button" onclick="handleSurveyClick(' + survey.id + ')">' +
                                 'Isi Survey' +
                                 '<svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">' +
                                     '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>' +
@@ -1125,12 +1137,22 @@
             container.innerHTML = html;
         }
 
+        // Handle clicks using a separate function to ensure correct ID is passed
+        function handleSurveyClick(surveyId) {
+            // Find the survey in the array by ID
+            const survey = surveys.find(s => s.id === surveyId);
+
+            if (survey) {
+                openModal(survey.id, survey.title, survey.category, survey.fullDescription, survey.duration, survey.questions, survey.deadline);
+            }
+        }
+
         function filterSurveys() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const categoryTerm = document.getElementById('categoryFilter').value;
 
             const filtered = surveys.filter(survey => {
-                const matchSearch = survey.title.toLowerCase().includes(searchTerm) || 
+                const matchSearch = survey.title.toLowerCase().includes(searchTerm) ||
                                   survey.description.toLowerCase().includes(searchTerm);
                 const matchCategory = categoryTerm === '' || survey.category.toLowerCase() === categoryTerm.toLowerCase();
                 return matchSearch && matchCategory;
@@ -1161,7 +1183,7 @@
                 document.getElementById('modalImage').src = '{{ asset("images/gambar1.png") }}';
                 document.getElementById('modalImage').alt = title;
             }
-            
+
             document.getElementById('modalCategory').textContent = category.toUpperCase();
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalDescription').textContent = fullDescription;
@@ -1176,7 +1198,7 @@
 
         function closeModal(event) {
             if (event && event.target !== event.currentTarget) return;
-            
+
             document.getElementById('modalOverlay').classList.remove('active');
             document.body.style.overflow = 'auto';
             currentSurvey = null;

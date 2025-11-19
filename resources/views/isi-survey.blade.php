@@ -342,6 +342,30 @@
             white-space: nowrap;
         }
 
+        .radio-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .radio-group label {
+            flex: 1;
+            text-align: center;
+            padding: 0 5px;
+        }
+
+        .radio-group input[type="radio"] {
+            width: 24px;
+            height: 24px;
+            margin: 0 auto 8px;
+            cursor: pointer;
+        }
+
+        .radio-group small {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
         /* Navigation */
         .nav-buttons {
             display: flex;
@@ -807,11 +831,11 @@
                 // Update navigation buttons
                 document.getElementById('prev-btn').disabled = (currentPage === 0);
                 
-                // If this is the last section, change next button to Selesai
+                // If this is the last section, change next button to Submit
                 if (currentPage === totalSections - 1) {
-                    document.getElementById('next-btn').textContent = 'Selesai';
+                    document.getElementById('next-btn').textContent = 'Kirim Jawaban';
                     document.getElementById('next-btn').onclick = function() {
-                        showPage(-1); // Show submit page
+                        document.getElementById('surveyForm').submit(); // Submit the form directly
                     };
                 } else {
                     document.getElementById('next-btn').textContent = 'Berikutnya';
@@ -845,16 +869,27 @@
                             ${questionNumber}. ${question.text}
                         </label>
                         <div class="scale-container">
-                            <div class="scale-options">
-                                <input type="radio" id="q_${question.id}_1" name="jawaban[${question.id}]" value="1" class="scale-input" required>
-                                <input type="radio" id="q_${question.id}_2" name="jawaban[${question.id}]" value="2" class="scale-input" required>
-                                <input type="radio" id="q_${question.id}_3" name="jawaban[${question.id}]" value="3" class="scale-input" required>
-                                <input type="radio" id="q_${question.id}_4" name="jawaban[${question.id}]" value="4" class="scale-input" required>
-                                <input type="radio" id="q_${question.id}_5" name="jawaban[${question.id}]" value="5" class="scale-input" required>
-                            </div>
-                            <div class="scale-labels">
-                                <span>Sangat Buruk</span>
-                                <span>Sangat Baik</span>
+                            <div class="radio-group" style="display: flex; justify-content: space-between; width: 100%; margin: 10px 0;">
+                                <label style="text-align: center; flex: 1; padding: 0 5px;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="1" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    1<br><small>Sangat Buruk</small>
+                                </label>
+                                <label style="text-align: center; flex: 1; padding: 0 5px;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="2" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    2<br><small>Buruk</small>
+                                </label>
+                                <label style="text-align: center; flex: 1; padding: 0 5px;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="3" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    3<br><small>Cukup</small>
+                                </label>
+                                <label style="text-align: center; flex: 1; padding: 0 5px;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="4" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    4<br><small>Baik</small>
+                                </label>
+                                <label style="text-align: center; flex: 1; padding: 0 5px;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="5" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    5<br><small>Sangat Baik</small>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -903,13 +938,11 @@
                 // Update navigation buttons
                 document.getElementById('prev-btn').disabled = (currentPage === 0);
                 
-                // Reset next button text if it was changed to 'Selesai'
-                if (document.getElementById('next-btn').textContent === 'Selesai') {
-                    document.getElementById('next-btn').textContent = 'Berikutnya';
-                    document.getElementById('next-btn').onclick = function() {
-                        nextPage();
-                    };
-                }
+                // Reset next button text if it was changed to 'Kirim Jawaban'
+                document.getElementById('next-btn').textContent = 'Berikutnya';
+                document.getElementById('next-btn').onclick = function() {
+                    nextPage();
+                };
             }
         }
 

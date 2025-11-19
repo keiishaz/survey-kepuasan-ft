@@ -184,9 +184,9 @@
                 <a href="{{ route('forms.edit-pertanyaan', $form->id_kuesioner) }}" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors">
                     Edit Pertanyaan
                 </a>
-                <button class="px-5 py-2.5 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                <a href="{{ route('forms.responden', $form->id_kuesioner) }}" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors">
                     Lihat Responden
-                </button>
+                </a>
                 <button class="px-5 py-2.5 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors">
                     Cetak Laporan
                 </button>
