@@ -42,7 +42,7 @@
         @include('Admin.navbar')
 
         <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-6 left-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg" id="sidebar-toggle">
+        <button class="fixed top-6 right-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg border border-gray-200" id="sidebar-toggle">
             <svg class="w-5 h-5 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
@@ -58,51 +58,76 @@
 
             <!-- Filter Section -->
             <div class="bg-white rounded-2xl shadow-sm p-5 mb-6 border border-gray-100">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <!-- Search -->
-                    <div class="lg:col-span-2">
-                        <label class="block text-xs font-semibold text-gray-700 mb-2">Cari Form</label>
-                        <div class="relative">
-                            <input type="text" 
-                                   placeholder="Cari berdasarkan judul form..." 
-                                   class="w-full px-4 py-2.5 pl-10 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm">
-                            <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                <form method="GET" action="{{ route('forms.index') }}" id="filter-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Search -->
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-gray-700 mb-2">Cari Form</label>
+                            <div class="relative">
+                                <input type="text"
+                                       name="search"
+                                       value="{{ request('search') }}"
+                                       placeholder="Cari berdasarkan judul form..."
+                                       class="w-full px-4 py-2.5 pl-10 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm">
+                                <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
                         </div>
+
+                        <!-- Kategori Filter -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-2">Kategori</label>
+                            <select name="category"
+                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none bg-white text-sm">
+                                <option value="">Semua Kategori</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id_kategori }}" {{ request('category') == $category->id_kategori ? 'selected' : '' }}>
+                                        {{ $category->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-2">Status</label>
+                            <select name="status"
+                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none bg-white text-sm">
+                                <option value="">Semua Status</option>
+                                <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                            </select>
+                        </div>
+
                     </div>
 
-                    <!-- Kategori Filter -->
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-2">Kategori</label>
-                        <select class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none bg-white text-sm">
-                            <option value="">Semua Kategori</option>
-                            <option value="akademik">Akademik</option>
-                            <option value="fasilitas">Fasilitas</option>
-                            <option value="layanan">Layanan</option>
-                            <option value="dosen">Dosen</option>
-                        </select>
-                    </div>
+                    <!-- Submit Button (Hidden) -->
+                    <button type="submit" class="hidden"></button>
+                </form>
 
-                    <!-- Status Filter -->
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-2">Status</label>
-                        <select class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none bg-white text-sm">
-                            <option value="">Semua Status</option>
-                            <option value="aktif">Aktif</option>
-                            <option value="nonaktif">Nonaktif</option>
-                        </select>
-                    </div>
-                </div>
+                <!-- JavaScript to submit form on change -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const filterForm = document.getElementById('filter-form');
+                        const inputs = filterForm.querySelectorAll('select, input');
+
+                        inputs.forEach(function(input) {
+                            input.addEventListener('change', function() {
+                                filterForm.submit();
+                            });
+                        });
+                    });
+                </script>
 
                 <!-- Button Buat Form -->
                 <div class="mt-5 pt-5 border-t border-gray-100">
-                    <button class="bg-gradient-to-r from-medium-blue to-blue-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:from-dark-blue hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center space-x-2">
+                    <a href="{{ route('forms.create') }}" class="bg-gradient-to-r from-medium-blue to-blue-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm hover:from-dark-blue hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center space-x-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
-                        <a href="{{ url('/form/tambah') }}" class="...">Buat Form Baru</a>
-                    </button>
+                        <span>Buat Form Baru</span>
+                    </a>
                 </div>
             </div>
 
@@ -292,5 +317,36 @@
             outline-offset: 2px;
         }
     </style>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="fixed top-4 right-4 z-50 hidden">
+        <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="notificationMessage" class="font-medium"></span>
+        </div>
+    </div>
+
+    <script>
+        // Function to show notification
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const messageElement = document.getElementById('notificationMessage');
+
+            messageElement.textContent = message;
+            toast.classList.remove('hidden');
+
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Check for success message from server
+        @if(session('success'))
+            showNotification('{{ session('success') }}');
+        @endif
+    </script>
 </body>
 </html>

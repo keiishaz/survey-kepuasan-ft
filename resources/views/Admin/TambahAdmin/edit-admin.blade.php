@@ -42,7 +42,7 @@
         @include('Admin.navbar')
 
         <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-6 left-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg" id="sidebar-toggle">
+        <button class="fixed top-6 right-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg border border-gray-200" id="sidebar-toggle">
             <svg class="w-5 h-5 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
@@ -51,7 +51,7 @@
         <!-- Main Content -->
         <main class="flex-1 lg:ml-72 p-6 lg:p-8 lg:pr-6">
             <!-- Header -->
-            <div class="mb-6">
+            <div class="mb-6 lg:mt-0 mt-16">
                 <h1 class="text-xl font-bold text-gray-900 mb-1">Edit Admin</h1>
                 <p class="text-xs text-gray-600">Form edit akun admin</p>
             </div>
@@ -76,12 +76,12 @@
                         <!-- Nama Admin -->
                         <div class="md:col-span-2">
                             <label for="nama" class="block text-sm font-semibold text-gray-700 mb-2">Nama Admin</label>
-                            <input type="text" 
-                                   id="nama" 
-                                   name="nama" 
+                            <input type="text"
+                                   id="nama"
+                                   name="nama"
                                    value="{{ old('nama', $admin->nama) }}"
                                    required
-                                   placeholder="Masukkan nama lengkap admin" 
+                                   placeholder="Masukkan nama lengkap admin"
                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm">
                             @error('nama')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -91,12 +91,12 @@
                         <!-- Email -->
                         <div class="md:col-span-2">
                             <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
+                            <input type="email"
+                                   id="email"
+                                   name="email"
                                    value="{{ old('email', $admin->email) }}"
                                    required
-                                   placeholder="Masukkan alamat email admin" 
+                                   placeholder="Masukkan alamat email admin"
                                    class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm">
                             @error('email')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -106,11 +106,11 @@
 
                     <!-- Submit and Cancel Buttons -->
                     <div class="mt-8 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-                        <button type="submit" 
+                        <button type="submit"
                                 class="flex-1 bg-gradient-to-r from-medium-blue to-blue-600 text-white px-5 py-3 rounded-xl font-medium text-sm hover:from-dark-blue hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow-md">
                             Perbarui Admin
                         </button>
-                        <a href="{{ route('admin.index') }}" 
+                        <a href="{{ route('admin.index') }}"
                            class="flex-1 bg-gray-100 text-gray-700 px-5 py-3 rounded-xl font-medium text-sm hover:bg-gray-200 transition-all duration-200 text-center">
                             Batal
                         </a>
@@ -124,12 +124,12 @@
         // Mobile Sidebar Toggle
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
-        
+
         if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', function() {
                 sidebar.classList.toggle('-translate-x-full');
                 sidebar.classList.toggle('translate-x-0');
-                
+
                 // Change icon
                 const icon = this.querySelector('svg');
                 if (sidebar.classList.contains('-translate-x-full')) {
@@ -143,7 +143,7 @@
             document.addEventListener('click', function(event) {
                 const isClickInsideSidebar = sidebar.contains(event.target);
                 const isClickOnToggle = sidebarToggle.contains(event.target);
-                
+
                 if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth < 1024) {
                     sidebar.classList.add('-translate-x-full');
                     const icon = sidebarToggle.querySelector('svg');
@@ -165,24 +165,6 @@
         if (window.innerWidth < 1024) {
             sidebar.classList.add('-translate-x-full');
         }
-        
-        // Toggle password visibility
-        function togglePassword(inputId) {
-            // This function is available in case password fields are added to this page in the future
-            const passwordInput = document.getElementById(inputId);
-            const eyeOpen = document.getElementById(inputId + '-eye-open');
-            const eyeClosed = document.getElementById(inputId + '-eye-closed');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                if (eyeOpen) eyeOpen.classList.remove('hidden');
-                if (eyeClosed) eyeClosed.classList.add('hidden');
-            } else {
-                passwordInput.type = 'password';
-                if (eyeOpen) eyeOpen.classList.add('hidden');
-                if (eyeClosed) eyeClosed.classList.remove('hidden');
-            }
-        }
     </script>
 
     <style>
@@ -198,7 +180,7 @@
                 width: calc(100% - 2rem);
                 max-width: 280px;
             }
-            
+
             #sidebar.translate-x-0 {
                 transform: translateX(0);
             }

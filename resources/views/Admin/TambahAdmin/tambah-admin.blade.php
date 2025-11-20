@@ -42,7 +42,7 @@
         @include('Admin.navbar')
 
         <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-6 left-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg" id="sidebar-toggle">
+        <button class="fixed top-6 right-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg border border-gray-200" id="sidebar-toggle">
             <svg class="w-5 h-5 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>

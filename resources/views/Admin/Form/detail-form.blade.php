@@ -326,32 +326,140 @@
             }
         });
         
+        // Status toggle handler
+        const statusToggle = document.getElementById('statusToggle');
+        const statusLabel = document.getElementById('statusLabel');
+        const toggleDot = document.getElementById('toggleDot');
+        let isActive = true;
+
+        statusToggle.addEventListener('click', function() {
+            isActive = !isActive;
+
+            if (isActive) {
+                statusLabel.textContent = 'Aktif';
+                statusToggle.classList.remove('bg-gray-400');
+                statusToggle.classList.add('bg-green-500');
+                toggleDot.classList.remove('translate-x-1');
+                toggleDot.classList.add('translate-x-7');
+            } else {
+                statusLabel.textContent = 'Nonaktif';
+                statusToggle.classList.remove('bg-green-500');
+                statusToggle.classList.add('bg-gray-400');
+                toggleDot.classList.remove('translate-x-7');
+                toggleDot.classList.add('translate-x-1');
+            }
+        });
+
+    </script>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="fixed top-4 right-4 z-50 hidden">
+        <div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="notificationMessage" class="font-medium"></span>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Konfirmasi Penghapusan
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500" id="deleteModalMessage">
+                                    Apakah Anda yakin ingin menghapus form <span id="deleteItemName" class="font-semibold"></span>? Tindakan ini tidak dapat dibatalkan dan semua data terkait akan dihapus.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <form id="deleteForm" method="POST" action="">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Hapus
+                        </button>
+                    </form>
+                    <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deleteItemId = null;
+
+        function showDeleteConfirmation(formId, formName) {
+            deleteItemId = formId;
+            document.getElementById('deleteItemName').textContent = formName;
+            document.getElementById('deleteForm').action = '/form/' + formId;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            deleteItemId = null;
+        }
+
+        // Function to show notification
+        function showNotification(message) {
+            const toast = document.getElementById('notificationToast');
+            const messageElement = document.getElementById('notificationMessage');
+
+            messageElement.textContent = message;
+            toast.classList.remove('hidden');
+
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Check for success message from server
+        @if(session('success'))
+            showNotification('{{ session('success') }}');
+        @endif
+
+        // Close modal when clicking outside the modal
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+
+        // Listen for form submission to show success notification
+        document.getElementById('deleteForm').addEventListener('submit', function() {
+            setTimeout(() => {
+                showNotification('Form berhasil dihapus');
+            }, 300);
+        });
+
         // Delete form confirmation
         function confirmDeleteForm(formId) {
-            if (confirm('Apakah Anda yakin ingin menghapus form ini? Tindakan ini tidak dapat dibatalkan dan semua data terkait akan dihapus.')) {
-                // Create and submit a form to delete the form
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/form/${formId}`;
-                form.style.display = 'none';
-                
-                // Add CSRF token using the value from the meta tag or directly from Laravel
-                const tokenInput = document.createElement('input');
-                tokenInput.type = 'hidden';
-                tokenInput.name = '_token';
-                tokenInput.value = '{{ csrf_token() }}'; // Directly embed the token from Laravel
-                form.appendChild(tokenInput);
-                
-                // Add method spoofing for DELETE
-                const methodInput = document.createElement('input');
-                methodInput.type = 'hidden';
-                methodInput.name = '_method';
-                methodInput.value = 'DELETE';
-                form.appendChild(methodInput);
-                
-                document.body.appendChild(form);
-                form.submit();
-            }
+            showDeleteConfirmation(formId, '{{ addslashes($form->nama) }}');
         }
     </script>
 </body>

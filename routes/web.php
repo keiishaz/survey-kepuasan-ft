@@ -38,7 +38,9 @@ Route::get('/isi-survey/{id}/selesai', [KuesionerController::class, 'selesai'])-
 
 
 
-Route::view('dashboard', 'dashboard')
+Route::get('/dashboard', function () {
+    return view('Admin.Dashboard.dashboard');
+})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -61,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/kategori/simpan', [KategoriController::class, 'store'])->name('kategori.simpan');
     Route::get('/kategori/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
     Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
+    Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
     Route::get('/kategori/{id}/hapus', [KategoriController::class, 'destroy'])->name('kategori.hapus');
 
     // Admin Management Routes
@@ -70,6 +73,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
     Route::put('/admin/{id}', [AdminController::class, 'update'])->name('admin.update');
     Route::delete('/admin/{id}', [AdminController::class, 'destroy'])->name('admin.destroy');
+
+    // Profile Management Routes for logged in admin
+    Route::get('/admin/profil', [AdminController::class, 'editProfil'])->name('admin.profil');
+    Route::put('/admin/profil/update', [AdminController::class, 'updateProfil'])->name('admin.update.profil');
+    Route::put('/admin/profil/change-password', [AdminController::class, 'updatePassword'])->name('admin.update.password');
 
     // Route::redirect('settings', 'settings/profile');
 

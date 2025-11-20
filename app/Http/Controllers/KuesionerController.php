@@ -13,11 +13,45 @@ use Illuminate\Support\Facades\Storage;
 class KuesionerController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $forms = Kuesioner::with('kategori')->orderBy('created_at', 'desc')->get();
+        $query = Kuesioner::with('kategori');
 
-        return view('Admin.Form.form', compact('forms'));
+        // Search functionality
+        if ($request->filled('search')) {
+            $query->where('nama', 'LIKE', '%' . $request->search . '%');
+        }
+
+        // Filter by category
+        if ($request->filled('category')) {
+            $query->where('id_kategori', $request->category);
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            if ($request->status === 'aktif') {
+                $query->where('tanggal_mulai', '<=', now())
+                      ->where(function($q) {
+                          $q->whereNull('tanggal_selesai')
+                            ->orWhere('tanggal_selesai', '>=', now());
+                      });
+            } elseif ($request->status === 'nonaktif') {
+                $query->where(function($q) {
+                    $q->where('tanggal_mulai', '>', now())
+                      ->orWhere('tanggal_selesai', '<', now());
+                });
+            }
+        }
+
+        // Default ordering by creation date
+        $query->orderBy('created_at', 'desc');
+
+        $forms = $query->get();
+
+        // Get categories for filter dropdown
+        $categories = \App\Models\Kategori::orderBy('nama')->get();
+
+        return view('Admin.Form.form', compact('forms', 'categories'));
     }
 
 

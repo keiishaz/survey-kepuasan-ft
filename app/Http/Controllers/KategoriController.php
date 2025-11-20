@@ -70,6 +70,14 @@ class KategoriController extends Controller
     public function destroy($id)
     {
         $kategori = Kategori::findOrFail($id);
+
+        // Check if this category is used in any forms
+        $relatedForms = \App\Models\Kuesioner::where('id_kategori', $kategori->id_kategori)->count();
+
+        if ($relatedForms > 0) {
+            return redirect()->back()->withErrors(['error' => 'Kategori tidak dapat dihapus karena masih digunakan oleh ' . $relatedForms . ' form.']);
+        }
+
         $kategori->delete();
 
         return redirect()->route('kategori')->with('success', 'Kategori berhasil dihapus.');
