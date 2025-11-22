@@ -191,9 +191,9 @@
                     Cetak Laporan
                 </button>
                 <div class="ml-auto flex items-center gap-3">
-                    <span id="statusLabel" class="text-sm font-medium text-gray-700">Aktif</span>
-                    <button id="statusToggle" class="relative inline-flex h-8 w-14 items-center rounded-full bg-green-500 transition-colors cursor-pointer" title="Klik untuk mengubah status">
-                        <span id="toggleDot" class="inline-block h-6 w-6 transform rounded-full bg-white transition-transform translate-x-7"></span>
+                    <span id="statusLabel" class="text-sm font-medium text-gray-700">{{ $form->is_active ? 'Aktif' : 'Nonaktif' }}</span>
+                    <button id="statusToggle" class="relative inline-flex h-8 w-14 items-center rounded-full {{ $form->is_active ? 'bg-green-500' : 'bg-gray-400' }} transition-colors cursor-pointer" title="Klik untuk mengubah status">
+                        <span id="toggleDot" class="inline-block h-6 w-6 transform rounded-full bg-white transition-transform {{ $form->is_active ? 'translate-x-7' : 'translate-x-1' }}"></span>
                     </button>
                 </div>
             </div>
@@ -201,7 +201,7 @@
             <!-- Analytics Section -->
             <div class="mb-8">
                 <h2 class="text-base font-bold text-gray-900 mb-4">Analitik Form</h2>
-                
+
                 <!-- Stats Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Total Responden -->
@@ -302,16 +302,34 @@
             window.location.href = '{{ route('forms.edit', $form->id_kuesioner) }}';
         });
 
+        // Initialize status from server
+        let currentStatus = {{ $form->is_active ? 'true' : 'false' }};
+
         // Status toggle handler
         const statusToggle = document.getElementById('statusToggle');
         const statusLabel = document.getElementById('statusLabel');
         const toggleDot = document.getElementById('toggleDot');
-        let isActive = true;
+
+        // Set initial state based on server-provided status
+        if (currentStatus) {
+            statusLabel.textContent = 'Aktif';
+            statusToggle.classList.remove('bg-gray-400');
+            statusToggle.classList.add('bg-green-500');
+            toggleDot.classList.remove('translate-x-1');
+            toggleDot.classList.add('translate-x-7');
+        } else {
+            statusLabel.textContent = 'Nonaktif';
+            statusToggle.classList.remove('bg-green-500');
+            statusToggle.classList.add('bg-gray-400');
+            toggleDot.classList.remove('translate-x-7');
+            toggleDot.classList.add('translate-x-1');
+        }
 
         statusToggle.addEventListener('click', function() {
-            isActive = !isActive;
-            
-            if (isActive) {
+            // Toggle the visual state immediately
+            currentStatus = !currentStatus;
+
+            if (currentStatus) {
                 statusLabel.textContent = 'Aktif';
                 statusToggle.classList.remove('bg-gray-400');
                 statusToggle.classList.add('bg-green-500');
@@ -324,30 +342,63 @@
                 toggleDot.classList.remove('translate-x-7');
                 toggleDot.classList.add('translate-x-1');
             }
-        });
-        
-        // Status toggle handler
-        const statusToggle = document.getElementById('statusToggle');
-        const statusLabel = document.getElementById('statusLabel');
-        const toggleDot = document.getElementById('toggleDot');
-        let isActive = true;
 
-        statusToggle.addEventListener('click', function() {
-            isActive = !isActive;
-
-            if (isActive) {
-                statusLabel.textContent = 'Aktif';
-                statusToggle.classList.remove('bg-gray-400');
-                statusToggle.classList.add('bg-green-500');
-                toggleDot.classList.remove('translate-x-1');
-                toggleDot.classList.add('translate-x-7');
-            } else {
-                statusLabel.textContent = 'Nonaktif';
-                statusToggle.classList.remove('bg-green-500');
-                statusToggle.classList.add('bg-gray-400');
-                toggleDot.classList.remove('translate-x-7');
-                toggleDot.classList.add('translate-x-1');
-            }
+            // Make API call to update the status
+            fetch(`{{ route('forms.update-status', $form->id_kuesioner) }}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    status: currentStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message);
+                } else {
+                    // Revert to previous state if there was an error
+                    currentStatus = !currentStatus;
+                    // Update the UI to match the server state
+                    if (currentStatus) {
+                        statusLabel.textContent = 'Aktif';
+                        statusToggle.classList.remove('bg-gray-400');
+                        statusToggle.classList.add('bg-green-500');
+                        toggleDot.classList.remove('translate-x-1');
+                        toggleDot.classList.add('translate-x-7');
+                    } else {
+                        statusLabel.textContent = 'Nonaktif';
+                        statusToggle.classList.remove('bg-green-500');
+                        statusToggle.classList.add('bg-gray-400');
+                        toggleDot.classList.remove('translate-x-7');
+                        toggleDot.classList.add('translate-x-1');
+                    }
+                    showNotification('Gagal memperbarui status: ' + (data.message || 'terjadi kesalahan'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Revert to previous state if there was a network error
+                currentStatus = !currentStatus;
+                // Update the UI to match the server state
+                if (currentStatus) {
+                    statusLabel.textContent = 'Aktif';
+                    statusToggle.classList.remove('bg-gray-400');
+                    statusToggle.classList.add('bg-green-500');
+                    toggleDot.classList.remove('translate-x-1');
+                    toggleDot.classList.add('translate-x-7');
+                } else {
+                    statusLabel.textContent = 'Nonaktif';
+                    statusToggle.classList.remove('bg-green-500');
+                    statusToggle.classList.add('bg-gray-400');
+                    toggleDot.classList.remove('translate-x-7');
+                    toggleDot.classList.add('translate-x-1');
+                }
+                showNotification('Gagal memperbarui status: koneksi bermasalah');
+            });
         });
 
     </script>

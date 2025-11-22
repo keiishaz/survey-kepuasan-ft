@@ -20,10 +20,11 @@ class Kuesioner extends Model
         'id_kategori',
         'nama',
         'deskripsi',
-        'sampul',          
-        'tanggal_mulai',    
-        'tanggal_selesai', 
-        'created_by',       
+        'sampul',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'created_by',
+        'status_manual',
     ];
     protected $casts = [
         'tanggal_mulai'    => 'date',
@@ -38,6 +39,11 @@ class Kuesioner extends Model
 
     public function getStatusAttribute(): string
     {
+        // If manual status is set, use it to override automatic status
+        if (!is_null($this->status_manual)) {
+            return $this->status_manual ? 'aktif' : 'nonaktif';
+        }
+
         $today = Carbon::today();
 
         if (is_null($this->tanggal_mulai) && is_null($this->tanggal_selesai)) {
@@ -61,17 +67,17 @@ class Kuesioner extends Model
     {
         return $this->status === 'aktif';
     }
-    
+
     public function identitas()
     {
         return $this->hasOne(KonfigurasiIdentitas::class, 'id_kuesioner', 'id_kuesioner');
     }
-    
+
     public function pertanyaan()
     {
         return $this->hasMany(\App\Models\Pertanyaan::class, 'id_kuesioner', 'id_kuesioner');
     }
-    
+
     public function respondens()
     {
         return $this->hasMany(\App\Models\Responden::class, 'id_kuesioner', 'id_kuesioner');

@@ -15,7 +15,7 @@ class KuesionerController extends Controller
 
     public function index(Request $request)
     {
-        $query = Kuesioner::with('kategori');
+        $query = Kuesioner::with('kategori')->withCount('respondens');
 
         // Search functionality
         if ($request->filled('search')) {
@@ -27,18 +27,38 @@ class KuesionerController extends Controller
             $query->where('id_kategori', $request->category);
         }
 
-        // Filter by status
+        // Filter by status - consider manual status override
         if ($request->filled('status')) {
             if ($request->status === 'aktif') {
-                $query->where('tanggal_mulai', '<=', now())
-                      ->where(function($q) {
-                          $q->whereNull('tanggal_selesai')
-                            ->orWhere('tanggal_selesai', '>=', now());
+                $query->where(function($q) {
+                    // Forms with manual status set to active
+                    $q->where('status_manual', true)
+                      // OR forms with manual status not set (null) AND automatic logic says it's active
+                      ->orWhere(function($subQuery) {
+                          $subQuery->whereNull('status_manual')
+                                   ->where(function($dateQuery) {
+                                       $dateQuery->where('tanggal_mulai', '<=', now())
+                                                 ->where(function($q2) {
+                                                     $q2->whereNull('tanggal_selesai')
+                                                       ->orWhere('tanggal_selesai', '>=', now());
+                                                 });
+                                   });
                       });
+                });
             } elseif ($request->status === 'nonaktif') {
                 $query->where(function($q) {
-                    $q->where('tanggal_mulai', '>', now())
-                      ->orWhere('tanggal_selesai', '<', now());
+                    // Forms with manual status set to non active
+                    $q->where('status_manual', false)
+                      // OR forms with manual status not set (null) AND automatic logic says it's non active
+                      ->orWhere(function($subQuery) {
+                          $subQuery->whereNull('status_manual')
+                                   ->where(function($dateQuery) {
+                                       $dateQuery->where(function($q2) {
+                                           $q2->where('tanggal_mulai', '>', now())
+                                             ->orWhere('tanggal_selesai', '<', now());
+                                       });
+                                   });
+                      });
                 });
             }
         }
@@ -461,6 +481,22 @@ class KuesionerController extends Controller
         $survey = Kuesioner::findOrFail($id);
 
         return view('isi-survey-selesai', compact('survey'));
+    }
+
+    public function updateManualStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|boolean',
+        ]);
+
+        $form = Kuesioner::findOrFail($id);
+        $form->update(['status_manual' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diperbarui',
+            'status' => $request->status ? 'aktif' : 'nonaktif'
+        ]);
     }
 
     public function exportResponden($id)

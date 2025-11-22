@@ -187,7 +187,7 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
-                            <span class="text-sm font-medium">{{ $form->responden_count }} Responden</span>
+                            <span class="text-sm font-medium">{{ $form->respondens_count }} Responden</span>
                         </div>
 
                         <a href="{{ route('forms.show', $form->id_kuesioner) }}" class="w-full inline-flex items-center justify-center bg-medium-blue text-white py-2.5 px-4 rounded-lg font-medium hover:bg-dark-blue transition-all duration-200 text-sm">
@@ -214,12 +214,12 @@
         // Mobile Sidebar Toggle
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
-        
+
         if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', function() {
                 sidebar.classList.toggle('-translate-x-full');
                 sidebar.classList.toggle('translate-x-0');
-                
+
                 // Change icon
                 const icon = this.querySelector('svg');
                 if (sidebar.classList.contains('-translate-x-full')) {
@@ -233,7 +233,7 @@
             document.addEventListener('click', function(event) {
                 const isClickInsideSidebar = sidebar.contains(event.target);
                 const isClickOnToggle = sidebarToggle.contains(event.target);
-                
+
                 if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth < 1024) {
                     sidebar.classList.add('-translate-x-full');
                     const icon = sidebarToggle.querySelector('svg');
@@ -270,7 +270,7 @@
                 width: calc(100% - 2rem);
                 max-width: 280px;
             }
-            
+
             #sidebar.translate-x-0 {
                 transform: translateX(0);
             }

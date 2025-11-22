@@ -56,7 +56,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form/{id}/responden', [KuesionerController::class, 'lihatResponden'])->name('forms.responden');
     Route::get('/form/{id}/export-respon', [KuesionerController::class, 'exportResponden'])->name('forms.export-respon');
     Route::delete('/form/{id}', [KuesionerController::class, 'destroy'])->name('forms.destroy');
-    
+    Route::put('/form/{id}/update-status', [KuesionerController::class, 'updateManualStatus'])->name('forms.update-status');
+
 
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
     Route::get('/kategori/tambah', [KategoriController::class, 'create'])->name('kategori.tambah');
