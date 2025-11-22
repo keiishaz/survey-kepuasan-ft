@@ -395,7 +395,7 @@
                 margin-top: 16px;
                 padding-top: 16px;
             }
-        }        
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -453,7 +453,7 @@
                 </div>
             </div>
         </main>
-        
+
         <!-- Hidden form for submission -->
         <form id="editPertanyaanForm" method="POST" action="{{ route('forms.update-pertanyaan', $form->id_kuesioner) }}">
             @csrf
@@ -484,19 +484,41 @@
                 @endif
             ],
             sections: [
+                @if(isset($sections) && $sections->count() > 0)
+                    @foreach($sections as $section)
                 {
-                    id: 1,
-                    title: 'Pertanyaan Utama',
+                    id: {{ $section->id_section }},
+                    title: "{{ addslashes($section->judul) }}",
                     questions: [
-                        @if(isset($questions) && $questions->count() > 0)
-                            @foreach($questions as $question)
+                        @foreach($section->pertanyaan as $question)
                         {
                             id: {{ $question->id_pertanyaan }},
                             text: "{{ addslashes($question->teks) }}",
                             required: {{ $question->status_aktif ? 'true' : 'false' }},
                             scale: 3, // Default scale, adjust as needed
                             existing: true
-                        },
+                        }@if(!$loop->last),
+                        @endif
+                        @endforeach
+                    ]
+                }@if(!$loop->last),
+                @endif
+                @endforeach
+                @else
+                {
+                    id: 1,
+                    title: 'Pertanyaan Umum',
+                    questions: [
+                        @if(isset($pertanyaan) && $pertanyaan->count() > 0)
+                            @foreach($pertanyaan as $question)
+                        {
+                            id: {{ $question->id_pertanyaan }},
+                            text: "{{ addslashes($question->teks) }}",
+                            required: {{ $question->status_aktif ? 'true' : 'false' }},
+                            scale: 3, // Default scale, adjust as needed
+                            existing: true
+                        }@if(!$loop->last),
+                        @endif
                             @endforeach
                         @else
                         {
@@ -509,26 +531,37 @@
                         @endif
                     ]
                 }
+                @endif
             ]
         };
 
         // Existing identitas options that are saved in the system
         const systemIdentitasOptions = [
-            'Nama Lengkap', 'Email', 'Program Studi', 'Angkatan', 'Status', 
+            'Nama Lengkap', 'Email', 'Program Studi', 'Angkatan', 'Status',
             'NIM', 'Nama Dosen', 'Mata Kuliah', 'Fakultas', 'Jenis Kelamin',
             'Semester', 'IPK', 'Nama Orang Tua', 'Pekerjaan Orang Tua', 'Penghasilan Orang Tua'
         ];
 
         let nextIdentitasId = backendData.identitas.length > 0 ? Math.max(...backendData.identitas.map(i => i.id)) + 1 : 1;
         let nextSectionId = backendData.sections.length > 0 ? Math.max(...backendData.sections.map(s => s.id)) + 1 : 2;
-        let nextQuestionId = backendData.sections[0].questions.length > 0 ? Math.max(...backendData.sections[0].questions.map(q => q.id)) + 1 : 2;
-        
+        let nextQuestionId = 1;
+
+        // Find the highest question ID to continue numbering correctly
+        backendData.sections.forEach(section => {
+            if (section.questions && section.questions.length > 0) {
+                const maxQuestionId = Math.max(...section.questions.map(q => q.id));
+                if (maxQuestionId > nextQuestionId) {
+                    nextQuestionId = maxQuestionId + 1;
+                }
+            }
+        });
+
         // Initialize current data
         let data = {
             identitas: backendData.identitas.length > 0 ? [...backendData.identitas] : [],
             sections: [...backendData.sections]
         };
-        
+
         // If no identitas exist, add default ones
         if (data.identitas.length === 0) {
             data.identitas = [
@@ -552,13 +585,13 @@
                                id="identitas-${item.id}">
                         <div id="identitas-dropdown-${item.id}" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden">
                             <div class="p-2 border-b border-gray-200">
-                                <input type="text" placeholder="Cari atribut..." 
-                                       class="field-input w-full text-sm" 
+                                <input type="text" placeholder="Cari atribut..."
+                                       class="field-input w-full text-sm"
                                        oninput="filterIdentitasOptions(${index}, this.value)">
                             </div>
                             <div class="max-h-60 overflow-y-auto">
                                 ${systemIdentitasOptions.map(option => `
-                                    <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm" 
+                                    <div class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                                          onclick="selectIdentitasOption(${index}, '${option.replace(/'/g, "\\'")}')">
                                         ${option}
                                     </div>
@@ -566,7 +599,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="identity-toggle-container">
                         <span class="identity-toggle-label">${item.required ? 'Wajib' : 'Tidak Wajib'}</span>
                         <button type="button" class="identity-toggle ${item.required ? 'active' : ''}"
@@ -574,22 +607,22 @@
                             <div class="identity-toggle-dot"></div>
                         </button>
                     </div>
-                    
+
                     <button type="button" onclick="toggleSelectIdentitas(${index})" class="btn btn-small btn-secondary ml-2">
                         Pilih
                     </button>
-                    
+
                     <button type="button" onclick="removeIdentitasItem(${index})" class="btn btn-small btn-danger ml-2">
                         Hapus
                     </button>
                 </div>
             `).join('');
-            
+
             // Hide dropdowns initially
             document.querySelectorAll('[id^="identitas-dropdown-"]').forEach(dropdown => {
                 dropdown.classList.add('hidden');
             });
-            
+
             // Add event listeners to handle clicks outside dropdowns
             document.addEventListener('click', function(e) {
                 if (!e.target.closest('.relative')) {
@@ -598,7 +631,7 @@
                     });
                 }
             });
-            
+
             // Update button state based on count
             updateIdentitasButtonState();
         }
@@ -606,10 +639,10 @@
         function toggleSelectIdentitas(index) {
             const dropdown = document.getElementById(`identitas-dropdown-${data.identitas[index].id}`);
             const isVisible = !dropdown.classList.contains('hidden');
-            
+
             // Hide all dropdowns
             document.querySelectorAll('[id^="identitas-dropdown-"]').forEach(d => d.classList.add('hidden'));
-            
+
             // Toggle current dropdown
             if (!isVisible) {
                 dropdown.classList.remove('hidden');
@@ -620,7 +653,7 @@
             const dropdown = document.getElementById(`identitas-dropdown-${data.identitas[index].id}`);
             const items = dropdown.querySelectorAll('div:not(.p-2)');
             const filter = searchValue.toLowerCase();
-            
+
             items.forEach(item => {
                 const text = item.textContent.toLowerCase();
                 if (text.includes(filter)) {
@@ -652,7 +685,7 @@
                 alert('Minimal harus ada 1 identitas');
             }
         }
-        
+
         function updateIdentitasButtonState() {
             const addButton = document.getElementById('addIdentitasBtn');
             if (data.identitas.length >= 5) {
@@ -730,7 +763,7 @@
                     </div>
                 </div>
             `).join('');
-            
+
             updateSectionButtons();
         }
 
@@ -755,7 +788,7 @@
         function addSection() {
             data.sections.push({
                 id: nextSectionId++,
-                title: `Bagian ${data.sections.length + 1}`,
+                title: `Bagian ${data.sections.length}`,
                 questions: [
                     { id: nextQuestionId++, text: 'Pertanyaan baru', required: false, scale: 3, existing: false }
                 ]
@@ -769,7 +802,7 @@
                 renderQuestions();
             }
         }
-        
+
         function updateSectionButtons() {
             // Add logic to update section buttons if needed
         }
@@ -779,7 +812,7 @@
             const identitasData = {
                 atribut1: data.identitas[0] ? data.identitas[0].label : null,
                 atribut2: data.identitas[1] ? data.identitas[1].label : null,
-                atribut3: data.identitas[2] ? data.identitas[2].label : null,
+               atribut3: data.identitas[2] ? data.identitas[2].label : null,
                 atribut4: data.identitas[3] ? data.identitas[3].label : null,
                 atribut5: data.identitas[4] ? data.identitas[4].label : null,
                 wajib1: data.identitas[0] ? data.identitas[0].required : null,
@@ -788,25 +821,34 @@
                 wajib4: data.identitas[3] ? data.identitas[3].required : null,
                 wajib5: data.identitas[4] ? data.identitas[4].required : null,
             };
-            
-            // Prepare questions data
-            const questionsData = [];
+
+            // Prepare questions data with proper section structure
+            const questionsData = {
+                sections: []
+            };
+
             data.sections.forEach(section => {
+                const sectionData = {
+                    title: section.title,
+                    questions: []
+                };
+
                 section.questions.forEach(question => {
-                    questionsData.push({
-                        id: question.id,
+                    sectionData.questions.push({
+                        id: question.id || null, // Use null if not set (for new questions)
                         text: question.text,
                         required: question.required,
-                        section_title: section.title,
                         existing: question.existing
                     });
                 });
+
+                questionsData.sections.push(sectionData);
             });
-            
+
             // Set the hidden form fields
             document.getElementById('identitasDataInput').value = JSON.stringify(identitasData);
             document.getElementById('questionsDataInput').value = JSON.stringify(questionsData);
-            
+
             // Submit the form
             document.getElementById('editPertanyaanForm').submit();
         }

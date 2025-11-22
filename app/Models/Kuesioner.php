@@ -82,4 +82,9 @@ class Kuesioner extends Model
     {
         return $this->hasMany(\App\Models\Responden::class, 'id_kuesioner', 'id_kuesioner');
     }
+
+    public function section()
+    {
+        return $this->hasMany(\App\Models\Section::class, 'id_kuesioner', 'id_kuesioner');
+    }
 }

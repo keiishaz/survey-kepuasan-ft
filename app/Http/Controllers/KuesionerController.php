@@ -37,11 +37,24 @@ class KuesionerController extends Controller
                       ->orWhere(function($subQuery) {
                           $subQuery->whereNull('status_manual')
                                    ->where(function($dateQuery) {
-                                       $dateQuery->where('tanggal_mulai', '<=', now())
-                                                 ->where(function($q2) {
-                                                     $q2->whereNull('tanggal_selesai')
-                                                       ->orWhere('tanggal_selesai', '>=', now());
-                                                 });
+                                       $dateQuery->where(function($q2) {
+                                           // Forms with no start and end date - always active
+                                           $q2->whereNull('tanggal_mulai')
+                                             ->whereNull('tanggal_selesai');
+                                       })
+                                       ->orWhere(function($q3) {
+                                           // Forms with start date but no end date - active if start date has passed
+                                           $q3->whereNotNull('tanggal_mulai')
+                                             ->whereNull('tanggal_selesai')
+                                             ->where('tanggal_mulai', '<=', now());
+                                       })
+                                       ->orWhere(function($q4) {
+                                           // Forms with both start and end date - active if today is between them
+                                           $q4->whereNotNull('tanggal_mulai')
+                                             ->whereNotNull('tanggal_selesai')
+                                             ->where('tanggal_mulai', '<=', now())
+                                             ->where('tanggal_selesai', '>=', now());
+                                       });
                                    });
                       });
                 });
@@ -54,8 +67,14 @@ class KuesionerController extends Controller
                           $subQuery->whereNull('status_manual')
                                    ->where(function($dateQuery) {
                                        $dateQuery->where(function($q2) {
-                                           $q2->where('tanggal_mulai', '>', now())
-                                             ->orWhere('tanggal_selesai', '<', now());
+                                           // Forms with start date that hasn't yet arrived
+                                           $q2->whereNotNull('tanggal_mulai')
+                                             ->where('tanggal_mulai', '>', now());
+                                       })
+                                       ->orWhere(function($q3) {
+                                           // Forms with end date that has passed
+                                           $q3->whereNotNull('tanggal_selesai')
+                                             ->where('tanggal_selesai', '<', now());
                                        });
                                    });
                       });
@@ -178,10 +197,21 @@ class KuesionerController extends Controller
             ];
         }
 
-        // Get all questions
-        $questions = $form->pertanyaan()->orderBy('urutan')->get();
+        // Get all sections with their associated questions
+        $sections = $form->section()
+            ->with(['pertanyaan' => function($query) {
+                $query->orderBy('urutan');
+            }])
+            ->orderBy('urutan')
+            ->get();
 
-        return view('Admin.Form.edit-pertanyaan', compact('form', 'identitas', 'questions'));
+        // If no sections exist but questions exist, get all questions directly
+        if ($sections->isEmpty()) {
+            $questions = $form->pertanyaan()->orderBy('urutan')->get();
+            return view('Admin.Form.edit-pertanyaan', compact('form', 'identitas', 'questions'));
+        }
+
+        return view('Admin.Form.edit-pertanyaan', compact('form', 'identitas', 'sections'));
     }
 
     public function updatePertanyaan(Request $request, $id)
@@ -227,15 +257,46 @@ class KuesionerController extends Controller
         // Parse the questions data
         $questionsData = json_decode($request->questions_data, true);
 
-        // Process questions - first, remove all existing questions for this form
-        $form->pertanyaan()->delete();
+        // Process questions and sections - first, remove all existing sections and questions for this form
+        $form->pertanyaan()->delete(); // Delete all questions first
+        $form->section()->delete(); // Delete all sections
 
-        // Then recreate questions from the data
-        foreach ($questionsData as $questionData) {
-            $form->pertanyaan()->create([
-                'teks' => $questionData['text'],
-                'status_aktif' => $questionData['required'],
-            ]);
+        // Then recreate sections and questions from the data
+        $urutan = 1;
+        $sectionUrutan = 1;
+
+        if (isset($questionsData['sections']) && is_array($questionsData['sections'])) {
+            foreach ($questionsData['sections'] as $section) {
+                $sectionTitle = $section['title'] ?? 'Section Baru';
+
+                // Create the section
+                $sectionRecord = $form->section()->create([
+                    'judul' => $sectionTitle,
+                    'urutan' => $sectionUrutan++
+                ]);
+
+                // Create questions for this section
+                if (isset($section['questions']) && is_array($section['questions'])) {
+                    foreach ($section['questions'] as $question) {
+                        $form->pertanyaan()->create([
+                            'id_section' => $sectionRecord->id_section,
+                            'teks' => $question['text'],
+                            'status_aktif' => $question['required'],
+                            'urutan' => $urutan++
+                        ]);
+                    }
+                }
+            }
+        } else {
+            // Fallback: process as before if the new structure isn't used
+            foreach ($questionsData as $questionData) {
+                $form->pertanyaan()->create([
+                    'id_section' => null, // No section
+                    'teks' => $questionData['text'],
+                    'status_aktif' => $questionData['required'],
+                    'urutan' => $urutan++
+                ]);
+            }
         }
 
         return redirect()->route('forms.show', $form->id_kuesioner)->with('success', 'Pertanyaan berhasil diperbarui.');
@@ -369,13 +430,37 @@ class KuesionerController extends Controller
 
     public function cariSurvey()
     {
-        // Ambil hanya survey yang aktif (status aktif)
+        // Ambil hanya survey yang aktif (memperhitungkan status_manual)
         $surveys = \App\Models\Kuesioner::with('kategori')
-                    ->where('tanggal_mulai', '<=', now())
-                    ->where('tanggal_selesai', '>=', now())
-                    ->orWhere(function ($query) {
-                        $query->whereNull('tanggal_mulai')
-                              ->whereNull('tanggal_selesai');
+                    ->where(function ($query) {
+                        // Survei dengan status_manual = true (diaktifkan secara manual)
+                        $query->where('status_manual', true)
+                              // ATAU survei dengan status_manual = null (tidak diatur) DAN logika tanggal menyatakan aktif
+                              ->orWhere(function ($subQuery) {
+                                  $subQuery->whereNull('status_manual')
+                                          ->where(function ($dateSubQuery) {
+                                              $dateSubQuery->where(function ($q) {
+                                                                  $q->whereNotNull('tanggal_mulai')
+                                                                    ->whereNotNull('tanggal_selesai')
+                                                                    ->where('tanggal_mulai', '<=', now())
+                                                                    ->where('tanggal_selesai', '>=', now());
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNull('tanggal_mulai')
+                                                                    ->whereNull('tanggal_selesai');
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNotNull('tanggal_mulai')
+                                                                    ->whereNull('tanggal_selesai')
+                                                                    ->where('tanggal_mulai', '<=', now());
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNull('tanggal_mulai')
+                                                                    ->whereNotNull('tanggal_selesai')
+                                                                    ->where('tanggal_selesai', '>=', now());
+                                                              });
+                                          });
+                              });
                     })
                     ->get();
 
@@ -384,19 +469,64 @@ class KuesionerController extends Controller
 
     public function isiSurvey($id)
     {
-        $survey = Kuesioner::with(['kategori', 'pertanyaan', 'identitas'])
+        $survey = Kuesioner::with(['kategori', 'pertanyaan.section', 'identitas'])
                     ->where('id_kuesioner', $id)
                     ->where(function ($query) {
-                        $query->where('tanggal_mulai', '<=', now())
-                              ->where('tanggal_selesai', '>=', now());
-                    })
-                    ->orWhere(function ($query) {
-                        $query->whereNull('tanggal_mulai')
-                              ->whereNull('tanggal_selesai');
+                        // Survei dengan status_manual = true (diaktifkan secara manual)
+                        $query->where('status_manual', true)
+                              // ATAU survei dengan status_manual = null (tidak diatur) DAN logika tanggal menyatakan aktif
+                              ->orWhere(function ($subQuery) {
+                                  $subQuery->whereNull('status_manual')
+                                          ->where(function ($dateSubQuery) {
+                                              $dateSubQuery->where(function ($q) {
+                                                                  $q->whereNotNull('tanggal_mulai')
+                                                                    ->whereNotNull('tanggal_selesai')
+                                                                    ->where('tanggal_mulai', '<=', now())
+                                                                    ->where('tanggal_selesai', '>=', now());
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNull('tanggal_mulai')
+                                                                    ->whereNull('tanggal_selesai');
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNotNull('tanggal_mulai')
+                                                                    ->whereNull('tanggal_selesai')
+                                                                    ->where('tanggal_mulai', '<=', now());
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNull('tanggal_mulai')
+                                                                    ->whereNotNull('tanggal_selesai')
+                                                                    ->where('tanggal_selesai', '>=', now());
+                                                              });
+                                          });
+                              });
                     })
                     ->firstOrFail();
 
-        return view('isi-survey', compact('survey'));
+        // Get all sections for this survey
+        $allSections = $survey->section()->orderBy('urutan')->get();
+
+        // Group questions by section with proper section information
+        $questionsGrouped = collect();
+
+        // Add questions that have a section
+        foreach($allSections as $section) {
+            $sectionQuestions = $survey->pertanyaan->where('id_section', $section->id_section);
+            if($sectionQuestions->count() > 0) {
+                $questionsGrouped->put($section->judul, $sectionQuestions);
+            }
+        }
+
+        // Add questions that don't belong to any section (if any)
+        $unassignedQuestions = $survey->pertanyaan->whereNull('id_section');
+        if($unassignedQuestions->count() > 0) {
+            $questionsGrouped->put('Pertanyaan Umum', $unassignedQuestions);
+        }
+
+        // Get all sections for passing to view if needed
+        $sections = $allSections;
+
+        return view('isi-survey', compact('survey', 'questionsGrouped', 'sections'));
     }
 
     public function storeJawaban(Request $request, $id)

@@ -5,34 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Pertanyaan extends Model
+class Section extends Model
 {
     use HasFactory;
 
-    protected $table = 'pertanyaan';
-    protected $primaryKey = 'id_pertanyaan';
+    protected $table = 'sections';
+    protected $primaryKey = 'id_section';
     public $timestamps = true;
 
     protected $fillable = [
         'id_kuesioner',
-        'id_section',
-        'teks',
+        'judul',
         'urutan',
-        'status_aktif',
     ];
 
-    protected $casts = [
-        'urutan' => 'integer',
-        'status_aktif' => 'boolean',
-    ];
-
+    // Relationship with Kuesioner
     public function kuesioner()
     {
         return $this->belongsTo(Kuesioner::class, 'id_kuesioner', 'id_kuesioner');
     }
 
-    public function section()
+    // Relationship with Pertanyaan
+    public function pertanyaan()
     {
-        return $this->belongsTo(Section::class, 'id_section', 'id_section');
+        return $this->hasMany(Pertanyaan::class, 'id_section', 'id_section');
     }
 }

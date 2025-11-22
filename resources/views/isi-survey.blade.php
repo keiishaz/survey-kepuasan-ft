@@ -277,7 +277,7 @@
         .scale-container {
             margin-top: 16px;
         }
-        
+
         .scale-options {
             display: flex;
             justify-content: space-between;
@@ -483,7 +483,7 @@
                 flex-wrap: wrap;
                 gap: 8px;
             }
-            
+
             .scale-input {
                 width: 32px;
                 height: 32px;
@@ -596,12 +596,12 @@
                 align-items: flex-start;
                 gap: 12px;
             }
-            
+
             .scale-input {
                 width: 30px;
                 height: 30px;
             }
-            
+
             .scale-labels {
                 flex-direction: column;
                 gap: 4px;
@@ -734,7 +734,7 @@
                         <input type="text" class="input-field" name="identitas3" placeholder="Masukkan program studi Anda" required>
                     </div>
                 @endif
-                
+
                 <!-- Next button for identitas -->
                 <div class="nav-buttons">
                     <button type="button" class="nav-btn" disabled style="visibility: hidden;">Sebelumnya</button>
@@ -774,28 +774,25 @@
     </div>
 
     <script>
-        // Get the questions data from Laravel
-        // For this implementation we'll group all questions into a single section since we don't have defined sub sections in the database
-        // In case you later add sub sections, you can modify this structure
-        
-        const questions = [
-            @foreach($survey->pertanyaan as $index => $question)
+        // Get the questions data grouped by section from Laravel
+        const sections = [
+            @foreach($questionsGrouped as $sectionName => $questionsInSection)
             {
-                id: {{ $question->id_pertanyaan }},
-                text: "{{ addslashes($question->teks) }}",
-                index: {{ $index }}
+                id: {{ $loop->index + 1 }},
+                title: "{{ addslashes($sectionName) }}",
+                questions: [
+                    @foreach($questionsInSection as $index => $question)
+                    {
+                        id: {{ $question->id_pertanyaan }},
+                        text: "{{ addslashes($question->teks) }}",
+                        index: {{ $index }}
+                    }@if(!$loop->last),
+                    @endif
+                    @endforeach
+                ]
             }@if(!$loop->last),
             @endif
             @endforeach
-        ];
-        
-        // Group all questions into a single section since no explicit sub-sectioning exists
-        const sections = [
-            {
-                id: 1,
-                title: "Bagian Umum",
-                questions: questions
-            }
         ];
 
         let currentPage = 0;
@@ -817,20 +814,20 @@
             } else {
                 // Show questions section
                 document.getElementById('questions-section').style.display = 'block';
-                
+
                 // Update current page (section)
                 currentPage = pageNum - 1; // Adjust for 0-based indexing
-                
+
                 // Update section counter
                 document.getElementById('current-section').textContent = currentPage + 1;
                 document.getElementById('total-sections').textContent = totalSections;
-                
+
                 // Generate and display questions for this section
                 renderSection();
-                
+
                 // Update navigation buttons
                 document.getElementById('prev-btn').disabled = (currentPage === 0);
-                
+
                 // If this is the last section, change next button to Submit
                 if (currentPage === totalSections - 1) {
                     document.getElementById('next-btn').textContent = 'Kirim Jawaban';
@@ -848,21 +845,21 @@
 
         function renderSection() {
             const container = document.getElementById('questions-container');
-            
+
             // Get current section
             const section = sections[currentPage];
-            
+
             let html = '';
-            
+
             // Add section title if there's more than one section
             if (totalSections > 1) {
                 html += `<h3 class="sub-section-title">${section.title}</h3>`;
             }
-            
+
             // Add each question in the section
             section.questions.forEach((question, index) => {
                 const questionNumber = (currentPage * 10) + index + 1; // Calculate actual question number
-                
+
                 html += `
                     <div class="question-group">
                         <label class="question-label">
@@ -895,23 +892,23 @@
                     </div>
                 `;
             });
-            
+
             container.innerHTML = html;
         }
 
         function nextPage() {
             if (currentPage < totalSections - 1) {
                 currentPage++;
-                
+
                 // Update section counter
                 document.getElementById('current-section').textContent = currentPage + 1;
-                
+
                 // Re-render section
                 renderSection();
-                
+
                 // Update navigation buttons
                 document.getElementById('prev-btn').disabled = (currentPage === 0);
-                
+
                 // If this is the last section, change next button to Selesai
                 if (currentPage === totalSections - 1) {
                     document.getElementById('next-btn').textContent = 'Selesai';
@@ -928,16 +925,16 @@
         function prevPage() {
             if (currentPage > 0) {
                 currentPage--;
-                
+
                 // Update section counter
                 document.getElementById('current-section').textContent = currentPage + 1;
-                
+
                 // Re-render section
                 renderSection();
-                
+
                 // Update navigation buttons
                 document.getElementById('prev-btn').disabled = (currentPage === 0);
-                
+
                 // Reset next button text if it was changed to 'Kirim Jawaban'
                 document.getElementById('next-btn').textContent = 'Berikutnya';
                 document.getElementById('next-btn').onclick = function() {
