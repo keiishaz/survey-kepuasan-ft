@@ -842,4 +842,109 @@ class KuesionerController extends Controller
             'total' => array_sum($distribusiArray)
         ]);
     }
+
+    public function exportLaporan($id, $format)
+    {
+        $form = Kuesioner::with(['kategori', 'section.pertanyaan', 'identitas', 'respondens.jawaban.pertanyaan'])->findOrFail($id);
+
+        // Get all sections with their questions
+        $sections = $form->section()->with('pertanyaan')->orderBy('urutan')->get();
+
+        // If no sections exist, get all questions directly
+        if ($sections->isEmpty()) {
+            $questions = $form->pertanyaan()->orderBy('urutan')->get();
+            $sections = collect([
+                (object) [
+                    'judul' => 'Pertanyaan Umum',
+                    'questions' => $questions
+                ]
+            ]);
+        } else {
+            // Transform to include questions in each section
+            $sections = $sections->map(function ($section) {
+                return [
+                    'judul' => $section->judul,
+                    'questions' => $section->pertanyaan->sortBy('urutan')
+                ];
+            });
+        }
+
+        // Get responden data with answers
+        $respondens = $form->respondens()->with('jawaban.pertanyaan')->get();
+
+        // Prepare statistics for all questions
+        $allQuestions = collect();
+        foreach($sections as $section) {
+            foreach($section['questions'] as $question) {
+                $allQuestions->push($question);
+            }
+        }
+
+        // Calculate statistics for each question
+        $questionStats = [];
+        foreach($allQuestions as $question) {
+            $answers = $respondens->pluck('jawaban')->flatten()
+                ->where('id_pertanyaan', $question->id_pertanyaan)
+                ->pluck('jawaban');
+
+            $stats = [
+                'count' => $answers->count(),
+                'avg' => $answers->count() > 0 ? $answers->avg() : 0,
+                'distribution' => [
+                    1 => 0,
+                    2 => 0,
+                    3 => 0,
+                    4 => 0,
+                    5 => 0,
+                ]
+            ];
+
+            // Calculate distribution more explicitly
+            foreach($answers as $answer) {
+                $answerScore = (int) $answer;  // Ensure it's treated as integer
+                if($answerScore >= 1 && $answerScore <= 5) {
+                    $stats['distribution'][$answerScore]++;
+                }
+            }
+
+            $questionStats[$question->id_pertanyaan] = $stats;
+        }
+
+        // Prepare data for export
+        $exportData = [
+            'form' => $form,
+            'sections' => $sections,
+            'respondens' => $respondens,
+            'questionStats' => $questionStats,
+            'totalResponden' => $respondens->count(),
+            'totalQuestions' => $allQuestions->count(),
+            'identitasConfig' => $form->identitas
+        ];
+
+        // Generate the export based on format
+        if (strtolower($format) === 'pdf') {
+            return $this->generatePdfReport($exportData);
+        } elseif (strtolower($format) === 'xlsx') {
+            return $this->generateExcelReport($exportData);
+        } else {
+            abort(404, 'Format not supported');
+        }
+    }
+
+    private function generatePdfReport($data)
+    {
+        // Add the full URL to the data for use in PDF
+        $data['fullUrl'] = request()->getSchemeAndHttpHost();
+
+        $pdf = \PDF::loadView('Admin.Form.export.pdf-report', $data);
+        return $pdf->download('laporan-form-' . $data['form']->id_kuesioner . '.pdf');
+    }
+
+    private function generateExcelReport($data)
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\FormReportExport($data),
+            'laporan-form-' . $data['form']->id_kuesioner . '.xlsx'
+        );
+    }
 }

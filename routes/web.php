@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/form/{id}/update-pertanyaan', [KuesionerController::class, 'updatePertanyaan'])->name('forms.update-pertanyaan');
     Route::get('/form/{id}/responden', [KuesionerController::class, 'lihatResponden'])->name('forms.responden');
     Route::get('/form/{id}/export-respon', [KuesionerController::class, 'exportResponden'])->name('forms.export-respon');
+    Route::get('/form/{id}/export.{format}', [KuesionerController::class, 'exportLaporan'])->name('forms.export-laporan');
     Route::delete('/form/{id}', [KuesionerController::class, 'destroy'])->name('forms.destroy');
     Route::put('/form/{id}/update-status', [KuesionerController::class, 'updateManualStatus'])->name('forms.update-status');
     Route::get('/form/{id}/jawaban-distribusi', [KuesionerController::class, 'getJawabanDistribusi'])->name('forms.jawaban-distribusi');
