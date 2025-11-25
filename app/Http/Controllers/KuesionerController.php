@@ -152,12 +152,41 @@ class KuesionerController extends Controller
     {
         $form = Kuesioner::with('kategori')->findOrFail($id);
 
+        // Hitung statistik dasar
+        $totalResponden = $form->respondens()->count();
+        $totalPertanyaan = $form->pertanyaan()->count();
+        $totalJawaban = \App\Models\Jawaban::whereHas('pertanyaan', function($query) use ($id) {
+            $query->where('id_kuesioner', $id);
+        })->count();
+
+        // Hitung tingkat penyelesaian
+        $completionRate = 0;
+        if ($totalPertanyaan > 0 && $totalResponden > 0) {
+            $jawabanPerResponden = $totalJawaban / $totalResponden;
+            $completionRate = min(100, ($jawabanPerResponden / $totalPertanyaan) * 100);
+        }
+
+        // Hitung rata-rata jawaban untuk pertanyaan berskala (1-5)
+        $rataRataJawaban = 0;
+        $jawabanBerskala = \App\Models\Jawaban::whereHas('pertanyaan', function($query) use ($id) {
+            $query->where('id_kuesioner', $id);
+        })->avg('jawaban');
+
+        if ($jawabanBerskala !== null) {
+            $rataRataJawaban = round($jawabanBerskala, 2);
+        }
+
         // siapkan url sampul (atau null)
         $coverUrl = $form->sampul ? Storage::url($form->sampul) : null;
 
         return view('Admin.Form.detail-form', [
-            'form'     => $form,
-            'coverUrl' => $coverUrl,
+            'form'             => $form,
+            'coverUrl'         => $coverUrl,
+            'totalResponden'   => $totalResponden,
+            'totalPertanyaan'  => $totalPertanyaan,
+            'totalJawaban'     => $totalJawaban,
+            'completionRate'   => $completionRate,
+            'rataRataJawaban'  => $rataRataJawaban,
         ]);
     }
 
@@ -531,15 +560,38 @@ class KuesionerController extends Controller
 
     public function storeJawaban(Request $request, $id)
     {
+        // Ambil survey dan cek apakah aktif dengan logika yang konsisten dengan isiSurvey
         $survey = Kuesioner::with(['kategori', 'pertanyaan', 'identitas'])
                     ->where('id_kuesioner', $id)
                     ->where(function ($query) {
-                        $query->where('tanggal_mulai', '<=', now())
-                              ->where('tanggal_selesai', '>=', now());
-                    })
-                    ->orWhere(function ($query) {
-                        $query->whereNull('tanggal_mulai')
-                              ->whereNull('tanggal_selesai');
+                        // Survei dengan status_manual = true (diaktifkan secara manual)
+                        $query->where('status_manual', true)
+                              // ATAU survei dengan status_manual = null (tidak diatur) DAN logika tanggal menyatakan aktif
+                              ->orWhere(function ($subQuery) {
+                                  $subQuery->whereNull('status_manual')
+                                          ->where(function ($dateSubQuery) {
+                                              $dateSubQuery->where(function ($q) {
+                                                                  $q->whereNotNull('tanggal_mulai')
+                                                                    ->whereNotNull('tanggal_selesai')
+                                                                    ->where('tanggal_mulai', '<=', now())
+                                                                    ->where('tanggal_selesai', '>=', now());
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNull('tanggal_mulai')
+                                                                    ->whereNull('tanggal_selesai');
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNotNull('tanggal_mulai')
+                                                                    ->whereNull('tanggal_selesai')
+                                                                    ->where('tanggal_mulai', '<=', now());
+                                                              })
+                                                              ->orWhere(function ($q) {
+                                                                  $q->whereNull('tanggal_mulai')
+                                                                    ->whereNotNull('tanggal_selesai')
+                                                                    ->where('tanggal_selesai', '>=', now());
+                                                              });
+                                          });
+                              });
                     })
                     ->firstOrFail();
 
@@ -583,15 +635,21 @@ class KuesionerController extends Controller
 
         // Save answer if available
         if ($request->has('jawaban')) {
+            // Ambil semua ID pertanyaan yang valid untuk form ini
+            $validQuestionIds = $survey->pertanyaan->pluck('id_pertanyaan')->toArray();
+
             foreach ($request->jawaban as $id_pertanyaan => $isi_jawaban) {
                 // Pastikan id_pertanyaan adalah angka (bukan 0 yang digunakan untuk identitas)
                 if ($id_pertanyaan != 0) {
-                    // Validasi bahwa jawaban adalah angka antara 1-5
-                    if (is_numeric($isi_jawaban) && $isi_jawaban >= 1 && $isi_jawaban <= 5) {
-                        $responden->jawaban()->create([
-                            'id_pertanyaan' => $id_pertanyaan,
-                            'jawaban' => $isi_jawaban,
-                        ]);
+                    // Pastikan id_pertanyaan terkait dengan survey ini
+                    if (in_array($id_pertanyaan, $validQuestionIds)) {
+                        // Validasi bahwa jawaban adalah angka antara 1-5
+                        if (is_numeric($isi_jawaban) && $isi_jawaban >= 1 && $isi_jawaban <= 5) {
+                            $responden->jawaban()->create([
+                                'id_pertanyaan' => $id_pertanyaan,
+                                'jawaban' => $isi_jawaban,
+                            ]);
+                        }
                     }
                 }
             }
@@ -627,6 +685,68 @@ class KuesionerController extends Controller
             'message' => 'Status berhasil diperbarui',
             'status' => $request->status ? 'aktif' : 'nonaktif'
         ]);
+    }
+
+    public function checkDuplicate(Request $request, $id)
+    {
+        $survey = Kuesioner::with('identitas')->findOrFail($id);
+
+        // Check if identitas configuration exists
+        if (!$survey->identitas) {
+            return response()->json(['exists' => false]);
+        }
+
+        // Build query for checking duplicates
+        $query = Responden::where('id_kuesioner', $id);
+
+        $hasIdentity = false;
+
+        // Check for any required identity fields based on configuration
+        if ($survey->identitas->wajib1 && $request->identitas1) {
+            $query->where('identitas1', $request->identitas1);
+            $hasIdentity = true;
+        } elseif ($request->identitas1 && ($survey->identitas->atribut1 && strlen($request->identitas1) > 0)) {
+            // Even if not required, if provided, check for it
+            $query->where('identitas1', $request->identitas1);
+            $hasIdentity = true;
+        }
+
+        if ($survey->identitas->wajib2 && $request->identitas2) {
+            $query->where('identitas2', $request->identitas2);
+            $hasIdentity = true;
+        } elseif ($request->identitas2 && ($survey->identitas->atribut2 && strlen($request->identitas2) > 0)) {
+            $query->where('identitas2', $request->identitas2);
+            $hasIdentity = true;
+        }
+
+        if ($survey->identitas->wajib3 && $request->identitas3) {
+            $query->where('identitas3', $request->identitas3);
+            $hasIdentity = true;
+        } elseif ($request->identitas3 && ($survey->identitas->atribut3 && strlen($request->identitas3) > 0)) {
+            $query->where('identitas3', $request->identitas3);
+            $hasIdentity = true;
+        }
+
+        if ($survey->identitas->wajib4 && $request->identitas4) {
+            $query->where('identitas4', $request->identitas4);
+            $hasIdentity = true;
+        } elseif ($request->identitas4 && ($survey->identitas->atribut4 && strlen($request->identitas4) > 0)) {
+            $query->where('identitas4', $request->identitas4);
+            $hasIdentity = true;
+        }
+
+        if ($survey->identitas->wajib5 && $request->identitas5) {
+            $query->where('identitas5', $request->identitas5);
+            $hasIdentity = true;
+        } elseif ($request->identitas5 && ($survey->identitas->atribut5 && strlen($request->identitas5) > 0)) {
+            $query->where('identitas5', $request->identitas5);
+            $hasIdentity = true;
+        }
+
+        // Only check for duplicates if at least one identity field is provided
+        $exists = $hasIdentity ? $query->exists() : false;
+
+        return response()->json(['exists' => $exists]);
     }
 
     public function exportResponden($id)
@@ -692,5 +812,34 @@ class KuesionerController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    public function getJawabanDistribusi($id)
+    {
+        $distribusi = \App\Models\Jawaban::whereHas('pertanyaan', function($query) use ($id) {
+            $query->where('id_kuesioner', $id);
+        })
+        ->selectRaw('jawaban, COUNT(*) as count')
+        ->groupBy('jawaban')
+        ->orderBy('jawaban')
+        ->pluck('count', 'jawaban');
+
+        // Initialize distribution array with zeros for scores 1-5
+        $distribusiArray = [0, 0, 0, 0, 0];
+
+        // Map the actual values from the database
+        if ($distribusi) {
+            foreach ($distribusi as $skor => $jumlah) {
+                // Adjust index for 0-based array (skor 1 -> index 0)
+                if ($skor >= 1 && $skor <= 5) {
+                    $distribusiArray[$skor - 1] = $jumlah;
+                }
+            }
+        }
+
+        return response()->json([
+            'distribusi' => $distribusiArray,
+            'total' => array_sum($distribusiArray)
+        ]);
     }
 }

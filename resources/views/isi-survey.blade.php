@@ -659,7 +659,10 @@
         <!-- Form -->
         <form class="form-container" id="surveyForm" method="POST" action="{{ route('isi-survey.store', $survey->id_kuesioner) }}">
             @csrf
-            <!-- Identitas Section - Only visible on first page -->
+            <!-- Hidden inputs to maintain all answers across sections -->
+            <div id="hidden-answers-container"></div>
+
+            <!-- Identitas Section - Always visible but shown first -->
             <div id="identitas-section" class="form-section">
                 <div class="section-header">
                     <div class="section-icon">👤</div>
@@ -672,7 +675,7 @@
                         <label class="question-label">
                             {{ $survey->identitas->atribut1 }}{!! $survey->identitas->wajib1 ? '<span class="required">*</span>' : '' !!}
                         </label>
-                        <input type="text" class="input-field" name="identitas1" placeholder="Masukkan {{ strtolower($survey->identitas->atribut1) }}" {!! $survey->identitas->wajib1 ? 'required' : '' !!}>
+                        <input type="text" class="input-field" id="identitas1" name="identitas1" value="{{ old('identitas1', session('identitas1', '')) }}" placeholder="Masukkan {{ strtolower($survey->identitas->atribut1) }}" {!! $survey->identitas->wajib1 ? 'required' : '' !!}>
                     </div>
                     @endif
 
@@ -681,7 +684,7 @@
                         <label class="question-label">
                             {{ $survey->identitas->atribut2 }}{!! $survey->identitas->wajib2 ? '<span class="required">*</span>' : '' !!}
                         </label>
-                        <input type="text" class="input-field" name="identitas2" placeholder="Masukkan {{ strtolower($survey->identitas->atribut2) }}" {!! $survey->identitas->wajib2 ? 'required' : '' !!}>
+                        <input type="text" class="input-field" id="identitas2" name="identitas2" value="{{ old('identitas2', session('identitas2', '')) }}" placeholder="Masukkan {{ strtolower($survey->identitas->atribut2) }}" {!! $survey->identitas->wajib2 ? 'required' : '' !!}>
                     </div>
                     @endif
 
@@ -690,7 +693,7 @@
                         <label class="question-label">
                             {{ $survey->identitas->atribut3 }}{!! $survey->identitas->wajib3 ? '<span class="required">*</span>' : '' !!}
                         </label>
-                        <input type="text" class="input-field" name="identitas3" placeholder="Masukkan {{ strtolower($survey->identitas->atribut3) }}" {!! $survey->identitas->wajib3 ? 'required' : '' !!}>
+                        <input type="text" class="input-field" id="identitas3" name="identitas3" value="{{ old('identitas3', session('identitas3', '')) }}" placeholder="Masukkan {{ strtolower($survey->identitas->atribut3) }}" {!! $survey->identitas->wajib3 ? 'required' : '' !!}>
                     </div>
                     @endif
 
@@ -699,7 +702,7 @@
                         <label class="question-label">
                             {{ $survey->identitas->atribut4 }}{!! $survey->identitas->wajib4 ? '<span class="required">*</span>' : '' !!}
                         </label>
-                        <input type="text" class="input-field" name="identitas4" placeholder="Masukkan {{ strtolower($survey->identitas->atribut4) }}" {!! $survey->identitas->wajib4 ? 'required' : '' !!}>
+                        <input type="text" class="input-field" id="identitas4" name="identitas4" value="{{ old('identitas4', session('identitas4', '')) }}" placeholder="Masukkan {{ strtolower($survey->identitas->atribut4) }}" {!! $survey->identitas->wajib4 ? 'required' : '' !!}>
                     </div>
                     @endif
 
@@ -708,7 +711,7 @@
                         <label class="question-label">
                             {{ $survey->identitas->atribut5 }}{!! $survey->identitas->wajib5 ? '<span class="required">*</span>' : '' !!}
                         </label>
-                        <input type="text" class="input-field" name="identitas5" placeholder="Masukkan {{ strtolower($survey->identitas->atribut5) }}" {!! $survey->identitas->wajib5 ? 'required' : '' !!}>
+                        <input type="text" class="input-field" id="identitas5" name="identitas5" value="{{ old('identitas5', session('identitas5', '')) }}" placeholder="Masukkan {{ strtolower($survey->identitas->atribut5) }}" {!! $survey->identitas->wajib5 ? 'required' : '' !!}>
                     </div>
                     @endif
                 @else
@@ -717,28 +720,28 @@
                         <label class="question-label">
                             Nama Lengkap<span class="required">*</span>
                         </label>
-                        <input type="text" class="input-field" name="identitas1" placeholder="Masukkan nama lengkap Anda" required>
+                        <input type="text" class="input-field" id="identitas1" name="identitas1" value="{{ old('identitas1', session('identitas1', '')) }}" placeholder="Masukkan nama lengkap Anda" required>
                     </div>
 
                     <div class="question-group">
                         <label class="question-label">
                             Email<span class="required">*</span>
                         </label>
-                        <input type="email" class="input-field" name="identitas2" placeholder="nama@email.com" required>
+                        <input type="email" class="input-field" id="identitas2" name="identitas2" value="{{ old('identitas2', session('identitas2', '')) }}" placeholder="nama@email.com" required>
                     </div>
 
                     <div class="question-group">
                         <label class="question-label">
                             Program Studi<span class="required">*</span>
                         </label>
-                        <input type="text" class="input-field" name="identitas3" placeholder="Masukkan program studi Anda" required>
+                        <input type="text" class="input-field" id="identitas3" name="identitas3" value="{{ old('identitas3', session('identitas3', '')) }}" placeholder="Masukkan program studi Anda" required>
                     </div>
                 @endif
 
                 <!-- Next button for identitas -->
                 <div class="nav-buttons">
                     <button type="button" class="nav-btn" disabled style="visibility: hidden;">Sebelumnya</button>
-                    <button type="button" class="nav-btn next" onclick="showPage(1)">Berikutnya</button>
+                    <button type="button" class="nav-btn next" onclick="saveCurrentDataAndShowPage(1)">Berikutnya</button>
                 </div>
             </div>
 
@@ -760,8 +763,8 @@
 
                 <!-- Navigation for questions -->
                 <div class="nav-buttons">
-                    <button type="button" class="nav-btn" id="prev-btn" onclick="prevPage()">Sebelumnya</button>
-                    <button type="button" class="nav-btn next" id="next-btn" onclick="nextPage()">Berikutnya</button>
+                    <button type="button" class="nav-btn" id="prev-btn" onclick="goToPreviousSection()">Sebelumnya</button>
+                    <button type="button" class="nav-btn next" id="next-btn" onclick="goToNextSection()">Berikutnya</button>
                 </div>
             </div>
 
@@ -797,6 +800,24 @@
 
         let currentPage = 0;
         let totalSections = sections.length;
+        let allAnswers = {}; // Store all answers across sections
+
+        // Initialize answers from hidden inputs if they exist
+        window.addEventListener('DOMContentLoaded', function() {
+            // Load any existing hidden answer inputs to allAnswers object
+            const hiddenContainer = document.getElementById('hidden-answers-container');
+            const hiddenInputs = hiddenContainer.querySelectorAll('input[type="hidden"]');
+
+            for (let i = 0; i < hiddenInputs.length; i++) {
+                const input = hiddenInputs[i];
+                if (input.name.startsWith('jawaban[')) {
+                    const questionId = input.name.match(/jawaban\[(\d+)\]/)[1];
+                    if (questionId) {
+                        allAnswers[questionId] = input.value;
+                    }
+                }
+            }
+        });
 
         // Function to show a specific page
         function showPage(pageNum) {
@@ -832,12 +853,13 @@
                 if (currentPage === totalSections - 1) {
                     document.getElementById('next-btn').textContent = 'Kirim Jawaban';
                     document.getElementById('next-btn').onclick = function() {
+                        saveAllCurrentAnswers(); // Save all answers before submit
                         document.getElementById('surveyForm').submit(); // Submit the form directly
                     };
                 } else {
                     document.getElementById('next-btn').textContent = 'Berikutnya';
                     document.getElementById('next-btn').onclick = function() {
-                        nextPage();
+                        goToNextSection();
                     };
                 }
             }
@@ -860,6 +882,9 @@
             section.questions.forEach((question, index) => {
                 const questionNumber = (currentPage * 10) + index + 1; // Calculate actual question number
 
+                // Get previously saved answer if exists
+                const savedAnswer = allAnswers[question.id] || '';
+
                 html += `
                     <div class="question-group">
                         <label class="question-label">
@@ -868,23 +893,23 @@
                         <div class="scale-container">
                             <div class="radio-group" style="display: flex; justify-content: space-between; width: 100%; margin: 10px 0;">
                                 <label style="text-align: center; flex: 1; padding: 0 5px;">
-                                    <input type="radio" name="jawaban[${question.id}]" value="1" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="1" class="scale-input" ${savedAnswer === '1' ? 'checked' : ''} style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
                                     1<br><small>Sangat Buruk</small>
                                 </label>
                                 <label style="text-align: center; flex: 1; padding: 0 5px;">
-                                    <input type="radio" name="jawaban[${question.id}]" value="2" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="2" class="scale-input" ${savedAnswer === '2' ? 'checked' : ''} style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
                                     2<br><small>Buruk</small>
                                 </label>
                                 <label style="text-align: center; flex: 1; padding: 0 5px;">
-                                    <input type="radio" name="jawaban[${question.id}]" value="3" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="3" class="scale-input" ${savedAnswer === '3' ? 'checked' : ''} style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
                                     3<br><small>Cukup</small>
                                 </label>
                                 <label style="text-align: center; flex: 1; padding: 0 5px;">
-                                    <input type="radio" name="jawaban[${question.id}]" value="4" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="4" class="scale-input" ${savedAnswer === '4' ? 'checked' : ''} style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
                                     4<br><small>Baik</small>
                                 </label>
                                 <label style="text-align: center; flex: 1; padding: 0 5px;">
-                                    <input type="radio" name="jawaban[${question.id}]" value="5" class="scale-input" required style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
+                                    <input type="radio" name="jawaban[${question.id}]" value="5" class="scale-input" ${savedAnswer === '5' ? 'checked' : ''} style="display: block; margin: 0 auto 5px; width: 24px; height: 24px; cursor: pointer;">
                                     5<br><small>Sangat Baik</small>
                                 </label>
                             </div>
@@ -894,53 +919,119 @@
             });
 
             container.innerHTML = html;
+
+            // Add event listeners to radio buttons to save answers in real time
+            const radios = container.querySelectorAll('input[name^="jawaban"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const questionId = this.name.match(/jawaban\[(\d+)\]/)[1];
+                    allAnswers[questionId] = this.value;
+
+                    // Update hidden input
+                    updateHiddenAnswerInput(questionId, this.value);
+                });
+            });
         }
 
-        function nextPage() {
-            if (currentPage < totalSections - 1) {
-                currentPage++;
+        // Function to update/create hidden input for an answer
+        function updateHiddenAnswerInput(questionId, value) {
+            const hiddenContainer = document.getElementById('hidden-answers-container');
+            let hiddenInput = document.querySelector(`input[name="jawaban[${questionId}]"]`);
 
-                // Update section counter
-                document.getElementById('current-section').textContent = currentPage + 1;
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `jawaban[${questionId}]`;
+                hiddenContainer.appendChild(hiddenInput);
+            }
 
-                // Re-render section
-                renderSection();
+            hiddenInput.value = value;
+        }
 
-                // Update navigation buttons
-                document.getElementById('prev-btn').disabled = (currentPage === 0);
-
-                // If this is the last section, change next button to Selesai
-                if (currentPage === totalSections - 1) {
-                    document.getElementById('next-btn').textContent = 'Selesai';
-                    document.getElementById('next-btn').onclick = function() {
-                        showPage(-1); // Show submit page
-                    };
+        // Function to save all current answers to allAnswers object and hidden inputs
+        function saveAllCurrentAnswers() {
+            // Save answers that are currently in the DOM
+            const radios = document.querySelectorAll('input[name^="jawaban"]');
+            radios.forEach(radio => {
+                if (radio.checked) {
+                    const questionId = radio.name.match(/jawaban\[(\d+)\]/)[1];
+                    if (questionId) {
+                        allAnswers[questionId] = radio.value;
+                        // Update hidden input
+                        updateHiddenAnswerInput(questionId, radio.value);
+                    }
                 }
+            });
+
+            // Also ensure all answers in the allAnswers object exist as hidden inputs
+            for (const questionId in allAnswers) {
+                updateHiddenAnswerInput(questionId, allAnswers[questionId]);
+            }
+
+            // Save identity fields to hidden inputs as well
+            const identitasFieldNames = ['identitas1', 'identitas2', 'identitas3', 'identitas4', 'identitas5'];
+            identitasFieldNames.forEach(fieldName => {
+                const identitasField = document.getElementById(fieldName);
+                if (identitasField) {
+                    updateHiddenIdentitasInput(fieldName, identitasField.value);
+                }
+            });
+        }
+
+        // Handle form submission to ensure all answers are saved
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            saveAllCurrentAnswers(); // Make sure all answers are saved before form submission
+        });
+
+        // Function to go to next section
+        function goToNextSection() {
+            saveAllCurrentAnswers(); // Save all answers before navigating
+            if (currentPage < totalSections - 1) {
+                showPage(currentPage + 2); // +2 because 0 is identitas, then +1 for 1-based indexing
             } else {
-                // Go to submit page
+                // Last section - show submit page
                 showPage(-1);
             }
         }
 
-        function prevPage() {
+        // Function to go to previous section
+        function goToPreviousSection() {
+            saveAllCurrentAnswers(); // Save all answers before navigating
             if (currentPage > 0) {
-                currentPage--;
-
-                // Update section counter
-                document.getElementById('current-section').textContent = currentPage + 1;
-
-                // Re-render section
-                renderSection();
-
-                // Update navigation buttons
-                document.getElementById('prev-btn').disabled = (currentPage === 0);
-
-                // Reset next button text if it was changed to 'Kirim Jawaban'
-                document.getElementById('next-btn').textContent = 'Berikutnya';
-                document.getElementById('next-btn').onclick = function() {
-                    nextPage();
-                };
+                showPage(currentPage); // +1 for 1-based indexing
+            } else {
+                // Go back to identitas page
+                showPage(0);
             }
+        }
+
+        // Function to save current data and show next page
+        function saveCurrentDataAndShowPage(pageNum) {
+            // Save identitas data to hidden inputs
+            const identitasFieldNames = ['identitas1', 'identitas2', 'identitas3', 'identitas4', 'identitas5'];
+            identitasFieldNames.forEach(fieldName => {
+                const identitasField = document.getElementById(fieldName);
+                if (identitasField) {
+                    updateHiddenIdentitasInput(fieldName, identitasField.value);
+                }
+            });
+
+            showPage(pageNum);
+        }
+
+        // Function to update/create hidden input for identitas
+        function updateHiddenIdentitasInput(fieldName, value) {
+            const hiddenContainer = document.getElementById('hidden-answers-container');
+            let hiddenInput = document.querySelector(`input[name="${fieldName}"]`);
+
+            if (!hiddenInput) {
+                hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = fieldName;
+                hiddenContainer.appendChild(hiddenInput);
+            }
+
+            hiddenInput.value = value;
         }
 
         // Initialize the form - show identitas page first

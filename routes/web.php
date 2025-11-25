@@ -33,6 +33,7 @@ Route::get('/isisurvey', function () {
 Route::get('/isi-survey/{id}', [KuesionerController::class, 'isiSurvey'])->name('isi-survey');
 Route::post('/isi-survey/{id}', [KuesionerController::class, 'storeJawaban'])->name('isi-survey.store');
 Route::get('/isi-survey/{id}/selesai', [KuesionerController::class, 'selesai'])->name('isi-survey.selesai');
+Route::post('/isi-survey/{id}/check-duplicate', [KuesionerController::class, 'checkDuplicate'])->name('isi-survey.check-duplicate');
 
 
 
@@ -57,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form/{id}/export-respon', [KuesionerController::class, 'exportResponden'])->name('forms.export-respon');
     Route::delete('/form/{id}', [KuesionerController::class, 'destroy'])->name('forms.destroy');
     Route::put('/form/{id}/update-status', [KuesionerController::class, 'updateManualStatus'])->name('forms.update-status');
+    Route::get('/form/{id}/jawaban-distribusi', [KuesionerController::class, 'getJawabanDistribusi'])->name('forms.jawaban-distribusi');
 
 
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
