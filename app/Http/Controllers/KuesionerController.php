@@ -933,11 +933,25 @@ class KuesionerController extends Controller
 
     private function generatePdfReport($data)
     {
-        // Add the full URL to the data for use in PDF
-        $data['fullUrl'] = request()->getSchemeAndHttpHost();
+        try {
+            // Atur memory limit dan execution time untuk PDF generation
+            ini_set('memory_limit', '512M');
+            ini_set('max_execution_time', 300);
 
-        $pdf = \PDF::loadView('Admin.Form.export.pdf-report', $data);
-        return $pdf->download('laporan-form-' . $data['form']->id_kuesioner . '.pdf');
+            // Add the full URL to the data for use in PDF
+            $data['fullUrl'] = request()->getSchemeAndHttpHost();
+
+            // Atur DOMPDF options secara eksplisit untuk production
+            $pdf = \PDF::loadView('Admin.Form.export.pdf-report', $data)
+                       ->setPaper('a4', 'portrait')
+                       ->setWarnings(false);
+
+            return $pdf->download('laporan-form-' . $data['form']->id_kuesioner . '.pdf');
+        } catch (\Exception $e) {
+            \Log::error('PDF Generation Error: ' . $e->getMessage() . ' in file: ' . $e->getFile() . ' on line: ' . $e->getLine());
+            // Jika terjadi error, kembalikan dengan pesan error
+            return response()->json(['error' => 'Terjadi kesalahan saat membuat laporan PDF: ' . $e->getMessage()], 500);
+        }
     }
 
     private function generateExcelReport($data)

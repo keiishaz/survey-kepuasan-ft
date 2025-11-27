@@ -64,7 +64,7 @@ return [
          * The temporary directory is required to download remote images and when
          * using the PDFLib back end.
          */
-        'temp_dir' => sys_get_temp_dir(),
+        'temp_dir' => storage_path('temp'),
 
         /**
          * ==== IMPORTANT ====
@@ -179,7 +179,7 @@ return [
          *
          * @var string
          */
-        'default_font' => 'serif',
+        'default_font' => 'dejavu sans',
 
         /**
          * Image DPI setting
@@ -197,8 +197,6 @@ return [
          * this tells the corresponding size in pt.
          * This adjusts the relative sizes to be similar to the rendering of the
          * html page in a reference browser.
-         *
-         * In pdf, always 1 pt = 1/72 inch
          *
          * Rendering resolution of various browsers in px per inch:
          * Windows Firefox and Internet Explorer:
@@ -267,7 +265,7 @@ return [
          *
          * @var bool
          */
-        'enable_remote' => false,
+        'enable_remote' => true,
 
         /**
          * List of allowed remote hosts
