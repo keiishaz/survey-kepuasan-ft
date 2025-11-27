@@ -721,35 +721,6 @@
                                          class="field-input textarea"
                                          oninput="data.sections[${sectionIndex}].questions[${qIndex}].text = this.value">${q.text}</textarea>
                             </div>
-
-                            <div class="field-section">
-                                <label class="field-label mb-3 block">Skala Penilaian (1-5)</label>
-                                <div class="scale-section">
-                                    <div class="scale-row">
-                                        <span class="scale-label">Sangat Baik</span>
-                                        <div class="scale-buttons">
-                                            ${[1, 2, 3, 4, 5].map(scale => `
-                                                <button type="button" class="scale-btn ${q.scale === scale ? 'active' : ''}"
-                                                       onclick="data.sections[${sectionIndex}].questions[${qIndex}].scale = ${scale}; renderQuestions()">
-                                                    ${scale}
-                                                </button>
-                                            `).join('')}
-                                        </div>
-                                        <span class="scale-label" style="text-align: right;">Sangat Buruk</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: ${q.required ? '#dcfce7' : '#e2e8f0'}; border-radius: 6px; gap: 16px;">
-                                <span class="text-14px text-gray-700">Pertanyaan ini <span class="${q.required ? 'font-semibold text-green-700' : 'font-normal text-gray-500'}">${q.required ? 'wajib' : 'tidak wajib'}</span> diisi</span>
-                                <div class="toggle-container">
-                                    <span class="toggle-label">${q.required ? 'Wajib' : 'Tidak Wajib'}</span>
-                                    <button type="button" class="toggle ${q.required ? 'active' : ''}"
-                                           onclick="data.sections[${sectionIndex}].questions[${qIndex}].required = !data.sections[${sectionIndex}].questions[${qIndex}].required; renderQuestions()">
-                                        <div class="toggle-dot"></div>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     `).join('')}
 

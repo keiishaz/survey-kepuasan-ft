@@ -847,7 +847,7 @@
                 renderSection();
 
                 // Update navigation buttons
-                document.getElementById('prev-btn').disabled = (currentPage === 0);
+                document.getElementById('prev-btn').disabled = false;
 
                 // If this is the last section, change next button to Submit
                 if (currentPage === totalSections - 1) {
@@ -883,7 +883,14 @@
                 const questionNumber = (currentPage * 10) + index + 1; // Calculate actual question number
 
                 // Get previously saved answer if exists
-                const savedAnswer = allAnswers[question.id] || '';
+                let savedAnswer = allAnswers[question.id] || '';
+
+                // Set default answer to 3 if no previous answer exists
+                if (!savedAnswer) {
+                    savedAnswer = '3';
+                    allAnswers[question.id] = '3';
+                    updateHiddenAnswerInput(question.id, '3');
+                }
 
                 html += `
                     <div class="question-group">
