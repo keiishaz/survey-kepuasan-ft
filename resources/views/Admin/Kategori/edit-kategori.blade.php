@@ -69,5 +69,30 @@ if(sidebarToggle&&sidebar){sidebarToggle.addEventListener('click',function(){sid
 window.addEventListener('resize',function(){if(window.innerWidth>=1024){sidebar.classList.remove('-translate-x-full');}else{sidebar.classList.add('-translate-x-full');}});
 if(window.innerWidth<1024){sidebar.classList.add('-translate-x-full');}
 </script>
+
+@include('partials.confirmation-modal')
+
+<script>
+    // Add confirmation to edit category form
+    document.addEventListener('DOMContentLoaded', function() {
+        const editCategoryForm = document.querySelector('form[method="POST"]');
+        if (editCategoryForm && editCategoryForm.action.includes('/kategori/') && editCategoryForm.querySelector('input[name="_method"][value="PUT"]')) {
+            // Find the submit button and add confirmation to its click event
+            const submitButton = editCategoryForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    showSaveConfirmation(
+                        "Apakah Anda yakin ingin memperbarui kategori ini?",
+                        function() {
+                            editCategoryForm.submit();
+                        }
+                    );
+                });
+            }
+        }
+    });
+</script>
 </body>
 </html>

@@ -59,4 +59,6 @@
         <span>{{ __('Already have an account?') }}</span>
         <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
     </div>
+
+    @include('partials.confirmation-modal')
 </div>

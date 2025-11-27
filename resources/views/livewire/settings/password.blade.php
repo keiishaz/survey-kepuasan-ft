@@ -36,4 +36,6 @@
             </div>
         </form>
     </x-settings.layout>
+
+    @include('partials.confirmation-modal')
 </section>

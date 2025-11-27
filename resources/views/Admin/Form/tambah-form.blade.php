@@ -220,10 +220,16 @@
 
         removeImageBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            coverInput.value = '';
-            uploadPlaceholder.classList.remove('hidden');
-            previewContainer.classList.add('hidden');
-            uploadZone.classList.remove('dragover');
+            showConfirmation(
+                "Konfirmasi Penghapusan",
+                "Apakah Anda yakin ingin menghapus foto sampul?",
+                function() {
+                    coverInput.value = '';
+                    uploadPlaceholder.classList.remove('hidden');
+                    previewContainer.classList.add('hidden');
+                    uploadZone.classList.remove('dragover');
+                }
+            );
         });
 
         // // Form submission
@@ -232,5 +238,7 @@
         //     alert('Form akan disimpan! (Demo)');
         // });
     </script>
+
+    @include('partials.confirmation-modal')
 </body>
 </html>

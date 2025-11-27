@@ -327,5 +327,31 @@
             outline-offset: 2px;
         }
     </style>
+
+    @include('partials.confirmation-modal')
+
+    <script>
+        // Add confirmation to password change form
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordForm = document.querySelector('form[action="{{ route('admin.update.password') }}"]');
+            if (passwordForm) {
+                const originalSubmit = passwordForm.onsubmit;
+                passwordForm.onsubmit = function(e) {
+                    e.preventDefault();
+
+                    showSaveConfirmation(
+                        "Apakah Anda yakin ingin mengubah password Anda?",
+                        function() {
+                            if (originalSubmit) {
+                                originalSubmit.call(passwordForm);
+                            } else {
+                                passwordForm.submit();
+                            }
+                        }
+                    );
+                };
+            }
+        });
+    </script>
 </body>
 </html>

@@ -854,7 +854,7 @@ class KuesionerController extends Controller
         if ($sections->isEmpty()) {
             $questions = $form->pertanyaan()->orderBy('urutan')->get();
             $sections = collect([
-                (object) [
+                [
                     'judul' => 'Pertanyaan Umum',
                     'questions' => $questions
                 ]

@@ -42,7 +42,7 @@ Route::post('/isi-survey/{id}/check-duplicate', [KuesionerController::class, 'ch
 Route::get('/dashboard', function () {
     return view('Admin.Dashboard.dashboard');
 })
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {

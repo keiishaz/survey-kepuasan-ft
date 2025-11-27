@@ -67,31 +67,31 @@
                         <p class="text-xs text-gray-600">FT UNIB</p>
                     </div>
                 </div>
-                
+
                 <!-- Mobile menu button -->
                 <button class="md:hidden text-dark-blue p-2 rounded-lg hover:bg-pastel-blue/30 transition-colors" id="mobile-menu-btn">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
-                
+
                 <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="#home" class="text-sm text-gray-700 hover:text-medium-blue transition-colors font-medium">Beranda</a>
-                    <a href="#about" class="text-sm text-gray-700 hover:text-medium-blue transition-colors font-medium">Tentang</a>
-                    <a href="#statistics" class="text-sm text-gray-700 hover:text-medium-blue transition-colors font-medium">Statistik</a>
-                    <a href="#contact" class="text-sm text-gray-700 hover:text-medium-blue transition-colors font-medium">Kontak</a>
-                    <a href="{{ url('/login') }}" class="text-sm text-gray-700 hover:text-medium-blue transition-colors font-medium">Masuk</a>
+                <div class="hidden md:flex items-center space-x-2">
+                    <a href="#home" class="px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Beranda</a>
+                    <a href="#about" class="px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Tentang</a>
+                    <a href="#statistics" class="px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Statistik</a>
+                    <a href="#contact" class="px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Kontak</a>
+                    <a href="{{ url('/login') }}" class="px-4 py-2 text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-dark-blue hover:to-indigo-700 transition-all duration-300 font-medium rounded-lg border border-gray-300 hover:border-dark-blue shadow-sm hover:shadow-md">Masuk</a>
                 </div>
             </div>
-            
+
             <!-- Mobile Navigation Menu -->
             <div class="md:hidden hidden pb-4 space-y-2" id="mobile-menu">
-                <a href="#home" class="block text-sm text-gray-700 hover:text-medium-blue hover:bg-pastel-blue/20 transition-colors font-medium px-3 py-2 rounded-lg">Beranda</a>
-                <a href="#about" class="block text-sm text-gray-700 hover:text-medium-blue hover:bg-pastel-blue/20 transition-colors font-medium px-3 py-2 rounded-lg">Tentang</a>
-                <a href="#statistics" class="block text-sm text-gray-700 hover:text-medium-blue hover:bg-pastel-blue/20 transition-colors font-medium px-3 py-2 rounded-lg">Statistik</a>
-                <a href="#contact" class="block text-sm text-gray-700 hover:text-medium-blue hover:bg-pastel-blue/20 transition-colors font-medium px-3 py-2 rounded-lg">Kontak</a>
-                <a href="{{ url('/login') }}" class="block text-sm text-gray-700 hover:text-medium-blue hover:bg-pastel-blue/20 transition-colors font-medium px-3 py-2 rounded-lg">Masuk</a>
+                <a href="#home" class="block text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium px-3 py-2 rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Beranda</a>
+                <a href="#about" class="block text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium px-3 py-2 rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Tentang</a>
+                <a href="#statistics" class="block text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium px-3 py-2 rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Statistik</a>
+                <a href="#contact" class="block text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-medium-blue hover:to-dark-blue transition-all duration-300 font-medium px-3 py-2 rounded-lg border border-gray-300 hover:border-medium-blue shadow-sm hover:shadow-md">Kontak</a>
+                <a href="{{ url('/login') }}" class="block text-sm text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-dark-blue hover:to-indigo-700 transition-all duration-300 font-medium px-3 py-2 rounded-lg border border-gray-300 hover:border-dark-blue shadow-sm hover:shadow-md">Masuk</a>
             </div>
         </div>
     </nav>

@@ -62,4 +62,6 @@
             </button>
         </div>
     </form>
+
+    @include('partials.confirmation-modal')
 </div>

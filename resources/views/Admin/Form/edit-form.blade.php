@@ -228,11 +228,17 @@
 
         removeImageBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            document.getElementById('removeImageFlag').value = '1';
-            imageUpload.value = '';
-            uploadPlaceholder.classList.remove('hidden');
-            previewContainer.classList.add('hidden');
-            uploadZone.classList.remove('dragover');
+            showConfirmation(
+                "Konfirmasi Penghapusan",
+                "Apakah Anda yakin ingin menghapus foto sampul?",
+                function() {
+                    document.getElementById('removeImageFlag').value = '1';
+                    imageUpload.value = '';
+                    uploadPlaceholder.classList.remove('hidden');
+                    previewContainer.classList.add('hidden');
+                    uploadZone.classList.remove('dragover');
+                }
+            );
         });
 
         // Drag and drop functionality
@@ -259,5 +265,7 @@
             }
         });
     </script>
+
+    @include('partials.confirmation-modal')
 </body>
 </html>

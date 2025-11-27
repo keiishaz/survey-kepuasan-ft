@@ -105,7 +105,7 @@
                             </svg>
                             <span>Edit</span>
                         </a>
-                        <button type="button" onclick="showDeleteConfirmation({{ $kategori->id_kategori }}, '{{ addslashes($kategori->nama) }}', {{ $kategori->kuesioner_count }})" class="flex-1 flex items-center justify-center space-x-1 bg-red-50 text-red-600 py-2 px-3 rounded-lg font-medium hover:bg-red-100 transition-all duration-200 text-xs">
+                        <button type="button" data-delete-url="{{ route('kategori.destroy', $kategori->id_kategori) }}" data-item-name="{{ addslashes($kategori->nama) }}" data-item-id="{{ $kategori->id_kategori }}" data-form-count="{{ $kategori->kuesioner_count }}" class="flex-1 flex items-center justify-center space-x-1 bg-red-50 text-red-600 py-2 px-3 rounded-lg font-medium hover:bg-red-100 transition-all duration-200 text-xs data-delete-btn">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                             </svg>
@@ -268,65 +268,6 @@
         </div>
     </div>
 
-    <script>
-        let deleteItemId = null;
-
-        function showDeleteConfirmation(id, name, formCount) {
-            deleteItemId = id;
-            document.getElementById('deleteItemName').textContent = name;
-            document.getElementById('deleteForm').action = '/kategori/' + id;
-            document.getElementById('deleteModalMessage').innerHTML = 'Apakah Anda yakin ingin menghapus kategori <span class="font-semibold">' + name + '</span>? Tindakan ini tidak dapat dibatalkan.';
-
-            if(formCount > 0) {
-                document.getElementById('deleteWarning').classList.remove('hidden');
-                document.getElementById('formCount').textContent = formCount;
-                document.getElementById('deleteModalMessage').innerHTML = 'Apakah Anda yakin ingin menghapus kategori <span class="font-semibold">' + name + '</span>?';
-            } else {
-                document.getElementById('deleteWarning').classList.add('hidden');
-            }
-
-            document.getElementById('deleteModal').classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-            deleteItemId = null;
-        }
-
-        // Function to show notification
-        function showNotification(message) {
-            const toast = document.getElementById('notificationToast');
-            const messageElement = document.getElementById('notificationMessage');
-
-            messageElement.textContent = message;
-            toast.classList.remove('hidden');
-
-            // Auto hide after 3 seconds
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        // Check for success message from server
-        @if(session('success'))
-            showNotification('{{ session('success') }}');
-        @endif
-
-        // Close modal when clicking outside the modal
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDeleteModal();
-            }
-        });
-
-        // Listen for form submission to show success notification
-        document.getElementById('deleteForm').addEventListener('submit', function() {
-            setTimeout(() => {
-                showNotification('Kategori berhasil dihapus');
-            }, 300);
-        });
-    </script>
+    @include('partials.confirmation-modal')
 </body>
 </html>

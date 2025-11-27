@@ -227,5 +227,7 @@
             outline-offset: 2px;
         }
     </style>
+
+    @include('partials.confirmation-modal')
 </body>
 </html>

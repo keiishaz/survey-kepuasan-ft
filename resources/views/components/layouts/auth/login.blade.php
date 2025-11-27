@@ -6,11 +6,8 @@
             .login-bg {
                 background: linear-gradient(135deg, #E0E7FF 0%, #F3E8FF 100%);
             }
-            .image-bg {
-                background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-            }
             .btn-primary {
-                background-color: #2563EB;
+                background: linear-gradient(to right, #2563EB, #3B82F6);
                 color: white;
                 padding: 0.75rem 1.5rem;
                 border-radius: 0.5rem;
@@ -19,23 +16,32 @@
                 border: none;
                 cursor: pointer;
                 width: 100%;
+                box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
             }
             .btn-primary:hover {
-                background-color: #1D4ED8;
+                background: linear-gradient(to right, #1D4ED8, #2563EB);
                 transform: translateY(-2px);
+                box-shadow: 0 6px 8px rgba(37, 99, 235, 0.3);
             }
             .form-input {
                 width: 100%;
                 padding: 0.75rem;
-                border: 2px solid #E5E7EB;
+                border: 2px solid #E2E8F0;
                 border-radius: 0.5rem;
                 font-size: 1rem;
-                transition: border-color 0.3s;
+                transition: all 0.3s ease;
+                background-color: #FFFFFF;
+                color: #1F2937;
             }
             .form-input:focus {
                 outline: none;
                 border-color: #2563EB;
-                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+                color: #1F2937;
+            }
+            .form-input::placeholder {
+                color: #9CA3AF;
+                opacity: 0.7;
             }
             .form-label {
                 display: block;

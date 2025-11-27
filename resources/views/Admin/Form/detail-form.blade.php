@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>SIPULAS - Detail Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -307,7 +308,7 @@
                         <div class="flex-1">
                             <h3 class="text-base font-semibold text-gray-900 mb-1">Zona Berbahaya</h3>
                             <p class="text-sm text-gray-600 mb-4">Tindakan ini tidak dapat dibatalkan. Form dan semua data terkait akan dihapus permanen.</p>
-                            <button type="button" onclick="confirmDeleteForm({{ $form->id_kuesioner }})" class="px-5 py-2.5 bg-red-600 text-white font-medium rounded-lg text-sm hover:bg-red-700 transition-colors">
+                            <button type="button" class="universal-delete-btn px-5 py-2.5 bg-red-600 text-white font-medium rounded-lg text-sm hover:bg-red-700 transition-colors">
                                 Hapus Form
                             </button>
                         </div>
@@ -318,15 +319,35 @@
     </div>
 
     <script>
-        // Status toggle handler
+        // Initialize status based on the current form status
+        let isActive = {{ json_encode($form->is_active) }};
         const statusToggle = document.getElementById('statusToggle');
         const statusLabel = document.getElementById('statusLabel');
         const toggleDot = document.getElementById('toggleDot');
-        let isActive = true;
 
+        // Set initial state based on form status
+        if (isActive) {
+            statusLabel.textContent = 'Aktif';
+            statusToggle.classList.remove('bg-gray-400');
+            statusToggle.classList.add('bg-green-500');
+            toggleDot.classList.remove('translate-x-1');
+            toggleDot.classList.add('translate-x-7');
+        } else {
+            statusLabel.textContent = 'Nonaktif';
+            statusToggle.classList.remove('bg-green-500');
+            statusToggle.classList.add('bg-gray-400');
+            toggleDot.classList.remove('translate-x-7');
+            toggleDot.classList.add('translate-x-1');
+        }
+
+        // Status toggle handler
         statusToggle.addEventListener('click', function() {
-            isActive = !isActive;
-            
+            const newStatus = !isActive;
+            const formId = {{ json_encode($form->id_kuesioner) }};
+
+            // Optimistically update UI
+            isActive = newStatus;
+
             if (isActive) {
                 statusLabel.textContent = 'Aktif';
                 statusToggle.classList.remove('bg-gray-400');
@@ -340,7 +361,77 @@
                 toggleDot.classList.remove('translate-x-7');
                 toggleDot.classList.add('translate-x-1');
             }
+
+            // Send API request to update status
+            fetch('/form/' + formId + '/update-status', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: isActive
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                } else {
+                    // Revert UI on error
+                    isActive = !isActive;
+                    updateToggleUI();
+                    showNotification('Gagal mengubah status: ' + (data.message || 'Terjadi kesalahan'), 'error');
+                }
+            })
+            .catch(error => {
+                // Revert UI on error
+                isActive = !isActive;
+                updateToggleUI();
+                console.error('Error:', error);
+                showNotification('Terjadi kesalahan saat mengubah status', 'error');
+            });
         });
+
+        function updateToggleUI() {
+            if (isActive) {
+                statusLabel.textContent = 'Aktif';
+                statusToggle.classList.remove('bg-gray-400');
+                statusToggle.classList.add('bg-green-500');
+                toggleDot.classList.remove('translate-x-1');
+                toggleDot.classList.add('translate-x-7');
+            } else {
+                statusLabel.textContent = 'Nonaktif';
+                statusToggle.classList.remove('bg-green-500');
+                statusToggle.classList.add('bg-gray-400');
+                toggleDot.classList.remove('translate-x-7');
+                toggleDot.classList.add('translate-x-1');
+            }
+        }
+
+        // Notification function
+        function showNotification(message, type = 'success') {
+            const toast = document.getElementById('notificationToast');
+            const toastMessage = document.getElementById('notificationMessage');
+
+            toastMessage.textContent = message;
+
+            // Set toast color based on type
+            toast.className = toast.className.replace('bg-green-500', '');
+            toast.className = toast.className.replace('bg-red-500', '');
+            if (type === 'error') {
+                toast.classList.add('bg-red-500');
+            } else {
+                toast.classList.add('bg-green-500');
+            }
+
+            toast.classList.remove('hidden');
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
     </script>
 
     <!-- Notification Toast -->
@@ -353,99 +444,29 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                            </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                Konfirmasi Penghapusan
-                            </h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-gray-500" id="deleteModalMessage">
-                                    Apakah Anda yakin ingin menghapus form <span id="deleteItemName" class="font-semibold"></span>? Tindakan ini tidak dapat dibatalkan dan semua data terkait akan dihapus.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <form id="deleteForm" method="POST" action="">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Hapus
-                        </button>
-                    </form>
-                    <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Batal
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('partials.confirmation-modal')
 
     <script>
-        let deleteItemId = null;
+        // Update the delete button click function
+        document.addEventListener('DOMContentLoaded', function() {
+            // Change the delete form button to use the universal confirmation
+            const deleteFormBtn = document.querySelector('.universal-delete-btn');
+            if (deleteFormBtn) {
+                const formId = {{ json_encode($form->id_kuesioner) }};
+                const formName = '{{ addslashes($form->nama) }}';
 
-        function showDeleteConfirmation(formId, formName) {
-            deleteItemId = formId;
-            document.getElementById('deleteItemName').textContent = formName;
-            document.getElementById('deleteForm').action = '/form/' + formId;
-            document.getElementById('deleteModal').classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-        }
+                // Remove click handler if any and add our own
+                deleteFormBtn.onclick = function(e) {
+                    e.preventDefault();
 
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-            deleteItemId = null;
-        }
-
-        function showNotification(message) {
-            const toast = document.getElementById('notificationToast');
-            const messageElement = document.getElementById('notificationMessage');
-
-            messageElement.textContent = message;
-            toast.classList.remove('hidden');
-
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        @if(session('success'))
-            showNotification('{{ session('success') }}');
-        @endif
-
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDeleteModal();
+                    showDeleteConfirmation(
+                        formId,
+                        formName,
+                        "{{ route('forms.destroy', $form->id_kuesioner) }}"
+                    );
+                };
             }
         });
-
-        document.getElementById('deleteForm').addEventListener('submit', function() {
-            setTimeout(() => {
-                showNotification('Form berhasil dihapus');
-            }, 300);
-        });
-
-        function confirmDeleteForm(formId) {
-            showDeleteConfirmation(formId, '{{ addslashes($form->nama) }}');
-        }
 
         // Export modal functions
         function openExportModal() {
@@ -461,7 +482,7 @@
         function exportReport(format) {
             // Close modal and redirect to export route
             closeExportModal();
-            window.location.href = `/form/{{ $form->id_kuesioner }}/export.${format}`;
+            window.location.href = '/form/' + {{ json_encode($form->id_kuesioner) }} + '/export.' + format;
         }
 
         // Initialize charts if there's data

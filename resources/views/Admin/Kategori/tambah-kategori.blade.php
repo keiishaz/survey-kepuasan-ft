@@ -138,5 +138,31 @@
         sidebar.classList.add('-translate-x-full');
     }
 </script>
+
+@include('partials.confirmation-modal')
+
+<script>
+    // Add confirmation to add category form
+    document.addEventListener('DOMContentLoaded', function() {
+        const addCategoryForm = document.querySelector('form[action="{{ route(\'kategori.simpan\') }}"]');
+        if (addCategoryForm) {
+            const originalSubmit = addCategoryForm.onsubmit;
+            addCategoryForm.onsubmit = function(e) {
+                e.preventDefault();
+
+                showSaveConfirmation(
+                    "Apakah Anda yakin ingin menambahkan kategori ini?",
+                    function() {
+                        if (originalSubmit) {
+                            originalSubmit.call(addCategoryForm);
+                        } else {
+                            addCategoryForm.submit();
+                        }
+                    }
+                );
+            };
+        }
+    });
+</script>
 </body>
 </html>

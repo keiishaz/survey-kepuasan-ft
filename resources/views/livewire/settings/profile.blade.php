@@ -40,4 +40,6 @@
 
         <livewire:settings.delete-user-form />
     </x-settings.layout>
+
+    @include('partials.confirmation-modal')
 </section>

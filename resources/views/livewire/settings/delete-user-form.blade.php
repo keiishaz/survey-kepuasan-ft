@@ -31,4 +31,6 @@
             </div>
         </form>
     </flux:modal>
+
+    @include('partials.confirmation-modal')
 </section>

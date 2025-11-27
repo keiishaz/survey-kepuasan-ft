@@ -447,7 +447,7 @@
                     <button type="button" class="btn btn-secondary" onclick="window.history.back()">
                         Batal
                     </button>
-                    <button type="button" class="btn btn-primary" onclick="submitForm()">
+                    <button type="button" class="btn btn-primary" onclick="confirmSubmitForm()">
                         Simpan Perubahan
                     </button>
                 </div>
@@ -779,10 +779,14 @@
         }
 
         function removeQuestion(sectionIndex, questionIndex) {
-            if (confirm('Apakah Anda yakin ingin menghapus pertanyaan ini?')) {
-                data.sections[sectionIndex].questions.splice(questionIndex, 1);
-                renderQuestions();
-            }
+            showConfirmation(
+                "Konfirmasi Penghapusan",
+                "Apakah Anda yakin ingin menghapus pertanyaan ini?",
+                function() {
+                    data.sections[sectionIndex].questions.splice(questionIndex, 1);
+                    renderQuestions();
+                }
+            );
         }
 
         function addSection() {
@@ -797,10 +801,14 @@
         }
 
         function removeSection(sectionIndex) {
-            if (confirm('Apakah Anda yakin ingin menghapus bagian dan semua pertanyaannya?')) {
-                data.sections.splice(sectionIndex, 1);
-                renderQuestions();
-            }
+            showConfirmation(
+                "Konfirmasi Penghapusan",
+                "Apakah Anda yakin ingin menghapus bagian dan semua pertanyaannya?",
+                function() {
+                    data.sections.splice(sectionIndex, 1);
+                    renderQuestions();
+                }
+            );
         }
 
         function updateSectionButtons() {
@@ -853,9 +861,20 @@
             document.getElementById('editPertanyaanForm').submit();
         }
 
+        function confirmSubmitForm() {
+            showSaveConfirmation(
+                "Apakah Anda yakin ingin menyimpan perubahan pertanyaan? Perubahan akan diterapkan ke form.",
+                function() {
+                    submitForm();
+                }
+            );
+        }
+
         // Initial render
         renderIdentitas();
         renderQuestions();
     </script>
+
+    @include('partials.confirmation-modal')
 </body>
 </html>
