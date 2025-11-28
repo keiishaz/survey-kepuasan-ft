@@ -981,11 +981,86 @@
             }
         }
 
+        // Function to validate required identity fields
+        function validateRequiredIdentityFields() {
+            // Get the survey configuration for required identity fields
+            const requiredFields = [
+                @if(isset($survey->identitas) && $survey->identitas->wajib1)
+                    { field: 'identitas1', label: '{{ $survey->identitas->atribut1 }}', isRequired: true },
+                @endif
+                @if(isset($survey->identitas) && $survey->identitas->wajib2)
+                    { field: 'identitas2', label: '{{ $survey->identitas->atribut2 }}', isRequired: true },
+                @endif
+                @if(isset($survey->identitas) && $survey->identitas->wajib3)
+                    { field: 'identitas3', label: '{{ $survey->identitas->atribut3 }}', isRequired: true },
+                @endif
+                @if(isset($survey->identitas) && $survey->identitas->wajib4)
+                    { field: 'identitas4', label: '{{ $survey->identitas->atribut4 }}', isRequired: true },
+                @endif
+                @if(isset($survey->identitas) && $survey->identitas->wajib5)
+                    { field: 'identitas5', label: '{{ $survey->identitas->atribut5 }}', isRequired: true },
+                @endif
+            ];
+
+            let hasErrors = false;
+            const errorMessages = [];
+
+            // Clear any existing error indicators
+            clearFieldErrors();
+
+            // Validate each required field
+            requiredFields.forEach(reqField => {
+                const fieldElement = document.getElementById(reqField.field);
+                if (fieldElement && reqField.isRequired) {
+                    const value = fieldElement.value.trim();
+
+                    if (value === '') {
+                        hasErrors = true;
+
+                        // Add visual error indicator to the field
+                        fieldElement.classList.add('border-red-500', 'bg-red-50');
+                        fieldElement.classList.remove('border-gray-300');
+
+                        // Add error message
+                        errorMessages.push(`${reqField.label} wajib diisi.`);
+                    }
+                }
+            });
+
+            if (hasErrors) {
+                // Show error notifications for all missing required fields
+                errorMessages.forEach(msg => {
+                    showNotification('error', msg, 5000);
+                });
+                return false; // Validation failed
+            }
+
+            return true; // All validations passed
+        }
+
+        // Function to clear field error styles
+        function clearFieldErrors() {
+            const allIdentitasFields = ['identitas1', 'identitas2', 'identitas3', 'identitas4', 'identitas5'];
+            allIdentitasFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field) {
+                    field.classList.remove('border-red-500', 'bg-red-50');
+                    field.classList.add('border-gray-300');
+                }
+            });
+        }
+
         // Function to save current data and show next page
         async function saveCurrentDataAndShowPage(pageNum) {
             // Check if moving from identity page to questions page
             if (pageNum === 1) { // Moving from identity page (pageNum 0) to first question page (pageNum 1)
-                // Validate identity uniqueness
+                // First validate required fields
+                const requiredValid = validateRequiredIdentityFields();
+                if (!requiredValid) {
+                    return; // Stop execution if required fields are not filled
+                }
+
+                // Then validate identity uniqueness
                 const idKuesioner = {{ $survey->id_kuesioner }};
 
                 const validationResult = await validateIdentity(idKuesioner);
