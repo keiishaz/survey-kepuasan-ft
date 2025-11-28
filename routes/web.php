@@ -8,9 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\KuesionerController;
 
-Route::get('/', function () {
-    return view('landing');
-})->name('home');
+Route::get('/', [\App\Http\Controllers\StatistikController::class, 'index'])->name('home');
 
 // Route::get('/form', function () {
 //     return view('form');
@@ -22,9 +20,9 @@ Route::get('/', function () {
 //     return view('detail-form');
 // })->name('detailform');
 
-Route::get('/editpertanyaan', function () {
-    return view('edit-pertanyaan');
-})->name('editpertanyaan');
+// Route::get('/editpertanyaan', function () {
+//     return view('edit-pertanyaan');
+// })->name('editpertanyaan');
 Route::get('/survey', [KuesionerController::class, 'cariSurvey'])->name('survey');
 Route::get('/cari-survey', [KuesionerController::class, 'cariSurvey'])->name('cari-survey');
 Route::get('/isisurvey', function () {

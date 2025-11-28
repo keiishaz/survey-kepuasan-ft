@@ -265,7 +265,7 @@
         .card {
             background: #ffffff;
             border: 1px solid #e5e7eb;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
@@ -275,44 +275,44 @@
 
         .card:hover {
             border-color: #d1d5db;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
         }
 
         .card-icon-section {
-            height: 160px;
+            height: 140px;
             position: relative;
             overflow: hidden;
         }
 
         .card-image {
             width: 100%;
-            height: 160px;
+            height: 140px;
             object-fit: cover;
             display: block;
         }
 
         .card-body {
-            padding: 24px;
+            padding: 18px;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
 
         .card-category {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: #3b82f6;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 12px;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
         }
 
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #111827;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -321,30 +321,30 @@
         }
 
         .card-description {
-            font-size: 14px;
+            font-size: 12px;
             color: #6b7280;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             flex: 1;
-            line-height: 1.6;
+            line-height: 1.5;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
         .card-footer {
             border-top: 1px solid #f3f4f6;
-            padding-top: 16px;
+            padding-top: 12px;
         }
 
         .card-button {
             width: 100%;
-            padding: 12px 20px;
+            padding: 10px 16px;
             background: #3b82f6;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -1032,20 +1032,12 @@
                     </div>
                     <div class="modal-info-grid">
                         <div class="modal-info-item">
-                            <div class="modal-info-label">Durasi Estimasi</div>
-                            <div class="modal-info-value" id="modalDuration">5-10 menit</div>
-                        </div>
-                        <div class="modal-info-item">
                             <div class="modal-info-label">Jumlah Pertanyaan</div>
                             <div class="modal-info-value" id="modalQuestions">15 pertanyaan</div>
                         </div>
                         <div class="modal-info-item">
                             <div class="modal-info-label">Batas Waktu</div>
                             <div class="modal-info-value" id="modalDeadline">31 Des 2024</div>
-                        </div>
-                        <div class="modal-info-item">
-                            <div class="modal-info-label">Status</div>
-                            <div class="modal-info-value" id="modalStatus">Belum Diisi</div>
                         </div>
                     </div>
                 </div>
@@ -1187,10 +1179,8 @@
             document.getElementById('modalCategory').textContent = category.toUpperCase();
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalDescription').textContent = fullDescription;
-            document.getElementById('modalDuration').textContent = duration;
             document.getElementById('modalQuestions').textContent = questions + ' pertanyaan';
             document.getElementById('modalDeadline').textContent = deadline;
-            document.getElementById('modalStatus').textContent = 'Belum Diisi';
 
             document.getElementById('modalOverlay').classList.add('active');
             document.body.style.overflow = 'hidden';
