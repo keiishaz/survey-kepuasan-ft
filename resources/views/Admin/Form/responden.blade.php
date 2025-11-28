@@ -348,17 +348,17 @@
             <!-- Pertanyaan dan Statistik Section -->
             <div class="mb-8">
                 <h2 class="text-base font-bold text-gray-900 mb-4">Statistik Jawaban</h2>
-                
+
                 @if(count($statistikPertanyaan) > 0)
                     @foreach($statistikPertanyaan as $index => $statistik)
                     <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mb-6">
                         <h3 class="font-medium text-gray-900 mb-4">Pertanyaan {{ $index + 1 }}: {{ $statistik['pertanyaan'] }}</h3>
-                        
+
                         <!-- Bar chart container untuk setiap pertanyaan -->
                         <div class="mb-4">
                             <canvas id="chart-{{ $statistik['id_pertanyaan'] }}" width="400" height="200"></canvas>
                         </div>
-                        
+
                         <!-- Deskripsi distribusi -->
                         <div class="grid grid-cols-5 gap-2">
                             @for($i = 1; $i <= 5; $i++)
@@ -388,7 +388,7 @@
         @if(count($statistikPertanyaan) > 0)
             @foreach($statistikPertanyaan as $statistik)
                 const ctx{{ $statistik['id_pertanyaan'] }} = document.getElementById('chart-{{ $statistik['id_pertanyaan'] }}').getContext('2d');
-                
+
                 new Chart(ctx{{ $statistik['id_pertanyaan'] }}, {
                     type: 'bar',
                     data: {
@@ -396,10 +396,10 @@
                         datasets: [{
                             label: 'Jumlah Responden',
                             data: [
-                                {{ $statistik['distribusi'][1] }}, 
-                                {{ $statistik['distribusi'][2] }}, 
-                                {{ $statistik['distribusi'][3] }}, 
-                                {{ $statistik['distribusi'][4] }}, 
+                                {{ $statistik['distribusi'][1] }},
+                                {{ $statistik['distribusi'][2] }},
+                                {{ $statistik['distribusi'][3] }},
+                                {{ $statistik['distribusi'][4] }},
                                 {{ $statistik['distribusi'][5] }}
                             ],
                             backgroundColor: [

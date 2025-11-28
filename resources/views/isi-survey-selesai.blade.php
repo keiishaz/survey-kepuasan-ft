@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIPULAS - Terima Kasih</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,297 +13,263 @@
             box-sizing: border-box;
         }
 
-        html, body {
-            height: 100%;
-        }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #fefce8 100%);
-            color: #1a1a1a;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc; /* Light grayish-white background to match survey page */
         }
 
-        .page-container {
-            max-width: 700px;
+        .formbold-main-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .formbold-form-wrapper {
             margin: 0 auto;
-            padding: 0 24px;
+            max-width: 700px; /* Same width as survey page */
             width: 100%;
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
         }
 
-        /* Header */
-        .header {
-            margin-bottom: 48px;
-        }
-
-        .header-banner {
-            background: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%); /* primary-500 to accent-500 from dashboard */
-            border-radius: 0 0 24px 24px;
-            padding: 48px 40px;
+        .formbold-header {
+            background: linear-gradient(135deg, #bae6fd 0%, #fef3c7 100%); /* Same gradient as survey page */
+            border-radius: 12px 12px 0 0;
+            padding: 24px;
+            margin-bottom: 20px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
-            margin-left: -40px;
-            margin-right: -40px;
-            padding-left: 80px;
-            padding-right: 80px;
+            color: #1e293b;
             text-align: center;
-            color: white;
         }
 
-        @media (min-width: 740px) {
-            .header-banner {
-                margin-left: calc((100vw - 700px) / -2);
-                margin-right: calc((100vw - 700px) / -2);
-            }
-        }
-
-        .header-banner::before {
+        .formbold-header::before {
             content: '';
             position: absolute;
-            top: -80px;
-            right: 10%;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.15);
+            top: -60px;
+            right: 8%;
+            width: 160px;
+            height: 160px;
+            background: rgba(30, 41, 59, 0.1);
             border-radius: 50%;
             z-index: 1;
         }
 
-        .header-content {
+        .formbold-header-content {
             position: relative;
             z-index: 2;
         }
 
         .thank-you-icon {
-            font-size: 80px;
-            margin-bottom: 24px;
-            color: white;
-        }
-
-        .header-content h1 {
-            font-size: 36px;
-            font-weight: 800;
-            color: white;
+            font-size: 64px;
             margin-bottom: 12px;
-            letter-spacing: -0.5px;
+            color: #1e293b;
         }
 
-        .header-content p {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.9);
+        .formbold-thank-you-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        .formbold-thank-you-message {
+            font-size: 14px;
+            color: #374151;
             font-weight: 400;
+            max-width: 600px;
         }
 
-        /* Content */
-        .content {
-            padding: 0 24px 48px;
+        .formbold-content {
             text-align: center;
+            padding: 20px 0;
         }
 
-        .message {
+        .formbold-survey-title {
             font-size: 18px;
-            color: #1e40af; /* primary-700 from dashboard */
-            margin-bottom: 32px;
-            line-height: 1.7;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 2px solid #bae6fd;
+        }
+
+        .formbold-thank-you-message-text {
+            font-size: 15px;
+            color: #374151;
+            margin-bottom: 24px;
+            line-height: 1.6;
             font-weight: 500;
         }
 
-        .survey-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1e40af; /* primary-700 from dashboard */
-            margin-bottom: 8px;
-            padding: 16px;
-            background: rgba(219, 234, 254, 0.4); /* primary-100 equivalent */
-            border-radius: 16px;
-            border-left: 4px solid #3b82f6; /* primary-500 from dashboard */
-        }
-
-        .actions {
+        .formbold-actions {
             display: flex;
-            gap: 20px;
+            gap: 12px;
             justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 16px;
+            align-items: center;
+            margin-top: 20px;
         }
 
-        .action-button {
-            padding: 16px 28px;
-            border-radius: 12px;
-            font-size: 16px;
+        .formbold-action-btn {
+            padding: 10px 24px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             text-decoration: none;
-            border: none;
-            min-width: 180px;
         }
 
-        .action-button-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%); /* primary-500 to accent-500 from dashboard */
+        .formbold-action-btn:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .formbold-action-btn.primary {
+            background: #3b82f6;
             color: white;
-            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+            border: none;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
-        .action-button-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px rgba(59, 130, 246, 0.3);
+        .formbold-action-btn.primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .action-button-secondary {
-            background: white;
-            color: #1e40af; /* primary-700 from dashboard */
-            border: 2px solid rgba(59, 130, 246, 0.3); /* primary-500 from dashboard */
-        }
-
-        .action-button-secondary:hover {
-            background: #dbeafe; /* primary-100 from dashboard */
-            border-color: #3b82f6; /* primary-500 from dashboard */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .header {
-                margin-bottom: 32px;
+            .formbold-main-wrapper {
+                padding: 16px;
             }
 
-            .header-banner {
-                padding: 40px 24px;
-                border-radius: 0 0 20px 20px;
-                margin-left: -24px;
-                margin-right: -24px;
-                padding-left: 48px;
-                padding-right: 48px;
+            .formbold-form-wrapper {
+                padding: 20px;
+            }
+
+            .formbold-header {
+                padding: 24px;
             }
 
             .thank-you-icon {
-                font-size: 72px;
-                margin-bottom: 16px;
+                font-size: 56px;
+                margin-bottom: 10px;
             }
 
-            .header-content h1 {
-                font-size: 30px;
+            .formbold-thank-you-title {
+                font-size: 22px;
             }
 
-            .header-content p {
-                font-size: 16px;
+            .formbold-thank-you-message {
+                font-size: 14px;
             }
 
-            .content {
-                padding: 0 24px 32px;
-            }
-
-            .message {
+            .formbold-survey-title {
                 font-size: 17px;
+                padding: 14px;
             }
 
-            .survey-title {
-                font-size: 20px;
-            }
-
-            .actions {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .action-button {
-                width: 100%;
+            .formbold-thank-you-message-text {
+                font-size: 15px;
             }
         }
 
         @media (max-width: 480px) {
-            .page-container {
-                padding: 0 16px;
+            .formbold-main-wrapper {
+                padding: 12px;
             }
 
-            .header {
-                margin-bottom: 24px;
+            .formbold-form-wrapper {
+                padding: 18px;
             }
 
-            .header-banner {
-                padding: 36px 16px;
-                border-radius: 0 0 18px 18px;
-                margin-left: -16px;
-                margin-right: -16px;
-                padding-left: 32px;
-                padding-right: 32px;
+            .formbold-header {
+                padding: 20px;
             }
 
             .thank-you-icon {
-                font-size: 64px;
-                margin-bottom: 12px;
+                font-size: 48px;
+                margin-bottom: 8px;
             }
 
-            .header-content h1 {
-                font-size: 26px;
+            .formbold-thank-you-title {
+                font-size: 20px;
+                margin-bottom: 6px;
             }
 
-            .header-content p {
-                font-size: 15px;
+            .formbold-thank-you-message {
+                font-size: 13px;
             }
 
-            .content {
-                padding: 0 16px 24px;
+            .formbold-survey-title {
+                font-size: 17px;
+                padding: 14px;
             }
 
-            .message {
-                font-size: 16px;
-                margin-bottom: 24px;
+            .formbold-thank-you-message-text {
+                font-size: 14px;
+                margin-bottom: 20px;
             }
 
-            .survey-title {
-                font-size: 18px;
+            .formbold-actions {
+                flex-direction: column;
+                gap: 12px;
             }
 
-            .action-button {
-                padding: 14px 24px;
+            .formbold-action-btn {
+                width: 100%;
+                padding: 12px 18px;
                 font-size: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="page-container">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-banner">
-                <div class="header-content">
+    <div class="formbold-main-wrapper">
+        <div class="formbold-form-wrapper">
+            <!-- Header -->
+            <div class="formbold-header">
+                <div class="formbold-header-content">
                     <div class="thank-you-icon">✓</div>
-                    <h1>Terima Kasih!</h1>
-                    <p>Semoga hari Anda menyenangkan</p>
+                    <h1 class="formbold-thank-you-title">Terima Kasih!</h1>
+                    <p class="formbold-thank-you-message">Partisipasi Anda sangat berharga untuk meningkatkan kualitas layanan kami</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Content -->
-        <div class="content">
-            <div class="survey-title">{{ $survey->nama }}</div>
-            <div class="message">
-                Jawaban Anda telah kami terima. 
-                Partisipasi Anda sangat berharga untuk meningkatkan kualitas layanan kami.
-            </div>
-            
-            <div class="actions">
-                <a href="{{ url('/cari-survey') }}" class="action-button action-button-primary">
-                    Isi Survey Lain
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
-                <a href="{{ url('/') }}" class="action-button action-button-secondary">
-                    Kembali ke Beranda
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                </a>
+            <!-- Content -->
+            <div class="formbold-content">
+                <div class="formbold-survey-title">{{ $survey->nama }}</div>
+                <div class="formbold-thank-you-message-text">
+                    Jawaban Anda telah kami terima.<br>
+                    Terima kasih atas waktu yang Anda luangkan untuk mengisi survey ini.
+                </div>
+
+                <div class="formbold-actions">
+                    <a href="{{ url('/cari-survey') }}" class="formbold-action-btn primary">
+                        Isi Survey Lain
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                    <a href="{{ url('/') }}" class="formbold-action-btn">
+                        Kembali ke Beranda
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
