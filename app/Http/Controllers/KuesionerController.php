@@ -693,60 +693,119 @@ class KuesionerController extends Controller
 
         // Check if identitas configuration exists
         if (!$survey->identitas) {
-            return response()->json(['exists' => false]);
+            return response()->json(['status' => 'ok']);
         }
 
         // Build query for checking duplicates
         $query = Responden::where('id_kuesioner', $id);
 
-        $hasIdentity = false;
+        // Check if the AJAX request is using the new format (identities array)
+        if ($request->has('identities')) {
+            // New format: receive array of identities
+            $identities = $request->input('identities');
 
-        // Check for any required identity fields based on configuration
-        if ($survey->identitas->wajib1 && $request->identitas1) {
-            $query->where('identitas1', $request->identitas1);
-            $hasIdentity = true;
-        } elseif ($request->identitas1 && ($survey->identitas->atribut1 && strlen($request->identitas1) > 0)) {
-            // Even if not required, if provided, check for it
-            $query->where('identitas1', $request->identitas1);
-            $hasIdentity = true;
+            foreach ($identities as $identity) {
+                $field = $identity['field'];
+                $value = $identity['value'];
+
+                // Only check if the field matches the ones configured for this survey
+                switch ($field) {
+                    case 'identitas1':
+                        if ($survey->identitas->wajib1 || $survey->identitas->atribut1) {
+                            $query->where($field, $value);
+                        }
+                        break;
+                    case 'identitas2':
+                        if ($survey->identitas->wajib2 || $survey->identitas->atribut2) {
+                            $query->where($field, $value);
+                        }
+                        break;
+                    case 'identitas3':
+                        if ($survey->identitas->wajib3 || $survey->identitas->atribut3) {
+                            $query->where($field, $value);
+                        }
+                        break;
+                    case 'identitas4':
+                        if ($survey->identitas->wajib4 || $survey->identitas->atribut4) {
+                            $query->where($field, $value);
+                        }
+                        break;
+                    case 'identitas5':
+                        if ($survey->identitas->wajib5 || $survey->identitas->atribut5) {
+                            $query->where($field, $value);
+                        }
+                        break;
+                }
+            }
+
+            $exists = $query->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'status' => 'duplicate',
+                    'message' => 'Identitas ini sudah pernah digunakan untuk mengisi survey ini.'
+                ]);
+            }
+
+            return response()->json(['status' => 'ok']);
+        } else {
+            // Legacy format (for backward compatibility): individual fields
+            $hasIdentity = false;
+
+            // Check for any required identity fields based on configuration
+            if ($survey->identitas->wajib1 && $request->identitas1) {
+                $query->where('identitas1', $request->identitas1);
+                $hasIdentity = true;
+            } elseif ($request->identitas1 && ($survey->identitas->atribut1 && strlen($request->identitas1) > 0)) {
+                // Even if not required, if provided, check for it
+                $query->where('identitas1', $request->identitas1);
+                $hasIdentity = true;
+            }
+
+            if ($survey->identitas->wajib2 && $request->identitas2) {
+                $query->where('identitas2', $request->identitas2);
+                $hasIdentity = true;
+            } elseif ($request->identitas2 && ($survey->identitas->atribut2 && strlen($request->identitas2) > 0)) {
+                $query->where('identitas2', $request->identitas2);
+                $hasIdentity = true;
+            }
+
+            if ($survey->identitas->wajib3 && $request->identitas3) {
+                $query->where('identitas3', $request->identitas3);
+                $hasIdentity = true;
+            } elseif ($request->identitas3 && ($survey->identitas->atribut3 && strlen($request->identitas3) > 0)) {
+                $query->where('identitas3', $request->identitas3);
+                $hasIdentity = true;
+            }
+
+            if ($survey->identitas->wajib4 && $request->identitas4) {
+                $query->where('identitas4', $request->identitas4);
+                $hasIdentity = true;
+            } elseif ($request->identitas4 && ($survey->identitas->atribut4 && strlen($request->identitas4) > 0)) {
+                $query->where('identitas4', $request->identitas4);
+                $hasIdentity = true;
+            }
+
+            if ($survey->identitas->wajib5 && $request->identitas5) {
+                $query->where('identitas5', $request->identitas5);
+                $hasIdentity = true;
+            } elseif ($request->identitas5 && ($survey->identitas->atribut5 && strlen($request->identitas5) > 0)) {
+                $query->where('identitas5', $request->identitas5);
+                $hasIdentity = true;
+            }
+
+            // Only check for duplicates if at least one identity field is provided
+            $exists = $hasIdentity ? $query->exists() : false;
+
+            if ($exists) {
+                return response()->json([
+                    'status' => 'duplicate',
+                    'message' => 'Identitas ini sudah pernah digunakan untuk mengisi survey ini.'
+                ]);
+            }
+
+            return response()->json(['status' => 'ok']);
         }
-
-        if ($survey->identitas->wajib2 && $request->identitas2) {
-            $query->where('identitas2', $request->identitas2);
-            $hasIdentity = true;
-        } elseif ($request->identitas2 && ($survey->identitas->atribut2 && strlen($request->identitas2) > 0)) {
-            $query->where('identitas2', $request->identitas2);
-            $hasIdentity = true;
-        }
-
-        if ($survey->identitas->wajib3 && $request->identitas3) {
-            $query->where('identitas3', $request->identitas3);
-            $hasIdentity = true;
-        } elseif ($request->identitas3 && ($survey->identitas->atribut3 && strlen($request->identitas3) > 0)) {
-            $query->where('identitas3', $request->identitas3);
-            $hasIdentity = true;
-        }
-
-        if ($survey->identitas->wajib4 && $request->identitas4) {
-            $query->where('identitas4', $request->identitas4);
-            $hasIdentity = true;
-        } elseif ($request->identitas4 && ($survey->identitas->atribut4 && strlen($request->identitas4) > 0)) {
-            $query->where('identitas4', $request->identitas4);
-            $hasIdentity = true;
-        }
-
-        if ($survey->identitas->wajib5 && $request->identitas5) {
-            $query->where('identitas5', $request->identitas5);
-            $hasIdentity = true;
-        } elseif ($request->identitas5 && ($survey->identitas->atribut5 && strlen($request->identitas5) > 0)) {
-            $query->where('identitas5', $request->identitas5);
-            $hasIdentity = true;
-        }
-
-        // Only check for duplicates if at least one identity field is provided
-        $exists = $hasIdentity ? $query->exists() : false;
-
-        return response()->json(['exists' => $exists]);
     }
 
     public function exportResponden($id)

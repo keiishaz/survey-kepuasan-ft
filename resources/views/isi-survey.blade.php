@@ -6,6 +6,7 @@
     <title>SIPULAS - Form Survey</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         * {
             margin: 0;
@@ -447,9 +448,80 @@
                 font-size: 13px;
             }
         }
+
+        /* Notification Styles */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+        }
+
+        .notification {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #f87171, #ef4444);
+            border-left: 4px solid #dc2626;
+        }
+
+        .notification-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        .notification-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+
     <div class="formbold-main-wrapper">
         <div class="formbold-form-wrapper">
             <!-- Header -->
@@ -866,9 +938,66 @@
             }
         }
 
+        // Function to validate identity uniqueness
+        async function validateIdentity(idKuesioner) {
+            // Collect active identity values
+            const activeIdentities = [];
+            const identityFields = ['identitas1', 'identitas2', 'identitas3', 'identitas4', 'identitas5'];
+
+            identityFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && field.value.trim() !== '') {
+                    activeIdentities.push({
+                        field: fieldId,
+                        value: field.value.trim()
+                    });
+                }
+            });
+
+            // If no identities are filled, no validation needed
+            if (activeIdentities.length === 0) {
+                return { status: 'ok' };
+            }
+
+            try {
+                const response = await fetch(`/isi-survey/${idKuesioner}/check-duplicate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        identities: activeIdentities
+                    })
+                });
+
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Error validating identity:', error);
+                // In case of error, allow proceeding to avoid blocking user
+                return { status: 'ok' };
+            }
+        }
+
         // Function to save current data and show next page
-        function saveCurrentDataAndShowPage(pageNum) {
-            // Save identitas data to hidden inputs
+        async function saveCurrentDataAndShowPage(pageNum) {
+            // Check if moving from identity page to questions page
+            if (pageNum === 1) { // Moving from identity page (pageNum 0) to first question page (pageNum 1)
+                // Validate identity uniqueness
+                const idKuesioner = {{ $survey->id_kuesioner }};
+
+                const validationResult = await validateIdentity(idKuesioner);
+
+                if (validationResult.status === 'duplicate') {
+                    // Show custom error notification
+                    showNotification('error', validationResult.message || 'Identitas ini sudah pernah digunakan untuk mengisi survey ini.', 5000);
+                    return; // Stop execution, do not proceed
+                }
+            }
+
+            // If validation passed or not on identity page, save identitas data to hidden inputs
             const identitasFieldNames = ['identitas1', 'identitas2', 'identitas3', 'identitas4', 'identitas5'];
             identitasFieldNames.forEach(fieldName => {
                 const identitasField = document.getElementById(fieldName);
@@ -897,6 +1026,56 @@
 
         // Initialize the form - show identitas page first
         showPage(0);
+
+        // Function to show custom notification
+        function showNotification(type, message, duration = 5000) {
+            const container = document.getElementById('notificationContainer');
+
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'notification-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.onclick = function() {
+                closeNotification(notification);
+            };
+
+            // Add icon
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'notification-icon';
+            if (type === 'error') {
+                iconSpan.innerHTML = '⚠️'; // Warning icon for error
+            }
+
+            // Add message
+            const messageSpan = document.createElement('span');
+            messageSpan.textContent = message;
+
+            notification.appendChild(iconSpan);
+            notification.appendChild(messageSpan);
+            notification.appendChild(closeBtn);
+
+            // Add to container
+            container.appendChild(notification);
+
+            // Auto remove after duration
+            setTimeout(() => {
+                closeNotification(notification);
+            }, duration);
+        }
+
+        // Function to close notification with animation
+        function closeNotification(notification) {
+            notification.style.animation = 'fadeOut 0.3s ease-out forwards';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }
     </script>
 </body>
 </html>
