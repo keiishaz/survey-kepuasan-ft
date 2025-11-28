@@ -179,35 +179,35 @@
                             @if($form->identitas->atribut1)
                                 <div class="p-3 bg-gray-50 rounded-lg">
                                     <div class="text-sm text-gray-600">Atribut 1</div>
-                                    <div class="font-medium">{{ $form->identitas->atribut1 }}</div>
+                                    <div class="font-medium text-gray-900">{{ $form->identitas->atribut1 }}</div>
                                     <div class="text-xs text-gray-500">Wajib: {{ $form->identitas->wajib1 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut2)
                                 <div class="p-3 bg-gray-50 rounded-lg">
                                     <div class="text-sm text-gray-600">Atribut 2</div>
-                                    <div class="font-medium">{{ $form->identitas->atribut2 }}</div>
+                                    <div class="font-medium text-gray-900">{{ $form->identitas->atribut2 }}</div>
                                     <div class="text-xs text-gray-500">Wajib: {{ $form->identitas->wajib2 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut3)
                                 <div class="p-3 bg-gray-50 rounded-lg">
                                     <div class="text-sm text-gray-600">Atribut 3</div>
-                                    <div class="font-medium">{{ $form->identitas->atribut3 }}</div>
+                                    <div class="font-medium text-gray-900">{{ $form->identitas->atribut3 }}</div>
                                     <div class="text-xs text-gray-500">Wajib: {{ $form->identitas->wajib3 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut4)
                                 <div class="p-3 bg-gray-50 rounded-lg">
                                     <div class="text-sm text-gray-600">Atribut 4</div>
-                                    <div class="font-medium">{{ $form->identitas->atribut4 }}</div>
+                                    <div class="font-medium text-gray-900">{{ $form->identitas->atribut4 }}</div>
                                     <div class="text-xs text-gray-500">Wajib: {{ $form->identitas->wajib4 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut5)
                                 <div class="p-3 bg-gray-50 rounded-lg">
                                     <div class="text-sm text-gray-600">Atribut 5</div>
-                                    <div class="font-medium">{{ $form->identitas->atribut5 }}</div>
+                                    <div class="font-medium text-gray-900">{{ $form->identitas->atribut5 }}</div>
                                     <div class="text-xs text-gray-500">Wajib: {{ $form->identitas->wajib5 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
@@ -229,7 +229,7 @@
                         <div class="responden-card">
                             <div class="flex justify-between items-center mb-3">
                                 <h3 class="text-sm font-medium text-gray-900">Responden #{{ $responden->id_respon }}</h3>
-                                <span class="text-xs text-gray-500">{{ $responden->waktu_submit ? \Carbon\Carbon::parse($responden->waktu_submit)->format('d M Y, H:i') : 'Belum selesai' }}</span>
+                                <span class="text-xs text-gray-700">{{ $responden->waktu_submit ? \Carbon\Carbon::parse($responden->waktu_submit)->format('d M Y, H:i') : 'Belum selesai' }}</span>
                             </div>
 
                             <!-- Identitas Responden -->
@@ -245,7 +245,7 @@
                                                     Atribut 1
                                                 @endif
                                             </div>
-                                            <div class="text-xs">{{ $responden->identitas1 }}</div>
+                                            <div class="text-xs text-gray-900">{{ $responden->identitas1 }}</div>
                                         </div>
                                     @endif
                                     @if($responden->identitas2)
@@ -257,7 +257,7 @@
                                                     Atribut 2
                                                 @endif
                                             </div>
-                                            <div class="text-xs">{{ $responden->identitas2 }}</div>
+                                            <div class="text-xs text-gray-900">{{ $responden->identitas2 }}</div>
                                         </div>
                                     @endif
                                     @if($responden->identitas3)
@@ -269,7 +269,7 @@
                                                     Atribut 3
                                                 @endif
                                             </div>
-                                            <div class="text-xs">{{ $responden->identitas3 }}</div>
+                                            <div class="text-xs text-gray-900">{{ $responden->identitas3 }}</div>
                                         </div>
                                     @endif
                                     @if($responden->identitas4)
@@ -281,7 +281,7 @@
                                                     Atribut 4
                                                 @endif
                                             </div>
-                                            <div class="text-xs">{{ $responden->identitas4 }}</div>
+                                            <div class="text-xs text-gray-900">{{ $responden->identitas4 }}</div>
                                         </div>
                                     @endif
                                     @if($responden->identitas5)
@@ -293,7 +293,7 @@
                                                     Atribut 5
                                                 @endif
                                             </div>
-                                            <div class="text-xs">{{ $responden->identitas5 }}</div>
+                                            <div class="text-xs text-gray-900">{{ $responden->identitas5 }}</div>
                                         </div>
                                     @endif
                                 </div>
@@ -305,7 +305,7 @@
                                 <h4 class="text-sm font-medium text-gray-700 mb-2">Jawaban:</h4>
                                 @foreach($responden->jawaban as $jawaban)
                                     <div class="jawaban-item">
-                                        <div class="text-xs">{{ $jawaban->pertanyaan->teks }}</div>
+                                        <div class="text-xs text-gray-900">{{ $jawaban->pertanyaan->teks }}</div>
                                         <div class="skala-indicator">
                                             <div class="skala-dot skala-{{ $jawaban->jawaban }}" title="Skala {{ $jawaban->jawaban }}"></div>
                                             <span class="ml-2 text-xs font-medium text-{{ $jawaban->jawaban == 1 ? 'red' : ($jawaban->jawaban == 2 ? 'orange' : ($jawaban->jawaban == 3 ? 'yellow' : ($jawaban->jawaban == 4 ? 'green' : 'emerald'))) }}-500">{{ $jawaban->jawaban }}</span>
