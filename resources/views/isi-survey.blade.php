@@ -18,7 +18,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #ffffff;
+            background: linear-gradient(135deg, #f0f9ff 0%, #fefce8 100%);
             color: #1a1a1a;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
@@ -37,16 +37,17 @@
         }
 
         .header-banner {
-            background: linear-gradient(135deg, #dbeafe 0%, #fef3c7 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%); /* primary-500 to accent-500 from dashboard */
             border-radius: 0 0 24px 24px;
             padding: 48px 40px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
             margin-left: -40px;
             margin-right: -40px;
             padding-left: 80px;
             padding-right: 80px;
+            color: white;
         }
 
         @media (min-width: 940px) {
@@ -59,11 +60,11 @@
         .header-banner::before {
             content: '';
             position: absolute;
-            top: -50px;
+            top: -80px;
             right: 10%;
             width: 200px;
             height: 200px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             z-index: 1;
         }
@@ -78,24 +79,24 @@
         }
 
         .back-btn {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.9);
+            width: 44px;
+            height: 44px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #374151;
-            transition: all 0.2s ease;
+            color: white;
+            transition: all 0.3s ease;
             flex-shrink: 0;
         }
 
         .back-btn:hover {
-            background: #ffffff;
-            border-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
             transform: translateX(-2px);
         }
 
@@ -113,24 +114,29 @@
         .survey-category {
             font-size: 12px;
             font-weight: 600;
-            color: #3b82f6;
+            color: rgba(255, 255, 255, 0.9);
             text-transform: uppercase;
             letter-spacing: 0.8px;
             margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
         }
 
         .header-content h1 {
             font-size: 32px;
-            font-weight: 700;
-            color: #111827;
+            font-weight: 800;
+            color: white;
             margin-bottom: 8px;
             letter-spacing: -0.5px;
         }
 
         .header-content p {
-            font-size: 15px;
-            color: #4b5563;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 400;
+            max-width: 600px;
         }
 
         .survey-info {
@@ -139,6 +145,7 @@
             display: flex;
             gap: 24px;
             flex-wrap: wrap;
+            margin-top: 24px;
         }
 
         .info-item {
@@ -146,13 +153,13 @@
             align-items: center;
             gap: 8px;
             font-size: 14px;
-            color: #374151;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .info-item svg {
             width: 18px;
             height: 18px;
-            color: #6b7280;
+            color: white;
         }
 
         /* Form Container */
@@ -162,41 +169,54 @@
 
         /* Section */
         .form-section {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 32px;
+            background: white;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+            border-radius: 20px;
+            padding: 40px;
             margin-bottom: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .form-section:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 15px 10px -6px rgba(0, 0, 0, 0.04);
         }
 
         .section-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.1); /* primary-500 from dashboard */
         }
 
         .section-icon {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 10px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #dbeafe 0%, #fef3c7 100%); /* primary-100 and accent-100 from dashboard */
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            border: 1px solid #e5e7eb;
+            font-size: 28px;
+            border: 2px solid rgba(59, 130, 246, 0.15); /* primary-500 from dashboard */
         }
 
         .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #111827;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e40af; /* primary-700 from dashboard */
+            line-height: 1.3;
         }
 
         /* Question */
         .question-group {
-            margin-bottom: 32px;
+            margin-bottom: 36px;
+            padding: 20px;
+            background: rgba(219, 234, 254, 0.2); /* primary-100 equivalent */
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6; /* primary-500 from dashboard */
         }
 
         .question-group:last-child {
@@ -204,69 +224,71 @@
         }
 
         .question-label {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
-            color: #111827;
-            margin-bottom: 12px;
+            color: #1e40af; /* primary-700 from dashboard */
+            margin-bottom: 16px;
             display: block;
+            line-height: 1.5;
         }
 
         .required {
-            color: #ef4444;
+            color: #dc2626;
             margin-left: 4px;
         }
 
         /* Input Field */
         .input-field {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 15px;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
             background: white;
-            transition: all 0.2s ease;
-            color: #111827;
+            transition: all 0.3s ease;
+            color: #1e293b;
         }
 
         .input-field:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
         }
 
         .input-field::placeholder {
-            color: #9ca3af;
+            color: #94a3b8;
         }
 
         /* Submit Button */
         .submit-section {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 32px;
+            background: white;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+            border-radius: 20px;
+            padding: 40px;
             text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         }
 
         .submit-button {
-            padding: 14px 32px;
-            background: #3b82f6;
+            padding: 16px 42px;
+            background: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%); /* primary-500 to accent-500 from dashboard */
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
         }
 
         .submit-button:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(59, 130, 246, 0.3);
         }
 
         .submit-button:active {
@@ -282,8 +304,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 12px 0;
+            margin: 16px 0;
             position: relative;
+            background: rgba(239, 246, 255, 0.6);
+            padding: 16px;
+            border-radius: 16px;
         }
 
         .scale-labels {
@@ -291,8 +316,9 @@
             justify-content: space-between;
             width: 100%;
             margin-top: 8px;
-            font-size: 13px;
-            color: #6b7280;
+            font-size: 14px;
+            color: #1e40af; /* primary-700 from dashboard */
+            font-weight: 600;
         }
 
         .scale-option {
@@ -300,9 +326,9 @@
         }
 
         .scale-input {
-            width: 36px;
-            height: 36px;
-            border: 2px solid #d1d5db;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #cbd5e1;
             border-radius: 50%;
             background: white;
             cursor: pointer;
@@ -310,35 +336,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .scale-input:hover {
-            border-color: #9ca3af;
-            background: #f3f4f6;
+            border-color: #93c5fd;
+            background: #f0f9ff;
         }
 
         .scale-input:checked {
-            border-color: #3b82f6;
-            background: #3b82f6;
+            border-color: #3b82f6; /* primary-500 from dashboard */
+            background: #3b82f6; /* primary-500 from dashboard */
+            transform: scale(1.1);
         }
 
         .scale-input:checked::after {
             content: '';
-            width: 12px;
-            height: 12px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: white;
         }
 
         .rating-label {
             position: absolute;
-            top: -20px;
+            top: -24px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 12px;
-            color: #6b7280;
+            font-size: 13px;
+            color: #1e40af; /* primary-700 from dashboard */
+            font-weight: 600;
             white-space: nowrap;
         }
 
@@ -355,34 +384,35 @@
         }
 
         .radio-group input[type="radio"] {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             margin: 0 auto 8px;
             cursor: pointer;
         }
 
         .radio-group small {
-            font-size: 12px;
-            color: #6b7280;
+            font-size: 13px;
+            color: #1e40af; /* primary-700 from dashboard */
+            font-weight: 600;
         }
 
         /* Navigation */
         .nav-buttons {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             justify-content: space-between;
-            margin-top: 24px;
+            margin-top: 32px;
         }
 
         .nav-btn {
-            padding: 12px 24px;
-            border: 1px solid #d1d5db;
+            padding: 14px 28px;
+            border: 2px solid #e2e8f0;
             background: white;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -390,21 +420,20 @@
         }
 
         .nav-btn:hover {
-            background: #f3f4f6;
-            border-color: #9ca3af;
+            background: #f8fafc;
+            border-color: #cbd5e1;
         }
 
         .nav-btn.next {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%); /* primary-500 to accent-500 from dashboard */
             color: white;
-            border-color: #3b82f6;
+            border: none;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
         }
 
         .nav-btn.next:hover {
-            background: #2563eb;
-            border-color: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(59, 130, 246, 0.3);
         }
 
         .page-indicator {
@@ -416,19 +445,23 @@
 
         /* Question counter */
         .question-counter {
-            font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 16px;
+            font-size: 16px;
+            color: #1e40af; /* primary-700 from dashboard */
+            margin-bottom: 24px;
+            padding: 12px 20px;
+            background: rgba(219, 234, 254, 0.3); /* primary-100 equivalent */
+            border-radius: 12px;
+            font-weight: 600;
         }
 
         /* Section Title */
         .sub-section-title {
             font-size: 18px;
-            font-weight: 600;
-            color: #111827;
+            font-weight: 700;
+            color: #1e40af; /* primary-700 from dashboard */
             margin-bottom: 16px;
             padding-bottom: 8px;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.2); /* primary-500 from dashboard */
         }
 
         /* Responsive */
@@ -455,7 +488,7 @@
             }
 
             .header-content p {
-                font-size: 14px;
+                font-size: 15px;
             }
 
             .survey-info {
@@ -468,15 +501,15 @@
 
             .form-section,
             .submit-section {
-                padding: 24px;
+                padding: 28px;
             }
 
             .section-title {
-                font-size: 18px;
+                font-size: 20px;
             }
 
             .question-label {
-                font-size: 14px;
+                font-size: 15px;
             }
 
             .scale-options {
@@ -485,8 +518,8 @@
             }
 
             .scale-input {
-                width: 32px;
-                height: 32px;
+                width: 36px;
+                height: 36px;
             }
         }
 
@@ -518,7 +551,7 @@
             }
 
             .header-content p {
-                font-size: 13px;
+                font-size: 14px;
             }
 
             .survey-category {
@@ -526,8 +559,8 @@
             }
 
             .back-btn {
-                width: 36px;
-                height: 36px;
+                width: 40px;
+                height: 40px;
             }
 
             .back-btn svg {
@@ -550,62 +583,65 @@
 
             .form-section,
             .submit-section {
-                padding: 20px;
-                border-radius: 12px;
+                padding: 24px;
+                border-radius: 16px;
                 margin-bottom: 16px;
             }
 
             .section-header {
-                gap: 10px;
-                margin-bottom: 20px;
+                gap: 12px;
+                margin-bottom: 24px;
             }
 
             .section-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
             }
 
             .section-title {
-                font-size: 17px;
+                font-size: 19px;
             }
 
             .question-group {
                 margin-bottom: 24px;
+                padding: 16px;
             }
 
             .question-label {
-                font-size: 14px;
-                margin-bottom: 10px;
+                font-size: 15px;
+                margin-bottom: 12px;
             }
 
             .input-field {
-                padding: 10px 14px;
-                font-size: 14px;
+                padding: 12px 16px;
+                font-size: 15px;
             }
 
             .submit-button,
             .nav-btn {
                 width: 100%;
-                padding: 12px 24px;
-                font-size: 14px;
+                padding: 14px 24px;
+                font-size: 15px;
             }
 
             .scale-options {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
                 gap: 12px;
+                padding: 12px;
             }
 
             .scale-input {
-                width: 30px;
-                height: 30px;
+                width: 34px;
+                height: 34px;
             }
 
             .scale-labels {
-                flex-direction: column;
-                gap: 4px;
-                align-items: flex-start;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                font-size: 13px;
             }
         }
     </style>

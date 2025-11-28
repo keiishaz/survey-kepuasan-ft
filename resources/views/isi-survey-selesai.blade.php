@@ -18,7 +18,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #ffffff;
+            background: linear-gradient(135deg, #f0f9ff 0%, #fefce8 100%);
             color: #1a1a1a;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
@@ -37,17 +37,18 @@
         }
 
         .header-banner {
-            background: linear-gradient(135deg, #059669 0%, #d9f99d 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%); /* primary-500 to accent-500 from dashboard */
             border-radius: 0 0 24px 24px;
             padding: 48px 40px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
             margin-left: -40px;
             margin-right: -40px;
             padding-left: 80px;
             padding-right: 80px;
             text-align: center;
+            color: white;
         }
 
         @media (min-width: 740px) {
@@ -60,11 +61,11 @@
         .header-banner::before {
             content: '';
             position: absolute;
-            top: -50px;
+            top: -80px;
             right: 10%;
             width: 200px;
             height: 200px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             z-index: 1;
         }
@@ -77,19 +78,20 @@
         .thank-you-icon {
             font-size: 80px;
             margin-bottom: 24px;
+            color: white;
         }
 
         .header-content h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: #111827;
+            font-size: 36px;
+            font-weight: 800;
+            color: white;
             margin-bottom: 12px;
             letter-spacing: -0.5px;
         }
 
         .header-content p {
-            font-size: 16px;
-            color: #4b5563;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 400;
         }
 
@@ -101,61 +103,69 @@
 
         .message {
             font-size: 18px;
-            color: #374151;
+            color: #1e40af; /* primary-700 from dashboard */
             margin-bottom: 32px;
             line-height: 1.7;
+            font-weight: 500;
         }
 
         .survey-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #111827;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e40af; /* primary-700 from dashboard */
             margin-bottom: 8px;
+            padding: 16px;
+            background: rgba(219, 234, 254, 0.4); /* primary-100 equivalent */
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6; /* primary-500 from dashboard */
         }
 
         .actions {
             display: flex;
-            gap: 16px;
+            gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 16px;
         }
 
         .action-button {
-            padding: 12px 24px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             text-decoration: none;
+            border: none;
+            min-width: 180px;
         }
 
         .action-button-primary {
-            background: #3b82f6;
+            background: linear-gradient(135deg, #3b82f6 0%, #f59e0b 100%); /* primary-500 to accent-500 from dashboard */
             color: white;
-            border-color: #3b82f6;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
         }
 
         .action-button-primary:hover {
-            background: #2563eb;
-            border-color: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(59, 130, 246, 0.3);
         }
 
         .action-button-secondary {
             background: white;
-            color: #374151;
+            color: #1e40af; /* primary-700 from dashboard */
+            border: 2px solid rgba(59, 130, 246, 0.3); /* primary-500 from dashboard */
         }
 
         .action-button-secondary:hover {
-            background: #f9fafb;
-            border-color: #9ca3af;
+            background: #dbeafe; /* primary-100 from dashboard */
+            border-color: #3b82f6; /* primary-500 from dashboard */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
         }
 
         /* Responsive */
@@ -174,16 +184,16 @@
             }
 
             .thank-you-icon {
-                font-size: 64px;
+                font-size: 72px;
                 margin-bottom: 16px;
             }
 
             .header-content h1 {
-                font-size: 26px;
+                font-size: 30px;
             }
 
             .header-content p {
-                font-size: 15px;
+                font-size: 16px;
             }
 
             .content {
@@ -191,15 +201,16 @@
             }
 
             .message {
-                font-size: 16px;
+                font-size: 17px;
             }
 
             .survey-title {
-                font-size: 18px;
+                font-size: 20px;
             }
 
             .actions {
                 flex-direction: column;
+                gap: 16px;
             }
 
             .action-button {
@@ -226,16 +237,16 @@
             }
 
             .thank-you-icon {
-                font-size: 56px;
+                font-size: 64px;
                 margin-bottom: 12px;
             }
 
             .header-content h1 {
-                font-size: 22px;
+                font-size: 26px;
             }
 
             .header-content p {
-                font-size: 14px;
+                font-size: 15px;
             }
 
             .content {
@@ -243,12 +254,17 @@
             }
 
             .message {
-                font-size: 15px;
+                font-size: 16px;
                 margin-bottom: 24px;
             }
 
             .survey-title {
-                font-size: 16px;
+                font-size: 18px;
+            }
+
+            .action-button {
+                padding: 14px 24px;
+                font-size: 15px;
             }
         }
     </style>

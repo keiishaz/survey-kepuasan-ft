@@ -1,25 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('partials.head')
     <title>SIPULAS - Manajemen Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'pastel-blue': '#E8F4FD',
-                        'light-blue': '#B8E0FF',
-                        'cream': '#FEF9E7',
-                        'dark-blue': '#1E3A8A',
-                        'medium-blue': '#3B82F6'
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         .sidebar-active {
             background: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%);
@@ -72,7 +55,7 @@
                         <div class="relative">
                             <input type="text"
                                    placeholder="Cari..."
-                                   class="w-full px-3 py-2 pl-9 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm">
+                                   class="w-full px-3 py-2 pl-9 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm text-gray-900">
                             <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
@@ -309,5 +292,6 @@
     </div>
 
     @include('partials.confirmation-modal')
+    @fluxScripts
 </body>
 </html>

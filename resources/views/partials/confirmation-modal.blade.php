@@ -1,6 +1,6 @@
 <!-- Universal Confirmation Modal -->
 <div id="confirmationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-    <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-30 transition-opacity backdrop-blur-sm" aria-hidden="true"></div>
     <div class="flex min-h-full items-center justify-center p-4">
         <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
             <div class="bg-white px-6 pt-6 pb-4 sm:pb-6">
@@ -36,13 +36,19 @@
         document.getElementById('modalTitle').textContent = title;
         document.getElementById('modalMessage').innerHTML = message;
         document.getElementById('confirmationModal').classList.remove('hidden');
-        
+
+        // Apply overflow hidden to prevent background scrolling
+        document.body.classList.add('overflow-hidden');
+
         // Set the callback function
         window.currentConfirmCallback = onConfirm;
     }
 
     function hideConfirmation() {
         document.getElementById('confirmationModal').classList.add('hidden');
+
+        // Remove overflow hidden
+        document.body.classList.remove('overflow-hidden');
     }
 
     // Event listeners for confirmation modal

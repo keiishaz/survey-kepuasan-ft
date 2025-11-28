@@ -1,26 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIPULAS - Responden {{ $form->nama }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @include('partials.head')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'pastel-blue': '#E8F4FD',
-                        'light-blue': '#B8E0FF',
-                        'cream': '#FEF9E7',
-                        'dark-blue': '#1E3A8A',
-                        'medium-blue': '#3B82F6'
-                    }
-                }
-            }
-        }
-    </script>
+    <title>SIPULAS - Responden {{ $form->nama }}</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -440,5 +423,6 @@
             @endforeach
         @endif
     </script>
+    @fluxScripts
 </body>
 </html>

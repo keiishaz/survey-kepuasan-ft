@@ -586,7 +586,7 @@
                         <div id="identitas-dropdown-${item.id}" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden">
                             <div class="p-2 border-b border-gray-200">
                                 <input type="text" placeholder="Cari atribut..."
-                                       class="field-input w-full text-sm"
+                                       class="field-input w-full text-sm text-gray-900"
                                        oninput="filterIdentitasOptions(${index}, this.value)">
                             </div>
                             <div class="max-h-60 overflow-y-auto">
