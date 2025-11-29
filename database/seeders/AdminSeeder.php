@@ -19,5 +19,10 @@ class AdminSeeder extends Seeder
             'email' => 'admin@ft.unib.ac.id',
             'password' => Hash::make('password123'),
         ]);
+        Admin::create([
+            'nama' => 'Admin SI',
+            'email' => 'adminSI@ft.unib.ac.id',
+            'password' => Hash::make('password123'),
+        ]);
     }
 }
