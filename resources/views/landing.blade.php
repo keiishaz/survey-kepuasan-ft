@@ -96,230 +96,249 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="pt-16 pb-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="animate-slide-up">
-                    <h2 class="text-5xl md:text-6xl font-bold text-dark-blue mb-6 leading-tight">
-                        Sistem Survey Kepuasan
-                        <span class="text-medium-blue">Layanan</span>
-                    </h2>
-                    <p class="text-xl text-gray-700 mb-8 leading-relaxed">
-                        SIPULAS merupakan platform evaluasi kepuasan layanan yang menyediakan sarana
-                        bagi civitas akademika dan stakeholder untuk memberikan penilaian terhadap
-                        kualitas layanan di Fakultas Teknik Universitas Bengkulu.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-6">
-                        <a href="{{ url('/cari-survey') }}">
-                            <button class="group bg-medium-blue text-white px-10 py-5 rounded-xl font-semibold text-lg hover:bg-dark-blue transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl border-2 border-transparent focus:ring-4 focus:ring-medium-blue/30">
-                                <span class="flex items-center justify-center space-x-2">
-                                    <span>Isi Survey Sekarang</span>
-                                </span>
-                            </button>
-                        </a>
-                        <a href="{{ asset('files/PANDUAN PENGISIAN SURVEY SIPULAS 2025.pdf') }}" download>
-                            <button class="group bg-white text-dark-blue border-3 border-medium-blue px-10 py-5 rounded-xl font-semibold text-lg hover:bg-medium-blue hover:text-white transition-all duration-300 shadow-lg hover:shadow-2xl focus:ring-4 focus:ring-medium-blue/30">
-                                <span class="flex items-center justify-center space-x-2">
-                                    <span>Panduan Pengisian</span>
-                                </span>
-                            </button>
-                        </a>
-                    </div>
+<!-- Hero Section - Perbaikan untuk Mobile -->
+<section id="home" class="pt-12 pb-16 md:pt-16 md:pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div class="animate-slide-up">
+                <!-- Judul - Responsif dengan proporsi yang tepat -->
+                <h2 class="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-dark-blue mb-4 md:mb-6 leading-tight">
+                    Sistem Survey Kepuasan
+                    <span class="text-medium-blue">Layanan</span>
+                </h2>
+
+                <!-- Deskripsi - Ukuran yang konsisten -->
+                <p class="text-base sm:text-lg md:text-xl text-gray-700 mb-6 md:mb-8 leading-relaxed">
+                    SIPULAS merupakan platform evaluasi kepuasan layanan yang menyediakan sarana
+                    bagi civitas akademika dan stakeholder untuk memberikan penilaian terhadap
+                    kualitas layanan di Fakultas Teknik Universitas Bengkulu.
+                </p>
+
+                <!-- Tombol dengan ukuran dan alignment yang diperbaiki -->
+                <div class="flex flex-col sm:flex-row gap-3 md:gap-6">
+                    <a href="{{ url('/cari-survey') }}" class="w-full sm:w-auto">
+                        <button class="group bg-medium-blue text-white px-5 py-2.5 sm:px-8 sm:py-3.5 md:px-10 md:py-5 rounded-lg md:rounded-xl font-semibold text-sm sm:text-base md:text-lg hover:bg-dark-blue transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl border-2 border-transparent focus:ring-4 focus:ring-medium-blue/30 w-full min-h-[44px]">
+                            <span class="flex items-center justify-center space-x-2">
+                                <span>Isi Survey Sekarang</span>
+                            </span>
+                        </button>
+                    </a>
+                    <a href="{{ asset('files/PANDUAN PENGISIAN SURVEY SIPULAS 2025.pdf') }}" download class="w-full sm:w-auto">
+                        <button class="group bg-white text-dark-blue border-2 border-medium-blue px-5 py-2.5 sm:px-8 sm:py-3.5 md:px-10 md:py-5 rounded-lg md:rounded-xl font-semibold text-sm sm:text-base md:text-lg hover:bg-medium-blue hover:text-white transition-all duration-300 shadow-lg hover:shadow-2xl focus:ring-4 focus:ring-medium-blue/30 w-full min-h-[44px]">
+                            <span class="flex items-center justify-center space-x-2">
+                                <span>Panduan Pengisian</span>
+                            </span>
+                        </button>
+                    </a>
                 </div>
-                <div class="animate-float">
-                    <!-- Gambar tanpa kotak dan shadow -->
-                    <div class="text-center">
-                        <img src="{{ asset('images/gambar1.png') }}"
-                             alt="Ilustrasi Sistem SIPULAS"
-                             class="w-full h-auto max-w-lg mx-auto rounded-2xl"
-                             loading="lazy">
-                        <!-- Fallback jika gambar tidak ada -->
-                        <div class="w-full h-80 bg-gradient-to-br from-pastel-blue via-white to-cream rounded-2xl flex items-center justify-center"
-                             style="display: none;" id="fallback-content">
-                            <div class="text-center">
-                                <div class="w-20 h-20 bg-medium-blue/20 rounded-full mx-auto mb-4 animate-pulse flex items-center justify-center">
-                                    <div class="w-10 h-10 bg-medium-blue/40 rounded-full animate-ping"></div>
-                                </div>
-                                <p class="text-dark-blue/60 text-lg font-medium">Memuat ilustrasi...</p>
+            </div>
+
+            <!-- Gambar Ilustrasi -->
+            <div class="animate-float md:animate-float">
+                <div class="text-center">
+                    <img src="{{ asset('images/gambar1.png') }}"
+                         alt="Ilustrasi Sistem SIPULAS"
+                         class="w-full h-auto max-w-lg mx-auto rounded-2xl sm:max-w-xs md:max-w-lg"
+                         loading="lazy">
+                    <div class="w-full h-80 bg-gradient-to-br from-pastel-blue via-white to-cream rounded-2xl flex items-center justify-center"
+                         style="display: none;" id="fallback-content">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-medium-blue/20 rounded-full mx-auto mb-4 animate-pulse flex items-center justify-center">
+                                <div class="w-10 h-10 bg-medium-blue/40 rounded-full animate-ping"></div>
                             </div>
+                            <p class="text-dark-blue/60 text-lg font-medium">Memuat ilustrasi...</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-dark-blue mb-4">Tentang SIPULAS</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Sistem evaluasi yang mendukung peningkatan kualitas layanan akademik dan administratif
+<!-- About Section dengan spacing konsisten -->
+<section id="about" class="py-12 sm:py-16 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue mb-3 md:mb-4">Tentang SIPULAS</h2>
+            <p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                Sistem evaluasi yang mendukung peningkatan kualitas layanan akademik dan administratif
+            </p>
+        </div>
+
+        <!-- Cards Grid dengan spacing konsisten -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+            <!-- Card 1 -->
+            <div class="bg-gradient-to-br from-pastel-blue/60 to-light-blue/40 border border-pastel-blue/20 backdrop-blur-sm p-6 md:p-8 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:from-pastel-blue/80 hover:to-light-blue/60">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-medium-blue to-dark-blue rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center shadow-lg">
+                    <svg class="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">Tujuan</h3>
+                <p class="text-sm md:text-base text-gray-700 leading-relaxed">
+                    Mengumpulkan data evaluasi kepuasan layanan secara sistematis dan objektif
+                    untuk mendukung perbaikan berkelanjutan.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-gradient-to-br from-pastel-blue/60 to-light-blue/40 border border-pastel-blue/20 backdrop-blur-sm p-8 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:from-pastel-blue/80 hover:to-light-blue/60">
-                    <div class="w-16 h-16 bg-gradient-to-br from-medium-blue to-dark-blue rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
-                        <!-- Target Icon -->
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-dark-blue mb-4">Tujuan</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                        Mengumpulkan data evaluasi kepuasan layanan secara sistematis dan objektif
-                        untuk mendukung perbaikan berkelanjutan.
-                    </p>
+            <!-- Card 2 -->
+            <div class="bg-gradient-to-br from-cream/80 to-orange-100/60 border border-orange-200/40 backdrop-blur-sm p-6 md:p-8 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:from-cream hover:to-orange-100/80">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center shadow-lg">
+                    <svg class="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
                 </div>
+                <h3 class="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">Metode</h3>
+                <p class="text-sm md:text-base text-gray-700 leading-relaxed">
+                    Menggunakan instrumen evaluasi terstruktur dengan pendekatan kuantitatif
+                    dan kualitatif untuk mengukur tingkat kepuasan layanan.
+                </p>
+            </div>
 
-                <div class="bg-gradient-to-br from-cream/80 to-orange-100/60 border border-orange-200/40 backdrop-blur-sm p-8 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:from-cream hover:to-orange-100/80">
-                    <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
-                        <!-- Chart Icon -->
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-dark-blue mb-4">Metode</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                        Menggunakan instrumen evaluasi terstruktur dengan pendekatan kuantitatif
-                        dan kualitatif untuk mengukur tingkat kepuasan layanan.
-                    </p>
+            <!-- Card 3 -->
+            <div class="bg-gradient-to-br from-green-50/80 to-emerald-100/60 border border-green-200/40 backdrop-blur-sm p-6 md:p-8 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:from-green-100/80 hover:to-emerald-100/80">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center shadow-lg">
+                    <svg class="w-7 h-7 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
                 </div>
+                <h3 class="text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">Manfaat</h3>
+                <p class="text-sm md:text-base text-gray-700 leading-relaxed">
+                    Menyediakan data akurat untuk pengambilan keputusan dalam upaya
+                    peningkatan kualitas layanan di lingkungan Fakultas Teknik.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
 
-                <div class="bg-gradient-to-br from-green-50/80 to-emerald-100/60 border border-green-200/40 backdrop-blur-sm p-8 rounded-2xl text-center hover:transform hover:scale-105 transition-all duration-300 hover:shadow-xl hover:from-green-100/80 hover:to-emerald-100/80">
-                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg">
-                        <!-- Refresh Icon -->
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
+<!-- Statistics Section dengan layout mobile yang ringkas -->
+<section id="statistics" class="py-12 sm:py-16 md:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue mb-3 md:mb-4">Statistik SIPULAS</h2>
+            <p class="text-base sm:text-lg md:text-xl text-gray-600">Data partisipasi survey dalam sistem SIPULAS</p>
+        </div>
+
+        <!-- Stats Grid - Layout responsif -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6 mb-12 sm:mb-14 md:mb-16">
+            <!-- Card 1: Total Responden -->
+            <div class="bg-white p-4 sm:p-5 md:p-6 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <!-- Text di kiri -->
+                    <div class="flex-1 pr-3">
+                        <div class="text-sm sm:text-base md:text-base font-medium text-gray-700 mb-1">Total Responden</div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue">
+                            {{ number_format($totalResponden) }}
+                        </div>
                     </div>
-                    <h3 class="text-2xl font-bold text-dark-blue mb-4">Manfaat</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                        Menyediakan data akurat untuk pengambilan keputusan dalam upaya
-                        peningkatan kualitas layanan di lingkungan Fakultas Teknik.
-                    </p>
+                    <!-- Icon di kanan -->
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-pastel-blue/50 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Survey Aktif -->
+            <div class="bg-white p-4 sm:p-5 md:p-6 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1 pr-3">
+                        <div class="text-sm sm:text-base md:text-base font-medium text-gray-700 mb-1">Survey Aktif</div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue">
+                            {{ number_format($totalSurveyAktif) }}
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-purple-100/50 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Tingkat Kepuasan -->
+            <div class="bg-white p-4 sm:p-5 md:p-6 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1 pr-3">
+                        <div class="text-sm sm:text-base md:text-base font-medium text-gray-700 mb-1">Tingkat Kepuasan</div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue">
+                            {{ number_format($tingkatKepuasanRata, 1) }}%
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-green-100/50 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Responden Bulan Ini -->
+            <div class="bg-white p-4 sm:p-5 md:p-6 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1 pr-3">
+                        <div class="text-sm sm:text-base md:text-base font-medium text-gray-700 mb-1">Responden Bulan Ini</div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-blue">
+                            {{ number_format($jumlahRespondenBulanIni) }}
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-amber-100/50 rounded-full flex items-center justify-center shadow-sm">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Statistics Section -->
-    <section id="statistics" class="py-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-dark-blue mb-4">Statistik SIPULAS</h2>
-                <p class="text-xl text-gray-600">Data partisipasi survey dalam sistem SIPULAS</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                <!-- Total Responden Card -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
-                    <div class="text-center">
-                        <div class="text-3xl md:text-4xl font-bold text-dark-blue mb-2">
-                            {{ number_format($totalResponden) }}
-                        </div>
-                        <div class="text-gray-700 text-sm md:text-base font-medium">Total Responden</div>
-                        <div class="mt-3">
-                            <div class="w-12 h-12 mx-auto bg-pastel-blue/50 rounded-full flex items-center justify-center shadow-sm">
-                                <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                            </div>
-                        </div>
+<!-- Survey Terpopuler dengan layout yang diperbaiki -->
+@if($surveyTerpopuler && $surveyTerpopuler->count() > 0)
+<div class="bg-white/80 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+    <div class="bg-gradient-to-r from-medium-blue to-dark-blue p-4 sm:p-5 md:p-6">
+        <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-white text-center">Survey Terpopuler Bulan Ini</h3>
+    </div>
+    <div class="p-4 sm:p-5 md:p-6">
+        <div class="space-y-3 sm:space-y-4">
+            @foreach($surveyTerpopuler as $index => $survey)
+            <div class="flex items-center justify-between p-3 sm:p-4 md:p-5 bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow gap-3">
+                <!-- Nomor dan Judul -->
+                <div class="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 flex items-center justify-center bg-gradient-to-r from-medium-blue to-dark-blue text-white rounded-lg font-bold text-xs sm:text-sm shadow-md flex-shrink-0">
+                        {{ $index + 1 }}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-semibold text-sm sm:text-base text-gray-800 truncate">{{ $survey->nama }}</div>
                     </div>
                 </div>
 
-                <!-- Total Survey Aktif Card -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
-                    <div class="text-center">
-                        <div class="text-3xl md:text-4xl font-bold text-dark-blue mb-2">
-                            {{ number_format($totalSurveyAktif) }}
-                        </div>
-                        <div class="text-gray-700 text-sm md:text-base font-medium">Survey Aktif</div>
-                        <div class="mt-3">
-                            <div class="w-12 h-12 mx-auto bg-purple-100/50 rounded-full flex items-center justify-center shadow-sm">
-                                <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tingkat Kepuasan Rata-rata Card -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
-                    <div class="text-center">
-                        <div class="text-3xl md:text-4xl font-bold text-dark-blue mb-2">
-                            {{ number_format($tingkatKepuasanRata, 1) }}%
-                        </div>
-                        <div class="text-gray-700 text-sm md:text-base font-medium">Tingkat Kepuasan Rata-rata</div>
-                        <div class="mt-3">
-                            <div class="w-12 h-12 mx-auto bg-green-100/50 rounded-full flex items-center justify-center shadow-sm">
-                                <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Jumlah Responden Bulan Ini Card -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200">
-                    <div class="text-center">
-                        <div class="text-3xl md:text-4xl font-bold text-dark-blue mb-2">
-                            {{ number_format($jumlahRespondenBulanIni) }}
-                        </div>
-                        <div class="text-gray-700 text-sm md:text-base font-medium">Responden Bulan Ini</div>
-                        <div class="mt-3">
-                            <div class="w-12 h-12 mx-auto bg-amber-100/50 rounded-full flex items-center justify-center shadow-sm">
-                                <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Jumlah Responden -->
+                <div class="text-right flex-shrink-0 pl-2">
+                    <div class="text-base sm:text-lg md:text-xl font-bold text-medium-blue whitespace-nowrap">{{ number_format($survey->total_responden) }}</div>
+                    <div class="text-xs text-gray-500 whitespace-nowrap">responden</div>
                 </div>
             </div>
-
-            <!-- Survey Terpopuler Detail -->
-            @if($surveyTerpopuler && $surveyTerpopuler->count() > 0)
-            <div class="bg-white/80 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <div class="bg-gradient-to-r from-medium-blue to-dark-blue p-6">
-                    <h3 class="text-2xl font-bold text-white text-center">Survey Terpopuler Bulan Ini</h3>
-                </div>
-                <div class="p-6">
-                    <div class="space-y-4">
-                        @foreach($surveyTerpopuler as $index => $survey)
-                        <div class="flex items-center justify-between p-5 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-r from-medium-blue to-dark-blue text-white rounded-lg font-bold text-sm shadow-md">
-                                    {{ $index + 1 }}
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="font-semibold text-gray-800 truncate">{{ $survey->nama }}</div>
-                                    <div class="text-sm text-gray-500 mt-1">
-                                        {{ Str::limit($survey->deskripsi, 100) }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-lg font-bold text-medium-blue">{{ number_format($survey->total_responden) }}</div>
-                                <div class="text-xs text-gray-500">responden</div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-            @else
-            <div class="bg-white/80 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center">
-                <h3 class="text-2xl font-bold text-dark-blue mb-4">Survey Terpopuler Bulan Ini</h3>
-                <p class="text-gray-600">Belum ada data survey terpopuler untuk bulan ini.</p>
-            </div>
-            @endif
+            @endforeach
+        </div>
+    </div>
+</div>
+@else
+<div class="bg-white/80 p-6 sm:p-7 md:p-8 rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center">
+    <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-dark-blue mb-3 md:mb-4">Survey Terpopuler Bulan Ini</h3>
+    <p class="text-sm sm:text-base text-gray-600">Belum ada data survey terpopuler untuk bulan ini.</p>
+</div>
+@endif
         </div>
     </section>
 
