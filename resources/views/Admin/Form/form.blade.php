@@ -398,7 +398,7 @@
         function showDeleteConfirmation(id, name, deleteUrl) {
             showConfirmation(
                 "Konfirmasi Penghapusan",
-                `Apakah Anda yakin ingin menghapus <span class="font-semibold">${name}</span>? Tindakan ini tidak dapat dibatalkan.`,
+                Apakah Anda yakin ingin menghapus <span class="font-semibold">${name}</span>? Tindakan ini tidak dapat dibatalkan.,
                 function() {
                     // Create and submit a form for deletion
                     const form = document.createElement('form');

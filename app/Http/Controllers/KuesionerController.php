@@ -127,9 +127,17 @@ class KuesionerController extends Controller
         }
 
 
-        $adminId   = auth('admin')->id() ?? auth()->id();
-        $createdBy = auth('admin')->user()->nama
-            ?? (auth()->user()->name ?? null);
+        // Determine which auth guard is active to get the correct user data
+        $adminId = null;
+        $createdBy = null;
+
+        if (auth('admin')->check()) {
+            $adminId = auth('admin')->id();
+            $createdBy = auth('admin')->user()->nama ?? auth('admin')->user()->name;
+        } elseif (auth()->check()) {
+            $adminId = auth()->id();
+            $createdBy = auth()->user()->name;
+        }
 
         // SIMPAN
         $kuesioner = Kuesioner::create([
@@ -294,7 +302,17 @@ class KuesionerController extends Controller
                 'wajib5' => $identitasData['wajib5'] ?? false,
             ]);
         } else {
-            $adminId = auth('admin')->id() ?? auth()->id();
+            // Determine which auth guard is active to get the correct user data
+            $adminId = null;
+
+            if (auth('admin')->check()) {
+                $adminId = auth('admin')->id();
+            } elseif (auth()->check()) {
+                $adminId = auth()->id();
+            } else {
+                // Fallback: get the authenticated user ID from either guard
+                $adminId = auth('admin')->id() ?? auth()->id();
+            }
             $form->identitas()->create([
                 'id_admin' => $adminId,
                 'id_kuesioner' => $form->id_kuesioner,
@@ -476,7 +494,7 @@ class KuesionerController extends Controller
         // Siapkan url sampul (atau null)
         $coverUrl = $form->sampul ? Storage::url($form->sampul) : null;
 
-        return view('Admin.responden', [
+        return view('Admin.Form.responden', [
             'form'     => $form,
             'coverUrl' => $coverUrl,
             'respondens' => $respondens,
