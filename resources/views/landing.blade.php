@@ -118,11 +118,13 @@
                                 </span>
                             </button>
                         </a>
-                        <button class="group bg-white text-dark-blue border-3 border-medium-blue px-10 py-5 rounded-xl font-semibold text-lg hover:bg-medium-blue hover:text-white transition-all duration-300 shadow-lg hover:shadow-2xl focus:ring-4 focus:ring-medium-blue/30">
-                            <span class="flex items-center justify-center space-x-2">
-                                <span>Panduan Pengisian</span>
-                            </span>
-                        </button>
+                        <a href="{{ asset('files/PANDUAN PENGISIAN SURVEY SIPULAS 2025.pdf') }}" download>
+                            <button class="group bg-white text-dark-blue border-3 border-medium-blue px-10 py-5 rounded-xl font-semibold text-lg hover:bg-medium-blue hover:text-white transition-all duration-300 shadow-lg hover:shadow-2xl focus:ring-4 focus:ring-medium-blue/30">
+                                <span class="flex items-center justify-center space-x-2">
+                                    <span>Panduan Pengisian</span>
+                                </span>
+                            </button>
+                        </a>
                     </div>
                 </div>
                 <div class="animate-float">
