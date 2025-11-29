@@ -490,17 +490,17 @@
         // Initialize charts if there's data
         @if($totalResponden > 0)
         document.addEventListener('DOMContentLoaded', function() {
-            // Completion Rate Donut Chart
-            const completionCtx = document.getElementById('completionChart').getContext('2d');
-            const completionChart = new Chart(completionCtx, {
+            // Satisfaction Rate Donut Chart
+            const satisfactionCtx = document.getElementById('completionChart').getContext('2d');
+            const satisfactionChart = new Chart(satisfactionCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Tingkat Penyelesaian', 'Belum Selesai'],
+                    labels: ['Tingkat Kepuasan', 'Belum Puas'],
                     datasets: [{
-                        data: [{{ $completionRate }}, {{ 100 - $completionRate }}],
+                        data: [{{ $tingkatKepuasan }}, {{ 100 - $tingkatKepuasan }}],
                         backgroundColor: [
-                            '#10B981',   // green - completed
-                            '#E5E7EB'    // gray - not completed
+                            '#10B981',   // green - satisfied
+                            '#E5E7EB'    // gray - not satisfied
                         ],
                         borderWidth: 0
                     }]
@@ -523,9 +523,9 @@
                 }
             });
 
-            // Answers Distribution Bar Chart - using actual data from backend
-            const answersCtx = document.getElementById('answersChart').getContext('2d');
-            new Chart(answersCtx, {
+            // Satisfaction Distribution Bar Chart - using actual data from backend
+            const satisfactionDistributionCtx = document.getElementById('answersChart').getContext('2d');
+            new Chart(satisfactionDistributionCtx, {
                 type: 'bar',
                 data: {
                     labels: ['Skor 1', 'Skor 2', 'Skor 3', 'Skor 4', 'Skor 5'],
@@ -538,8 +538,20 @@
                             {{ $distribusiJawaban[4] ?? 0 }},
                             {{ $distribusiJawaban[5] ?? 0 }}
                         ],
-                        backgroundColor: '#3B82F6',
-                        borderColor: '#2563EB',
+                        backgroundColor: [
+                            '#EF4444', // Skor 1 - red
+                            '#F97316', // Skor 2 - orange
+                            '#EAB308', // Skor 3 - amber
+                            '#22C55E', // Skor 4 - green
+                            '#10B981'  // Skor 5 - emerald
+                        ],
+                        borderColor: [
+                            '#DC2626', // Skor 1
+                            '#EA580C', // Skor 2
+                            '#CA8A04', // Skor 3
+                            '#16A34A', // Skor 4
+                            '#059669'  // Skor 5
+                        ],
                         borderWidth: 1
                     }]
                 },
@@ -552,6 +564,18 @@
                             beginAtZero: true,
                             ticks: {
                                 stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y;
+                                }
                             }
                         }
                     }

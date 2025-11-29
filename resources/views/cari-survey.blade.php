@@ -1105,7 +1105,7 @@
             for (var i = 0; i < filtered.length; i++) {
                 var survey = filtered[i];
                 var description = survey.description.length > 60 ? survey.description.substring(0, 60) + '...' : survey.description;
-                var sampulUrl = survey.sampul ? '/storage/' + survey.sampul : '{{ asset("images/gambar1.png") }}';
+                var sampulUrl = survey.sampul ? '{{ asset("uploadedfiles") }}/' + survey.sampul : null;
 
                 html += '<div class="card">' +
                     '<div class="card-icon-section">' +
@@ -1169,7 +1169,7 @@
             // Gunakan gambar dari survey atau gambar default untuk modal
             const survey = surveys.find(s => s.id === id);
             if (survey && survey.sampul) {
-                document.getElementById('modalImage').src = '/storage/' + survey.sampul;
+                document.getElementById('modalImage').src = '{{ asset("uploadedfiles") }}/' + survey.sampul;
                 document.getElementById('modalImage').alt = title;
             } else {
                 document.getElementById('modalImage').src = '{{ asset("images/gambar1.png") }}';

@@ -125,7 +125,7 @@
         @if($form->sampul)
             <div class="cover-image">
                 @php
-                    $imagePath = storage_path('app/public/' . $form->sampul);
+                    $imagePath = public_path('uploadedfiles/' . $form->sampul);
                     $imageData = null;
                     if (file_exists($imagePath)) {
                         $imageData = base64_encode(file_get_contents($imagePath));
@@ -135,7 +135,7 @@
                 @if($imageData)
                     <img src="data:{{ $mimeType }};base64,{{ $imageData }}" alt="Cover Image" />
                 @else
-                    <img src="{{ request()->getSchemeAndHttpHost() . '/storage/' . $form->sampul }}" alt="Cover Image" />
+                    <img src="{{ request()->getSchemeAndHttpHost() . '/uploadedfiles/' . $form->sampul }}" alt="Cover Image" />
                 @endif
             </div>
         @endif
@@ -146,7 +146,7 @@
 
     <div class="info-section">
         <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Ringkasan Survei</h3>
-        
+
         <div class="info-grid">
             <div class="stat-card">
                 <div class="stat-value">{{ $totalResponden }}</div>
@@ -159,8 +159,8 @@
             <div class="stat-card">
                 <div class="stat-value">
                     @if($totalResponden > 0 && $totalQuestions > 0)
-                        {{ round(($respondens->sum(function($respon) use ($totalQuestions) { 
-                            return $respon->jawaban->count(); 
+                        {{ round(($respondens->sum(function($respon) use ($totalQuestions) {
+                            return $respon->jawaban->count();
                         }) / ($totalResponden * $totalQuestions)) * 100, 1) }}%
                     @else
                         0%
@@ -222,10 +222,10 @@
 
     <div class="info-section">
         <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Statistik Jawaban</h3>
-        
+
         @foreach($sections as $section)
             <div class="section-title">{{ $section['judul'] ?? 'Pertanyaan Umum' }}</div>
-            
+
             @foreach($section['questions'] as $question)
                 @php
                     $stats = $questionStats[$question->id_pertanyaan] ?? null;
@@ -235,10 +235,10 @@
                         <div class="question-text">{{ $loop->iteration }}. {{ $question->teks }}</div>
                         <div class="question-stats">
                             <div style="margin-bottom: 5px;">
-                                <strong>Total Jawaban:</strong> {{ $stats['count'] }} 
+                                <strong>Total Jawaban:</strong> {{ $stats['count'] }}
                                 | <strong>Rata-rata:</strong> {{ number_format($stats['avg'], 2) }}
                             </div>
-                            
+
                             <div class="distribution">
                                 @foreach($stats['distribution'] as $score => $count)
                                     @if($count > 0)

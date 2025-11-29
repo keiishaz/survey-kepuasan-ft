@@ -77,15 +77,15 @@
             <form action="{{ route('forms.update', $form->id_kuesioner) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                
+
                 <!-- Upload Cover -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mb-6">
                     <label class="block text-sm font-semibold text-gray-900 mb-3">Unggah Sampul Form</label>
-                    
+
                     <div id="uploadZone" class="upload-zone rounded-xl p-8 text-center bg-gray-50 flex flex-col items-center justify-center min-h-64 cursor-pointer group">
                         <input type="file" id="imageUpload" name="sampul" accept="image/*" class="hidden">
                         <input type="hidden" id="removeImageFlag" name="remove_sampul" value="0">
-                        
+
                         <div id="uploadPlaceholder" class="space-y-3">
                             <div class="flex justify-center">
                                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@
                                 <p class="text-gray-400 text-xs mt-1">Format: PNG, JPG, JPEG, GIF (Max 5MB)</p>
                             </div>
                         </div>
-                        
+
                         <div id="previewContainer" class="hidden w-full">
                             <img id="previewImage" class="preview-image w-full" alt="Preview" />
                             <button type="button" class="mt-3 px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors w-full" id="removeImageBtn">
@@ -105,7 +105,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     @error('sampul')
                         <p class="text-xs text-red-600 mt-2">{{ $message }}</p>
                     @enderror
@@ -114,11 +114,11 @@
                 <!-- Nama Form -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mb-6">
                     <label class="block text-sm font-semibold text-gray-900 mb-2">Nama Form <span class="text-red-500">*</span></label>
-                    <input type="text" 
-                           name="nama" 
+                    <input type="text"
+                           name="nama"
                            value="{{ old('nama', $form->nama) }}"
                            required
-                           placeholder="Masukkan nama form" 
+                           placeholder="Masukkan nama form"
                            class="form-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 outline-none text-sm transition-all">
                     @error('nama')
                         <p class="text-xs text-red-600 mt-2">{{ $message }}</p>
@@ -132,7 +132,7 @@
                             class="form-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 outline-none text-sm transition-all bg-white">
                         <option value="">Pilih kategori</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id_kategori }}" 
+                            <option value="{{ $category->id_kategori }}"
                                     {{ old('id_kategori', $form->id_kategori) == $category->id_kategori ? 'selected' : '' }}>
                                 {{ $category->nama }}
                             </option>
@@ -146,8 +146,8 @@
                 <!-- Deskripsi -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mb-6">
                     <label class="block text-sm font-semibold text-gray-900 mb-2">Deskripsi</label>
-                    <textarea 
-                        name="deskripsi" 
+                    <textarea
+                        name="deskripsi"
                         placeholder="Tambahkan deskripsi untuk memberikan informasi lebih detail"
                         class="form-input w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 outline-none text-sm transition-all resize-none">{{ old('deskripsi', $form->deskripsi) }}</textarea>
                     @error('deskripsi')
@@ -193,7 +193,7 @@
     <script>
         // Initialize with existing image if available
         @if($form->sampul)
-            document.getElementById('previewImage').src = "{{ Storage::url($form->sampul) }}";
+            document.getElementById('previewImage').src = "{{ asset('uploadedfiles/'.$form->sampul) }}";
             document.getElementById('uploadPlaceholder').classList.add('hidden');
             document.getElementById('previewContainer').classList.remove('hidden');
         @endif
@@ -255,7 +255,7 @@
         uploadZone.addEventListener('drop', function(e) {
             e.preventDefault();
             this.classList.remove('dragover');
-            
+
             const files = e.dataTransfer.files;
             if (files.length) {
                 imageUpload.files = files;

@@ -149,7 +149,7 @@
                                         <td class="px-6 py-4">
                                             <div class="w-16 h-10">
                                                 @if($form->sampul)
-                                                    <img src="{{ asset('storage/'.$form->sampul) }}" alt="Sampul" class="w-full h-full object-cover rounded-md border border-gray-200">
+                                                    <img src="{{ asset('uploadedfiles/'.$form->sampul) }}" alt="Sampul" class="w-full h-full object-cover rounded-md border border-gray-200">
                                                 @else
                                                     <div class="w-full h-full bg-gray-100 rounded-md border border-gray-200 flex items-center justify-center">
                                                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,12 +222,12 @@
     <script>
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
-        
+
         if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', function() {
                 sidebar.classList.toggle('-translate-x-full');
                 sidebar.classList.toggle('translate-x-0');
-                
+
                 const icon = this.querySelector('svg');
                 if (sidebar.classList.contains('-translate-x-full')) {
                     icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
@@ -239,7 +239,7 @@
             document.addEventListener('click', function(event) {
                 const isClickInsideSidebar = sidebar.contains(event.target);
                 const isClickOnToggle = sidebarToggle.contains(event.target);
-                
+
                 if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth < 1024) {
                     sidebar.classList.add('-translate-x-full');
                     const icon = sidebarToggle.querySelector('svg');
@@ -270,7 +270,7 @@
             #sidebar {
                 transform: translateX(-100%);
             }
-            
+
             #sidebar.translate-x-0 {
                 transform: translateX(0);
             }

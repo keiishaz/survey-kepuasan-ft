@@ -122,8 +122,19 @@ class KuesionerController extends Controller
 
         $sampulPath = null;
         if ($request->hasFile('sampul')) {
-            // simpan ke storage/app/public/kuesioner
-            $sampulPath = $request->file('sampul')->store('kuesioner', 'public');
+            // Buat direktori jika belum ada
+            $uploadDir = public_path('uploadedfiles/kuesioner');
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            // Generate nama file unik
+            $fileName = time() . '_' . uniqid() . '.' . $request->file('sampul')->getClientOriginalExtension();
+
+            // Simpan ke public/uploadedfiles/kuesioner
+            $request->file('sampul')->move($uploadDir, $fileName);
+
+            $sampulPath = 'kuesioner/' . $fileName;
         }
 
 
@@ -211,7 +222,7 @@ class KuesionerController extends Controller
         ];
 
         // siapkan url sampul (atau null)
-        $coverUrl = $form->sampul ? Storage::url($form->sampul) : null;
+        $coverUrl = $form->sampul ? asset('uploadedfiles/' . $form->sampul) : null;
 
         return view('Admin.Form.detail-form', [
             'form'             => $form,
@@ -409,14 +420,32 @@ class KuesionerController extends Controller
         if ($request->hasFile('sampul')) {
             // Delete old file if exists
             if ($form->sampul) {
-                \Storage::delete($form->sampul);
+                $oldFilePath = public_path('uploadedfiles/' . $form->sampul);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
             }
-            // Save new file
-            $sampulPath = $request->file('sampul')->store('kuesioner', 'public');
+
+            // Buat direktori jika belum ada
+            $uploadDir = public_path('uploadedfiles/kuesioner');
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            // Generate nama file unik
+            $fileName = time() . '_' . uniqid() . '.' . $request->file('sampul')->getClientOriginalExtension();
+
+            // Simpan ke public/uploadedfiles/kuesioner
+            $request->file('sampul')->move($uploadDir, $fileName);
+
+            $sampulPath = 'kuesioner/' . $fileName;
         } else if ($request->has('remove_sampul') && $request->remove_sampul == '1') {
             // If user requested to remove the image
             if ($form->sampul) {
-                \Storage::delete($form->sampul);
+                $oldFilePath = public_path('uploadedfiles/' . $form->sampul);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
             }
             $sampulPath = null;
         }
@@ -492,7 +521,7 @@ class KuesionerController extends Controller
         }
 
         // Siapkan url sampul (atau null)
-        $coverUrl = $form->sampul ? Storage::url($form->sampul) : null;
+        $coverUrl = $form->sampul ? asset('uploadedfiles/' . $form->sampul) : null;
 
         return view('Admin.Form.responden', [
             'form'     => $form,
