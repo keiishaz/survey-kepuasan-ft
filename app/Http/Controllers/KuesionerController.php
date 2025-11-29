@@ -176,6 +176,32 @@ class KuesionerController extends Controller
             $rataRataJawaban = round($jawabanBerskala, 2);
         }
 
+        // Hitung tingkat kepuasan dalam persentase berdasarkan rata-rata jawaban
+        $tingkatKepuasan = 0;
+        if ($rataRataJawaban > 0) {
+            // Konversi skala 1-5 ke persentase (1=20%, 2=40%, 3=60%, 4=80%, 5=100%)
+            $tingkatKepuasan = ($rataRataJawaban / 5) * 100;
+            $tingkatKepuasan = round($tingkatKepuasan, 2);
+        }
+
+        // Hitung distribusi jawaban (berapa banyak jawaban untuk setiap skor 1-5)
+        $jawabanDistribusi = \App\Models\Jawaban::whereHas('pertanyaan', function($query) use ($id) {
+            $query->where('id_kuesioner', $id);
+        })
+        ->selectRaw('jawaban, COUNT(*) as count')
+        ->groupBy('jawaban')
+        ->orderBy('jawaban')
+        ->pluck('count', 'jawaban');
+
+        // Buat array distribusi lengkap dengan skor 1-5
+        $distribusiLengkap = [
+            1 => $jawabanDistribusi[1] ?? 0,
+            2 => $jawabanDistribusi[2] ?? 0,
+            3 => $jawabanDistribusi[3] ?? 0,
+            4 => $jawabanDistribusi[4] ?? 0,
+            5 => $jawabanDistribusi[5] ?? 0,
+        ];
+
         // siapkan url sampul (atau null)
         $coverUrl = $form->sampul ? Storage::url($form->sampul) : null;
 
@@ -187,6 +213,8 @@ class KuesionerController extends Controller
             'totalJawaban'     => $totalJawaban,
             'completionRate'   => $completionRate,
             'rataRataJawaban'  => $rataRataJawaban,
+            'tingkatKepuasan'  => $tingkatKepuasan,
+            'distribusiJawaban' => $distribusiLengkap,
         ]);
     }
 

@@ -13,7 +13,7 @@
                 required
                 autofocus
                 autocomplete="email"
-                placeholder="email@ft.unib.ac.id"
+                placeholder="Masukkan email di sini.."
                 class="form-input"
             />
             @error('email')
@@ -30,7 +30,7 @@
                 type="password"
                 required
                 autocomplete="current-password"
-                placeholder="{{ __('Enter your password') }}"
+                placeholder="{{ __('Masukkan kata sandi..') }}"
                 class="form-input"
             />
             @error('password')
@@ -38,20 +38,6 @@
             @enderror
         </div>
 
-        <!-- Remember Me -->
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <input
-                    wire:model="remember"
-                    id="remember"
-                    type="checkbox"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <label for="remember" class="ml-2 block text-sm text-gray-700">
-                    {{ __('Remember me') }}
-                </label>
-            </div>
-        </div>
 
         <div>
             <button

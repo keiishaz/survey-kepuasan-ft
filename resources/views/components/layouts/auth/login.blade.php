@@ -4,7 +4,7 @@
         @include('partials.head')
         <style>
             .login-bg {
-                background: linear-gradient(135deg, #E0E7FF 0%, #F3E8FF 100%);
+                background: linear-gradient(135deg, #bae6fd 0%, #fef3c7 100%);
             }
             .btn-primary {
                 background: linear-gradient(to right, #2563EB, #3B82F6);

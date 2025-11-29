@@ -776,7 +776,15 @@
                     document.getElementById('next-btn').textContent = 'Kirim Jawaban';
                     document.getElementById('next-btn').onclick = function() {
                         saveAllCurrentAnswers(); // Save all answers before submit
-                        document.getElementById('surveyForm').submit(); // Submit the form directly
+
+                        // Show confirmation before submitting
+                        showConfirmation(
+                            "Konfirmasi Pengiriman",
+                            "Apakah Anda yakin ingin mengirim jawaban survey? Jawaban yang dikirim tidak dapat diubah kembali.",
+                            function() {
+                                document.getElementById('surveyForm').submit(); // Submit the form directly
+                            }
+                        );
                     };
                 } else {
                     document.getElementById('next-btn').textContent = 'Berikutnya';
@@ -1144,6 +1152,86 @@
                     notification.parentNode.removeChild(notification);
                 }
             }, 300);
+        }
+    </script>
+
+    <!-- Include the confirmation modal -->
+    <!-- Universal Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-30 transition-opacity backdrop-blur-sm" aria-hidden="true"></div>
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
+                <div class="bg-white px-6 pt-6 pb-4 sm:pb-6">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-12 sm:w-12">
+                            <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                        <div class="mt-4 text-center sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg font-bold leading-6 text-gray-900" id="modalTitle">Konfirmasi Tindakan</h3>
+                            <div class="mt-3">
+                                <p class="text-sm text-gray-600" id="modalMessage">Apakah Anda yakin ingin melakukan tindakan ini?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 bg-gray-50 px-6 py-4 sm:py-5">
+                    <button type="button" id="cancelButton" class="mt-2 sm:mt-0 px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium text-sm hover:bg-gray-100 transition-colors sm:px-4">
+                        Batal
+                    </button>
+                    <button type="button" id="confirmButton" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white font-medium text-sm hover:from-red-600 hover:to-red-700 transition-all shadow-sm sm:px-4">
+                        Ya, Lanjutkan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Universal confirmation function
+        function showConfirmation(title, message, onConfirm) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').innerHTML = message;
+            document.getElementById('confirmationModal').classList.remove('hidden');
+
+            // Apply overflow hidden to prevent background scrolling
+            document.body.classList.add('overflow-hidden');
+
+            // Set the callback function
+            window.currentConfirmCallback = onConfirm;
+        }
+
+        function hideConfirmation() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+
+            // Remove overflow hidden
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Event listeners for confirmation modal
+        document.getElementById('confirmButton').addEventListener('click', function() {
+            if (typeof window.currentConfirmCallback === 'function') {
+                window.currentConfirmCallback();
+            }
+            hideConfirmation();
+        });
+
+        document.getElementById('cancelButton').addEventListener('click', hideConfirmation);
+
+        // Close modal when clicking outside the modal content
+        document.getElementById('confirmationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideConfirmation();
+            }
+        });
+
+        // Add CSRF token meta tag if not present
+        if (!document.querySelector('meta[name="csrf-token"]')) {
+            const meta = document.createElement('meta');
+            meta.name = 'csrf-token';
+            meta.content = document.querySelector('input[name="_token"]').value;
+            document.head.appendChild(meta);
         }
     </script>
 </body>

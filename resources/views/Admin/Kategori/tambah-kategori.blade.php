@@ -144,7 +144,7 @@
 <script>
     // Add confirmation to add category form
     document.addEventListener('DOMContentLoaded', function() {
-        const addCategoryForm = document.querySelector('form[action="{{ route(\'kategori.simpan\') }}"]');
+        const addCategoryForm = document.querySelector('form[action="{{ route('kategori.simpan') }}"]');
         if (addCategoryForm) {
             const originalSubmit = addCategoryForm.onsubmit;
             addCategoryForm.onsubmit = function(e) {
