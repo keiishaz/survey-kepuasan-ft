@@ -402,7 +402,14 @@
     <div class="flex min-h-screen">
         @include('Admin.navbar')
 
-        <main class="flex-1 lg:ml-72 p-4 md:p-6 lg:p-8">
+        <!-- Mobile Sidebar Toggle -->
+        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+
+        <main class="flex-1 lg:ml-64 p-4 md:p-6 lg:p-8">
             <div style="max-width: 1200px; margin: 0 auto;">
                 <!-- Header -->
                 <div class="mb-6">
@@ -844,6 +851,49 @@
         // Initial render
         renderIdentitas();
         renderQuestions();
+    </script>
+
+    <script>
+        // Mobile Sidebar Toggle
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebar.classList.toggle('translate-x-0');
+
+                const icon = this.querySelector('svg');
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+                } else {
+                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+                }
+            });
+
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnToggle = sidebarToggle.contains(event.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle && window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    const icon = sidebarToggle.querySelector('svg');
+                    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+                }
+            });
+        }
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        if (window.innerWidth < 1024) {
+            sidebar.classList.add('-translate-x-full');
+        }
     </script>
 
     @include('partials.confirmation-modal')

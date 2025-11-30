@@ -113,19 +113,105 @@
                     </div>
                 </div>
 
-                <!-- Form List Table -->
+                <!-- Form List Table / Card View -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                    <div class="overflow-x-auto">
+                    <!-- Mobile Card View (Visible on small screens) -->
+                    <div class="md:hidden overflow-x-auto">
+                        @forelse ($forms as $form)
+                            @php
+                                $isActive = $form->is_active;
+                                $statusText = $isActive ? 'Aktif' : 'Nonaktif';
+                                $statusClass = $isActive ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200';
+
+                                $kat = strtolower($form->kategori->nama ?? '-');
+                                $badgeMap = [
+                                    'akademik' => ['text'=>'text-blue-600','bg'=>'bg-blue-50', 'border'=>'border-blue-200'],
+                                    'fasilitas'=> ['text'=>'text-orange-600','bg'=>'bg-orange-50', 'border'=>'border-orange-200'],
+                                    'layanan'  => ['text'=>'text-purple-600','bg'=>'bg-purple-50', 'border'=>'border-purple-200'],
+                                    'dosen'    => ['text'=>'text-emerald-600','bg'=>'bg-emerald-50', 'border'=>'border-emerald-200'],
+                                ];
+                                $c = $badgeMap[$kat] ?? ['text'=>'text-gray-700','bg'=>'bg-gray-100', 'border'=>'border-gray-200'];
+                            @endphp
+                            <div class="border-b border-gray-100 last:border-b-0 p-4">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="flex-shrink-0 w-12 h-8">
+                                        @if($form->sampul)
+                                            <img src="{{ asset('uploadedfiles/'.$form->sampul) }}" alt="Sampul" class="w-full h-full object-cover rounded-md border border-gray-200">
+                                        @else
+                                            <div class="w-full h-full bg-gray-100 rounded-md border border-gray-200 flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <h3 class="text-sm font-semibold text-gray-900 truncate">{{ $form->nama }}</h3>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $c['text'] }} {{ $c['bg'] }} border {{ $c['border'] }} mt-1">
+                                            {{ $form->kategori->nama ?? '-' }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Tanggal:</span>
+                                        <span class="text-gray-900">
+                                            {{ $form->tanggal_mulai?->format('d/m/Y') ?? '-' }}
+                                            <span class="text-gray-400">s/d {{ $form->tanggal_selesai?->format('d/m/Y') ?? '-' }}</span>
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Responden:</span>
+                                        <span class="text-gray-900 flex items-center">
+                                            <svg class="w-3 h-3 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                            </svg>
+                                            {{ $form->respondens_count }}
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500">Status:</span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
+                                            <span class="w-1.5 h-1.5 rounded-full mr-1 {{ $isActive ? 'bg-green-500' : 'bg-gray-400' }}"></span>
+                                            {{ $statusText }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <a href="{{ route('forms.show', $form->id_kuesioner) }}" class="inline-flex items-center bg-primary-500 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-primary-600 transition-all duration-200 text-xs w-full justify-center">
+                                        Kelola Form
+                                    </a>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="py-12 text-center">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                                        <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="text-gray-600 font-medium mb-2">Belum ada form</p>
+                                    <a href="{{ route('forms.create') }}" class="text-primary-600 font-semibold hover:text-primary-700">Buat Form Baru</a>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    <!-- Desktop Table View (Hidden on small screens) -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-gray-50/50">
                                 <tr>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Gambar</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Form</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Responden</th>
-                                    <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-20 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Gambar</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama Form</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Responden</th>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100">
@@ -146,8 +232,8 @@
                                     @endphp
 
                                     <tr class="hover:bg-gray-50/50 transition-colors">
-                                        <td class="px-6 py-4">
-                                            <div class="w-16 h-10">
+                                        <td class="px-4 py-3">
+                                            <div class="w-12 h-8">
                                                 @if($form->sampul)
                                                     <img src="{{ asset('uploadedfiles/'.$form->sampul) }}" alt="Sampul" class="w-full h-full object-cover rounded-md border border-gray-200">
                                                 @else
@@ -159,38 +245,38 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <p class="text-sm font-semibold text-gray-900">{{ $form->nama }}</p>
+                                        <td class="px-4 py-3">
+                                            <p class="text-sm font-semibold text-gray-900 truncate max-w-xs">{{ $form->nama }}</p>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $c['text'] }} {{ $c['bg'] }} border {{ $c['border'] }}">
+                                        <td class="px-4 py-3">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $c['text'] }} {{ $c['bg'] }} border {{ $c['border'] }}">
                                                 {{ $form->kategori->nama ?? '-' }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <div class="text-sm text-gray-600">
+                                        <td class="px-4 py-3">
+                                            <div class="text-xs text-gray-600">
                                                 <p>{{ $form->tanggal_mulai?->format('d/m/Y') ?? '-' }}</p>
-                                                <p class="text-gray-400 text-xs">s/d {{ $form->tanggal_selesai?->format('d/m/Y') ?? '-' }}</p>
+                                                <p class="text-gray-400">s/d {{ $form->tanggal_selesai?->format('d/m/Y') ?? '-' }}</p>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center space-x-2 text-gray-500">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center space-x-1 text-gray-500">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                                                 </svg>
-                                                <span class="text-sm font-medium">{{ $form->respondens_count }} Responden</span>
+                                                <span class="text-xs font-medium">{{ $form->respondens_count }}</span>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
-                                                <span class="w-1.5 h-1.5 rounded-full mr-1.5 {{ $isActive ? 'bg-green-500' : 'bg-gray-400' }}"></span>
+                                        <td class="px-4 py-3">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
+                                                <span class="w-1.5 h-1.5 rounded-full mr-1 {{ $isActive ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                                 {{ $statusText }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 text-right">
-                                            <a href="{{ route('forms.show', $form->id_kuesioner) }}" class="inline-flex items-center bg-primary-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-600 transition-all duration-200 text-sm">
-                                                Kelola Form
-                                                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <td class="px-4 py-3 text-right">
+                                            <a href="{{ route('forms.show', $form->id_kuesioner) }}" class="inline-flex items-center bg-primary-500 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-primary-600 transition-all duration-200 text-xs sm:text-sm">
+                                                Kelola
+                                                <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                                 </svg>
                                             </a>
