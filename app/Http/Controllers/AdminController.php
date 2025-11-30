@@ -10,9 +10,20 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $admins = Admin::all();
+        $query = Admin::query();
+
+        // Apply search filter if provided
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('nama', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('email', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        $admins = $query->get();
         return view('Admin.TambahAdmin.manajemen-admin', compact('admins'));
     }
 

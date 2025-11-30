@@ -617,10 +617,6 @@
                         </button>
                     </div>
 
-                    <button type="button" onclick="toggleSelectIdentitas(${index})" class="btn btn-small btn-secondary ml-2">
-                        Pilih
-                    </button>
-
                     <button type="button" onclick="removeIdentitasItem(${index})" class="btn btn-small btn-danger ml-2">
                         Hapus
                     </button>

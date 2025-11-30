@@ -45,28 +45,55 @@
             <div class="p-6 lg:p-8">
                 <!-- Filter Section -->
                 <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-6">
-                    <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
-                        <!-- Search -->
-                        <div class="flex-1 w-full">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Cari Kategori</label>
-                            <div class="relative">
-                                <input type="text"
-                                       placeholder="Cari..."
-                                       class="w-full px-4 py-2 pl-10 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none text-sm text-gray-900 bg-white">
-                                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                </svg>
+                    <form method="GET" action="{{ route('kategori') }}" id="search-form">
+                        <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
+                            <!-- Search -->
+                            <div class="flex-1 w-full">
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Cari Kategori</label>
+                                <div class="relative">
+                                    <input type="text"
+                                           name="search"
+                                           value="{{ request('search') }}"
+                                           placeholder="Cari berdasarkan nama kategori..."
+                                           class="w-full px-4 py-2 pl-10 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none text-sm text-gray-900 bg-white">
+                                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Button Tambah -->
-                        <a href="{{ url('/kategori/tambah') }}" class="bg-gradient-to-r from-medium-blue to-blue-600 text-white px-4 py-2 rounded-xl font-medium text-sm hover:from-dark-blue hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Tambah
-                        </a>
-                    </div>
+                            <!-- Button Tambah -->
+                            <a href="{{ url('/kategori/tambah') }}" class="bg-gradient-to-r from-medium-blue to-blue-600 text-white px-4 py-2 rounded-xl font-medium text-sm hover:from-dark-blue hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-1.5 whitespace-nowrap">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Tambah
+                            </a>
+                        </div>
+                    </form>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const searchForm = document.getElementById('search-form');
+                            const searchInput = searchForm.querySelector('input[name="search"]');
+
+                            // Add event listener for search input
+                            searchInput.addEventListener('keyup', function(e) {
+                                if (e.key === 'Enter') {
+                                    searchForm.submit();
+                                }
+                            });
+
+                            // Add debounced search to avoid too many requests
+                            let searchTimeout;
+                            searchInput.addEventListener('input', function() {
+                                clearTimeout(searchTimeout);
+                                searchTimeout = setTimeout(function() {
+                                    searchForm.submit();
+                                }, 500); // Delay search by 500ms
+                            });
+                        });
+                    </script>
                 </div>
 
                 <!-- Kategori Grid Cards -->

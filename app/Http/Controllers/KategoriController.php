@@ -8,11 +8,17 @@ use Illuminate\Validation\Rule;
 
 class KategoriController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Kategori::withCount('kuesioner')
-        ->orderBy('nama')
-        ->get();
+        $query = Kategori::withCount('kuesioner');
+
+        // Apply search filter if provided
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where('nama', 'LIKE', "%{$searchTerm}%");
+        }
+
+        $categories = $query->orderBy('nama')->get();
         return view('Admin.Kategori.kategori', compact('categories'));
     }
 
