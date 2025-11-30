@@ -4,19 +4,14 @@
     @include('partials.head')
     <title>SIPULAS - Manajemen Admin</title>
     <style>
-        .sidebar-active {
-            background: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%);
-            color: white;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
         .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -25,19 +20,28 @@
         @include('Admin.navbar')
 
         <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-6 right-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg border border-gray-200" id="sidebar-toggle">
-            <svg class="w-5 h-5 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
 
         <!-- Main Content -->
-        <main class="flex-1 lg:ml-72 p-6 lg:p-8 lg:pr-6">
-            <!-- Header -->
-            <div class="mb-6">
-                <h1 class="text-xl font-bold text-gray-900 mb-1">Manajemen Admin</h1>
-                <p class="text-xs text-gray-600">Kelola semua akun admin dalam sistem</p>
-            </div>
+        <main class="flex-1 lg:ml-64">
+            <!-- Top Header Bar -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="px-6 lg:px-8 py-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 class="text-xl font-semibold text-gray-800">Manajemen Admin</h1>
+                            <p class="text-sm text-gray-500 mt-0.5">Kelola semua akun admin dalam sistem</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="p-6 lg:p-8">
 
             <!-- Success Message -->
             @if(session('success'))
@@ -47,28 +51,28 @@
             @endif
 
             <!-- Filter Section -->
-            <div class="bg-white rounded-2xl shadow-sm p-4 mb-6 border border-gray-100">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-6">
                 <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
                     <!-- Search -->
                     <div class="flex-1 w-full">
-                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Cari Admin</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Cari Admin</label>
                         <div class="relative">
                             <input type="text"
                                    placeholder="Cari..."
-                                   class="w-full px-3 py-2 pl-9 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm text-gray-900">
-                            <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   class="w-full px-4 py-2 pl-10 border border-gray-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-200 outline-none text-sm text-gray-900 bg-white">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
                     </div>
 
                     <!-- Button Tambah -->
-                    <button class="bg-gradient-to-r from-medium-blue to-blue-600 text-white px-4 py-2 rounded-xl font-medium text-sm hover:from-dark-blue hover:to-blue-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center space-x-1.5 whitespace-nowrap">
+                    <a href="{{ url('/admin/tambah') }}" class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-2 rounded-lg font-medium text-sm hover:from-primary-600 hover:to-primary-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center gap-1.5 whitespace-nowrap">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
-                        <a href="{{ url('/admin/tambah') }}" class="...">Tambah</a>
-                    </button>
+                        Tambah
+                    </a>
                 </div>
             </div>
 
@@ -221,19 +225,15 @@
     </script>
 
     <style>
-        /* Smooth transitions for sidebar */
         #sidebar {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
         }
 
         @media (max-width: 1023px) {
             #sidebar {
                 transform: translateX(-100%);
-                left: 1rem;
-                width: calc(100% - 2rem);
-                max-width: 280px;
             }
-            
+
             #sidebar.translate-x-0 {
                 transform: translateX(0);
             }
@@ -254,22 +254,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+            background: #f1f5f9;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #3B82F6;
-            border-radius: 10px;
+            background: #cbd5e1;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #1E3A8A;
-        }
-
-        /* Smooth card transitions */
-        .card-hover {
-            will-change: transform, box-shadow;
+            background: #94a3b8;
         }
 
         /* Better focus states for accessibility */

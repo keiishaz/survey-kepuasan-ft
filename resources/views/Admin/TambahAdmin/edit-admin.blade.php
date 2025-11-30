@@ -1,39 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('partials.head')
     <title>SIPULAS - Edit Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'pastel-blue': '#E8F4FD',
-                        'light-blue': '#B8E0FF',
-                        'cream': '#FEF9E7',
-                        'dark-blue': '#1E3A8A',
-                        'medium-blue': '#3B82F6'
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        .sidebar-active {
-            background: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%);
-            color: white;
-        }
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
     </style>
 </head>
@@ -42,19 +14,28 @@
         @include('Admin.navbar')
 
         <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-6 right-6 z-50 lg:hidden bg-white p-3 rounded-xl shadow-lg border border-gray-200" id="sidebar-toggle">
-            <svg class="w-5 h-5 text-dark-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
 
         <!-- Main Content -->
-        <main class="flex-1 lg:ml-72 p-6 lg:p-8 lg:pr-6">
-            <!-- Header -->
-            <div class="mb-6 lg:mt-0 mt-16">
-                <h1 class="text-xl font-bold text-gray-900 mb-1">Edit Admin</h1>
-                <p class="text-xs text-gray-600">Form edit akun admin</p>
-            </div>
+        <main class="flex-1 lg:ml-64">
+            <!-- Top Header Bar -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="px-6 lg:px-8 py-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 class="text-xl font-semibold text-gray-800">Edit Admin</h1>
+                            <p class="text-sm text-gray-500 mt-0.5">Form edit akun admin</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="p-6 lg:p-8">
 
             <!-- Error Messages -->
             @if ($errors->any())
@@ -68,7 +49,7 @@
             @endif
 
             <!-- Form Container -->
-            <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8 border border-gray-100 max-w-3xl">
+            <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-8 border border-gray-100">
                 <form action="{{ route('admin.update', $admin->id_admin) }}" method="POST">
                     @csrf
                     @method('PUT')
@@ -82,7 +63,7 @@
                                    value="{{ old('nama', $admin->nama) }}"
                                    required
                                    placeholder="Masukkan nama lengkap admin"
-                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm">
+                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm text-gray-900 bg-white">
                             @error('nama')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -97,7 +78,7 @@
                                    value="{{ old('email', $admin->email) }}"
                                    required
                                    placeholder="Masukkan alamat email admin"
-                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm">
+                                   class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:border-medium-blue focus:ring-2 focus:ring-medium-blue/20 transition-all duration-200 outline-none text-sm text-gray-900 bg-white">
                             @error('email')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -168,17 +149,13 @@
     </script>
 
     <style>
-        /* Smooth transitions for sidebar */
         #sidebar {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
         }
 
         @media (max-width: 1023px) {
             #sidebar {
                 transform: translateX(-100%);
-                left: 1rem;
-                width: calc(100% - 2rem);
-                max-width: 280px;
             }
 
             #sidebar.translate-x-0 {
@@ -201,22 +178,16 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+            background: #f1f5f9;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #3B82F6;
-            border-radius: 10px;
+            background: #cbd5e1;
+            border-radius: 3px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #1E3A8A;
-        }
-
-        /* Smooth card transitions */
-        .card-hover {
-            will-change: transform, box-shadow;
+            background: #94a3b8;
         }
 
         /* Better focus states for accessibility */
@@ -229,5 +200,6 @@
     </style>
 
     @include('partials.confirmation-modal')
+    @fluxScripts
 </body>
 </html>

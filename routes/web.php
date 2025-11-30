@@ -6,7 +6,9 @@ use App\Livewire\Settings\Appearance;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KuesionerController;
+use App\Http\Controllers\StatistikController;
 
 Route::get('/', [\App\Http\Controllers\StatistikController::class, 'index'])->name('home');
 
@@ -35,11 +37,7 @@ Route::post('/isi-survey/{id}/check-duplicate', [KuesionerController::class, 'ch
 
 
 
-
-
-Route::get('/dashboard', function () {
-    return view('Admin.Dashboard.dashboard');
-})
+Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 

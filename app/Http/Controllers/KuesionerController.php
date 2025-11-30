@@ -233,6 +233,7 @@ class KuesionerController extends Controller
             'completionRate'   => $completionRate,
             'rataRataJawaban'  => $rataRataJawaban,
             'tingkatKepuasan'  => $tingkatKepuasan,
+            'tingkatPenyelesaian' => $completionRate,
             'distribusiJawaban' => $distribusiLengkap,
         ]);
     }
@@ -885,12 +886,12 @@ class KuesionerController extends Controller
 
     public function exportResponden($id)
     {
-        $form = Kuesioner::with('kategori')->findOrFail($id);
-        $respondens = $form->respondens()->with(['jawaban.pertanyaan'])->get();
+        $form = Kuesioner::with(['kategori', 'identitas', 'pertanyaan'])->findOrFail($id);
+        $respondens = $form->respondens()->with(['jawaban.pertanyaan', 'kuesioner.kategori'])->get();
 
         // Siapkan header CSV
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="responden_' . $form->nama . '_' . now()->format('Y-m-d_H-i-s') . '.csv"',
         ];
 
@@ -898,8 +899,17 @@ class KuesionerController extends Controller
         $callback = function() use ($form, $respondens) {
             $file = fopen('php://output', 'w');
 
-            // Header baris
-            $row = ['ID Responden', 'Waktu Submit'];
+            // Set UTF-8 BOM for Excel compatibility
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Header baris - menambahkan kolom tambahan dari relasi
+            $row = [
+                'id_responden',
+                'id_form',
+                'nama_form',
+                'kategori_form',
+                'waktu_submit',
+            ];
 
             // Tambahkan header identitas
             if ($form->identitas) {
@@ -921,20 +931,24 @@ class KuesionerController extends Controller
             foreach($respondens as $responden) {
                 $row = [
                     $responden->id_respon,
+                    $responden->id_kuesioner,
+                    $responden->kuesioner->nama ?? $form->nama,  // Menggunakan nama form dari relasi, fallback ke form yang sedang diakses
+                    $responden->kuesioner->kategori->nama ?? $form->kategori->nama ?? '',  // Menggunakan kategori dari relasi, fallback ke form yang sedang diakses
                     $responden->waktu_submit ? \Carbon\Carbon::parse($responden->waktu_submit)->format('Y-m-d H:i:s') : 'Belum selesai'
                 ];
 
                 // Tambahkan data identitas
                 if ($form->identitas) {
-                    if ($form->identitas->atribut1) $row[] = $responden->identitas1;
-                    if ($form->identitas->atribut2) $row[] = $responden->identitas2;
-                    if ($form->identitas->atribut3) $row[] = $responden->identitas3;
-                    if ($form->identitas->atribut4) $row[] = $responden->identitas4;
-                    if ($form->identitas->atribut5) $row[] = $responden->identitas5;
+                    if ($form->identitas->atribut1) $row[] = $responden->identitas1 ?? '';
+                    if ($form->identitas->atribut2) $row[] = $responden->identitas2 ?? '';
+                    if ($form->identitas->atribut3) $row[] = $responden->identitas3 ?? '';
+                    if ($form->identitas->atribut4) $row[] = $responden->identitas4 ?? '';
+                    if ($form->identitas->atribut5) $row[] = $responden->identitas5 ?? '';
                 }
 
                 // Tambahkan jawaban untuk setiap pertanyaan
                 foreach($form->pertanyaan as $pertanyaan) {
+                    // Cari jawaban yang sesuai dengan pertanyaan saat ini
                     $jawaban = $responden->jawaban->firstWhere('id_pertanyaan', $pertanyaan->id_pertanyaan);
                     $row[] = $jawaban ? $jawaban->jawaban : '';
                 }
