@@ -1,7 +1,25 @@
 <!-- Sidebar -->
-<aside class="w-64 bg-[#1E3A8A] border-r border-gray-200 fixed left-0 top-0 bottom-0 overflow-y-auto z-40 transition-all duration-300" id="sidebar">
-    <!-- Logo Section -->
-    <div class="h-16 flex items-center px-6 border-b border-gray-700 bg-[#1E3A8A]">
+<aside class="w-64 bg-[#1E3A8A] border-r border-gray-200 fixed left-0 top-0 bottom-0 overflow-y-auto z-50 transition-all duration-300" id="sidebar">
+    <!-- Mobile Header with close button -->
+    <div class="h-16 flex items-center px-6 bg-[#1E3A8A] lg:hidden">
+        <div class="flex items-center flex-1">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center">
+                <img src="{{ asset('images/logounib.png') }}" alt="Logo" class="w-full h-full object-contain">
+            </div>
+            <div class="ml-3">
+                <h1 class="text-base font-bold text-white">SIPULAS</h1>
+                <p class="text-xs text-gray-300">FT UNIB</p>
+            </div>
+        </div>
+        <button id="close-sidebar" class="text-white hover:text-gray-300 focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Logo Section - Desktop -->
+    <div class="h-16 flex items-center px-6 bg-[#1E3A8A] hidden lg:flex">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-lg flex items-center justify-center">
                 <img src="{{ asset('images/logounib.png') }}" alt="Logo" class="w-full h-full object-contain">
@@ -100,6 +118,22 @@
             }
         );
     }
+
+    // Mobile sidebar close functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+
+        if (closeSidebarBtn && sidebar) {
+            closeSidebarBtn.addEventListener('click', function() {
+                // Add the class that hides the sidebar on mobile
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    sidebar.classList.remove('translate-x-0');
+                }
+            });
+        }
+    });
 </script>
 
 @include('partials.confirmation-modal')

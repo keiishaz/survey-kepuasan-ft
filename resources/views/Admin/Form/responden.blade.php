@@ -122,46 +122,43 @@
     <div class="flex min-h-screen">
         @include('Admin.navbar')
 
-        <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-
         <!-- Main Content -->
-        <main class="flex-1 lg:ml-64 p-6 lg:p-8">
-            <!-- Header -->
-            <div class="mb-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <a href="{{ route('forms.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Manajemen Form</a>
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                        <a href="{{ route('forms.show', $form->id_kuesioner) }}" class="text-sm text-gray-600 hover:text-gray-900">{{ $form->nama }}</a>
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                        <span class="text-sm text-gray-900 font-medium">Responden</span>
-                    </div>
-                    <div>
-                        <a href="{{ route('forms.export-respon', $form->id_kuesioner) }}" class="px-4 py-2 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            Ekspor Responden
-                        </a>
+        <main class="flex-1 lg:ml-64">
+            <!-- Top Header -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="px-6 lg:px-8 py-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <!-- Mobile Menu Button -->
+                            <button class="lg:hidden mr-3 bg-white p-2 rounded-lg shadow-sm border border-gray-200" id="sidebar-toggle">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
+                            <div>
+                                <h1 class="text-xl font-semibold text-gray-800">Responden</h1>
+                                <p class="text-sm text-gray-500 mt-0.5">Form {{ $form->nama }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{{ route('forms.export-respon', $form->id_kuesioner) }}" class="px-4 py-2 bg-white border border-gray-200 text-gray-900 font-medium rounded-lg text-sm hover:bg-gray-50 transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Ekspor Responden
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </header>
 
+            <div class="p-6 lg:p-8">
             <!-- Analytics Section -->
             <div class="mb-8">
                 <h2 class="text-base font-bold text-gray-900 mb-4">Statistik Responden</h2>
 
                 <!-- Stats Horizontal -->
-                <div class="space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Total Responden -->
                     <div class="stat-card">
                         <div class="stat-icon" style="background-color: #F3E8FF;">
@@ -195,39 +192,39 @@
             <!-- Identitas Section -->
             <div class="mb-8">
                 <h2 class="text-base font-bold text-gray-900 mb-4">Konfigurasi Identitas</h2>
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
+                <div class="bg-white rounded-2xl p-6 border border-blue-200 shadow-sm">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @if($form->identitas)
                             @if($form->identitas->atribut1)
-                                <div class="p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                                <div class="p-2 bg-white rounded-lg border border-blue-200">
                                     <div class="text-xs text-blue-700 font-medium">Atribut 1</div>
                                     <div class="text-xs text-gray-900">{{ $form->identitas->atribut1 }}</div>
                                     <div class="text-xs text-gray-600">Wajib: {{ $form->identitas->wajib1 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut2)
-                                <div class="p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                                <div class="p-2 bg-white rounded-lg border border-blue-200">
                                     <div class="text-xs text-blue-700 font-medium">Atribut 2</div>
                                     <div class="text-xs text-gray-900">{{ $form->identitas->atribut2 }}</div>
                                     <div class="text-xs text-gray-600">Wajib: {{ $form->identitas->wajib2 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut3)
-                                <div class="p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                                <div class="p-2 bg-white rounded-lg border border-blue-200">
                                     <div class="text-xs text-blue-700 font-medium">Atribut 3</div>
                                     <div class="text-xs text-gray-900">{{ $form->identitas->atribut3 }}</div>
                                     <div class="text-xs text-gray-600">Wajib: {{ $form->identitas->wajib3 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut4)
-                                <div class="p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                                <div class="p-2 bg-white rounded-lg border border-blue-200">
                                     <div class="text-xs text-blue-700 font-medium">Atribut 4</div>
                                     <div class="text-xs text-gray-900">{{ $form->identitas->atribut4 }}</div>
                                     <div class="text-xs text-gray-600">Wajib: {{ $form->identitas->wajib4 ? 'Ya' : 'Tidak' }}</div>
                                 </div>
                             @endif
                             @if($form->identitas->atribut5)
-                                <div class="p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                                <div class="p-2 bg-white rounded-lg border border-blue-200">
                                     <div class="text-xs text-blue-700 font-medium">Atribut 5</div>
                                     <div class="text-xs text-gray-900">{{ $form->identitas->atribut5 }}</div>
                                     <div class="text-xs text-gray-600">Wajib: {{ $form->identitas->wajib5 ? 'Ya' : 'Tidak' }}</div>
@@ -246,7 +243,7 @@
             <div class="mb-8">
                 <h2 class="text-base font-bold text-gray-900 mb-4">Data Responden ({{ $totalResponden }})</h2>
                 @if($respondens->count() > 0)
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
+                    <div class="bg-white rounded-2xl p-6 border border-white shadow-sm">
                         <div class="responden-container">
                             @foreach($respondens as $responden)
                             <div class="responden-card bg-white shadow-sm rounded-xl border border-gray-200 transition-all duration-300 hover:shadow-md">
@@ -442,6 +439,7 @@
                         <p class="text-gray-500 text-sm mt-1">Statistik akan muncul setelah ada responden yang menjawab</p>
                     </div>
                 @endif
+            </div>
             </div>
         </main>
     </div>

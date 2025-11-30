@@ -93,24 +93,24 @@
     <div class="flex min-h-screen">
         @include('Admin.navbar')
 
-        <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-
         <!-- Main Content -->
         <main class="flex-1 lg:ml-64">
             <!-- Top Header -->
             <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
                 <div class="px-6 lg:px-8 py-4">
-                    <div class="flex items-center space-x-2 text-sm text-gray-500 mb-2">
-                        <a href="{{ route('forms.index') }}" class="hover:text-primary-600 transition-colors">Manajemen Form</a>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
-                        <span class="text-gray-900 font-medium">{{ $form->nama }}</span>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <!-- Mobile Menu Button -->
+                            <button class="lg:hidden mr-3 bg-white p-2 rounded-lg shadow-sm border border-gray-200" id="sidebar-toggle">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
+                            <div>
+                                <h1 class="text-xl font-semibold text-gray-800">Kelola Detail Survey</h1>
+                                <p class="text-sm text-gray-500 mt-0.5">Form {{ $form->nama }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>

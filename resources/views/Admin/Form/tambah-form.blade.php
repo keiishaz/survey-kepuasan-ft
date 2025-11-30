@@ -55,28 +55,28 @@
     <div class="flex min-h-screen">
         @include('Admin.navbar')
 
-        <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-
         <!-- Main Content -->
-        <main class="flex-1 lg:ml-64 p-6 lg:p-8">
-            <!-- Header -->
-            <div class="mb-8">
-                <div class="flex items-center space-x-2 mb-2">
-                    <a href="#" class="text-sm text-gray-600 hover:text-gray-900">Manajemen Form</a>
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    <span class="text-sm font-bold text-gray-900 font-medium">Buat Form Baru</span>
-                </div>
-                <h1 class="text-xl font-bold text-gray-900">Buat Form Baru</h1>
-                <p class="text-sm text-gray-600 mt-1">Tambahkan form survey baru ke dalam sistem</p>
-            </div>
+        <main class="flex-1 lg:ml-64">
+            <!-- Top Header -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="px-6 lg:px-8 py-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <!-- Mobile Menu Button -->
+                            <button class="lg:hidden mr-3 bg-white p-2 rounded-lg shadow-sm border border-gray-200" id="sidebar-toggle">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
+                            <div>
+                                <h1 class="text-xl font-semibold text-gray-800">Buat Form Baru</h1>
+                                <p class="text-sm text-gray-500 mt-0.5">Tambahkan form survey baru ke dalam sistem</p>
+                            </div>
+                        </div>
+                    </div>
+            </header>
 
+            <div class="p-6 lg:p-8">
             <!-- Form Container -->
             <form id="formBaru" class="space-y-6" method="POST" action="{{ route('forms.store') }}" enctype="multipart/form-data">
                 @csrf
@@ -173,6 +173,7 @@
                     </button>
                 </div>
             </form>
+            </div>
         </main>
     </div>
 

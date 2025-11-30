@@ -19,22 +19,23 @@
     <div class="flex min-h-screen">
         @include('Admin.navbar')
 
-        <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-
         <!-- Main Content -->
         <main class="flex-1 lg:ml-64">
             <!-- Top Header Bar -->
             <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
                 <div class="px-6 lg:px-8 py-4">
                     <div class="flex justify-between items-center">
-                        <div>
-                            <h1 class="text-xl font-semibold text-gray-800">Manajemen Kategori</h1>
-                            <p class="text-sm text-gray-500 mt-0.5">Kelola kategori form survey dalam sistem</p>
+                        <div class="flex items-center">
+                            <!-- Mobile Menu Button -->
+                            <button class="lg:hidden mr-3 bg-white p-2 rounded-lg shadow-sm border border-gray-200" id="sidebar-toggle">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
+                            <div>
+                                <h1 class="text-xl font-semibold text-gray-800">Manajemen Kategori</h1>
+                                <p class="text-sm text-gray-500 mt-0.5">Kelola kategori form survey dalam sistem</p>
+                            </div>
                         </div>
                     </div>
                 </div>

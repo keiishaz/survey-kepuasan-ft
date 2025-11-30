@@ -103,8 +103,8 @@
             <div class="animate-slide-up">
                 <!-- Judul - Responsif dengan proporsi yang tepat -->
                 <h2 class="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-dark-blue mb-4 md:mb-6 leading-tight">
-                    Sistem Survey Kepuasan
-                    <span class="text-medium-blue">Layanan</span>
+                    <span class="block xs:text-6xl xs:font-extrabold sm:text-5xl sm:font-bold md:text-5xl md:font-bold lg:text-6xl lg:font-bold sm:inline">Sistem Survey Kepuasan</span>
+                    <span class="block xs:text-6xl xs:font-extrabold sm:text-5xl sm:font-bold md:text-5xl md:font-bold lg:text-6xl lg:font-bold sm:inline text-medium-blue">Layanan</span>
                 </h2>
 
                 <!-- Deskripsi - Ukuran yang konsisten -->

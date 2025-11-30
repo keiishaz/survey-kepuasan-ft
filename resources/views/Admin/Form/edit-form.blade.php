@@ -58,28 +58,29 @@
     <div class="flex min-h-screen">
         @include('Admin.navbar')
 
-        <!-- Mobile Sidebar Toggle -->
-        <button class="fixed top-4 right-4 z-50 lg:hidden bg-white p-2.5 rounded-lg shadow-md border border-gray-200" id="sidebar-toggle">
-            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-
         <!-- Main Content -->
-        <main class="flex-1 lg:ml-64 p-6 lg:p-8">
-            <!-- Header -->
-            <div class="mb-6">
-                <div class="flex items-center space-x-2 mb-2">
-                    <a href="{{ route('forms.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Manajemen Form</a>
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    <span class="text-sm text-gray-900 font-medium">{{ $form->nama ?? 'Form Baru' }}</span>
+        <main class="flex-1 lg:ml-64">
+            <!-- Top Header -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+                <div class="px-6 lg:px-8 py-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <!-- Mobile Menu Button -->
+                            <button class="lg:hidden mr-3 bg-white p-2 rounded-lg shadow-sm border border-gray-200" id="sidebar-toggle">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </button>
+                            <div>
+                                <h1 class="text-xl font-semibold text-gray-800">Edit Form</h1>
+                                <p class="text-sm text-gray-500 mt-0.5">Perbarui informasi form untuk disesuaikan kebutuhan Anda</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-900 mb-1">Edit Form</h1>
-                <p class="text-sm text-gray-600">Perbarui informasi form untuk disesuaikan kebutuhan Anda</p>
-            </div>
+            </header>
 
+            <div class="p-6 lg:p-8">
             <!-- Form -->
             <form action="{{ route('forms.update', $form->id_kuesioner) }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -194,6 +195,7 @@
                     </a>
                 </div>
             </form>
+            </div>
         </main>
     </div>
 
@@ -235,15 +237,18 @@
 
         removeImageBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation(); // Prevent event bubbling that might trigger other click handlers
             showConfirmation(
                 "Konfirmasi Penghapusan",
                 "Apakah Anda yakin ingin menghapus foto sampul?",
                 function() {
                     document.getElementById('removeImageFlag').value = '1';
-                    imageUpload.value = '';
+                    imageUpload.value = ''; // This clears the file input which prevents the file browser from appearing
                     uploadPlaceholder.classList.remove('hidden');
                     previewContainer.classList.add('hidden');
                     uploadZone.classList.remove('dragover');
+                    // Note: We intentionally do NOT call imageUpload.click() here
+                    // to avoid immediately opening the file browser after deletion
                 }
             );
         });
