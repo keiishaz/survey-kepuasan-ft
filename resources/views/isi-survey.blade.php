@@ -810,7 +810,7 @@
 
             // Add each question in the section
             section.questions.forEach((question, index) => {
-                const questionNumber = (currentPage * 10) + index + 1; // Calculate actual question number
+                const questionNumber = index + 1; // Calculate actual question number (starting from 1 for each section)
 
                 // Get previously saved answer if exists
                 let savedAnswer = allAnswers[question.id] || '';
